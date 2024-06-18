@@ -1,26 +1,37 @@
 ---
-title: "Fortinet TECWorkshop Template - MVP1"
-menuTitle: "TECWorkshop Template"
+title: "Securing Acme Corp's AWS Traffic Flows with FortiGate NGFW"
 weight: 1
 archetype: home
 ---
 
-### Welcome!
+## Acme Corp is migrating on prem apps/workloads to AWS Public cloud
 
+- 3 tier web apps (Front end, middleware, database)
 
-This site will explain how to use the [Hugo Web Framework]("https://gohugo.io/") & the ["reLearn" Theme]("https://mcshelby.github.io/hugo-theme-relearn/index.html") to effectively organize & deliver Fortinet TEC Workshops & Product demos in a consistent, simple, and visually appealing format.
+{{% notice tip %}}
+**CISO's typically have the following concerns and requirements** when migrating applications & workloads to public cloud. 
 
-The beauty of this framework lies in its simplicity.  Within approx 30 mins, anybody can have a site up and running.  Content is created via Markdown files, and the workshop guide layout is simply a directory structure.
+In this workshop you will **learn how FortiGates can address the following:**
 
-Follow along on this simple tutorial to get up and running with a Hugo formatted site for your TEC Workshop/training/demo content today!
+- Concerns:
+  - Exposure to Inbound Internet attacks
+  - Environment and App segmentation to reduce exploit blast radius
+  - NGFW protection & URL filtering for outbound web traffic 
+  - Simple security policy across Corporate Cyber Infrastructure
+- Corporate Requirements:
+  - Regional HA architecture (multi AZ)
+  - Traffic Protection with NGFW featuring FortiGate FortiGuard advanced protection
+  - Log of all traffic (blocked and allowed)
+{{% /notice %}}
 
-### Learning Objectives
-- Setup UserRepo on your system & Build container with Hugo & CentralRepo
-- Learn to work in Hugo to create your content to display proper information flow for your TEC Workshop/demo/training
-- Publish your Hugo site to GitHub pages via a CI/CD model 
- 
-### Hugo and Fortinet TECWorkshops - Visually
-- The purpose of this workflow is to simplify creation of Fortinet TECWorkshop guides while providing an example CI/CD development environment with maximum re-usability 
-- Here's a visual representation of our process which will be fully explained in each chapter
+![](1_moduleone/FTNTSecVPC-simple.png)
 
-{{< FTNThugoFlow >}}
+## Workshop Goals
+
+In this workshop you will learn how to use FortiGate NGFW deployed as AWS EC2 instances to protect traffic flows in common AWS architecture patterns as well as some fundamental AWS networking concepts.
+
+The intent is to help clarify the following:
+
+  * Learn foundational AWS networking concepts such as symmetrical routing traffic in and out of VPCs for various traffic flows
+  * Use FortiGate instances in AWS to secure inbound, outbound, and East/West traffic flows
+  * Introduction to FortiGate Security VPC (AWS centralized architecture) with Transit Gateway
