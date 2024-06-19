@@ -15,6 +15,26 @@ weight: 4
 
 #### Summarized Steps (click to expand each for details)
 
+0. Lab Environment Setup
+
+    {{% expand title="**Detailed Steps...**" %}}
+
+- **0.1:** In the **QwikLabs Console left menu** find and copy the URL from the output **TemplateD**.
+- **0.2:** In your AWS account, navigate to the **CloudFormation Console**, click **Create stack** in the upper right, then **With new resources (standard)**.
+- **0.3:** **Paste** the URL copied previously into the **Amazon S3 URL** and click **Next**.
+- **0.4:** Provide an alphanumeric name for the stack, such as part4, task4, etc and cick **Next**.
+- **0.5:** **You must select an IAM role in the Permissions section** of the configure stack options page, then scroll down and click **Next**.
+  ![](image-t0-1.png)
+  {{% notice warning %}}
+**If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
+  {{% /notice %}}
+
+- **0.6:** On the review and create page, scroll to the bottom, check the boxes to acknowledge the warnings, and click **Submit**.
+  ![](image-t0-2.png)
+- **0.7:** Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
+
+    {{% /expand %}}
+
 1. Create VPC routes for ingress routing.
 
     {{% expand title = "**Detailed Steps...**" %}}
@@ -269,6 +289,25 @@ Hop | Component | Description | Packet |
 8 | Internet -> IGW | IGW receives reply traffic and changes the source IP to the private IP of FortiGates Port1. The VPC router routes traffic to FortiGates Port1. The return traffic will follow these steps in reverse. | **<span style="color:blue">y.y.y.y:80</span> -> <span style="color:red">10.0.x.x:src-port</span>** |
 
   ![](../image-gwlb-example-flow2.png)
+
+    {{% /expand %}}
+
+7. Lab Environment Teardown
+
+    {{% expand title="**Detailed Steps...**" %}}
+
+- **7.1:** Before deleting the main CloudFormation Stack, we must remove the VPC routes referencing the GWLBE/VPCEs.
+- **7.2:** Navigate to the **VPC Console** and go to the **Route tables page** (menu on the left), and delete the following routes from the route tables shown below:
+
+Route Table| CIDR | VPC Endpoint
+---|---|---
+VPC-A-IgwRouteTable | 10.1.1.0/24 | VPCE-... AZ1
+VPC-A-IgwRouteTable | 10.1.10.0/24 | VPCE-... AZ2
+VPC-A-Public1RouteTable | 0.0.0.0/0 | VPCE-... AZ1
+VPC-A-Public2RouteTable | 0.0.0.0/0 | VPCE-... AZ2
+
+- **7.3:** Navigate to the **CloudFormation Console**, select the main stack you created and click **Delete**.
+- **7.4:** Once the stack is deleted, proceed to the next task.
 
     {{% /expand %}}
 

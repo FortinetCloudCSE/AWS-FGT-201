@@ -15,6 +15,26 @@ weight: 3
 
 #### Summarized Steps (click to expand each for details)
 
+0. Lab Environment Setup
+
+    {{% expand title="**Detailed Steps...**" %}}
+
+- **0.1:** In the **QwikLabs Console left menu** find and copy the URL from the output **TemplateC**.
+- **0.2:** In your AWS account, navigate to the **CloudFormation Console**, click **Create stack** in the upper right, then **With new resources (standard)**.
+- **0.3:** **Paste** the URL copied previously into the **Amazon S3 URL** and click **Next**.
+- **0.4:** Provide an alphanumeric name for the stack, such as part3, task3, etc and cick **Next**.
+- **0.5:** **You must select an IAM role in the Permissions section** of the configure stack options page, then scroll down and click **Next**.
+  ![](image-t0-1.png)
+  {{% notice warning %}}
+**If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
+  {{% /notice %}}
+
+- **0.6:** On the review and create page, scroll to the bottom, check the boxes to acknowledge the warnings, and click **Submit**.
+  ![](image-t0-2.png)
+- **0.7:** Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
+
+    {{% /expand %}}
+
 1. Check the Transit Gateway Route Tables and confirm east/west is not working.
 
     {{% expand title = "**Detailed Steps...**" %}}
@@ -104,7 +124,7 @@ TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 & 10.2.0.0/16 |
 {{% notice info %}}	
 FortiGate1 is getting data-plane traffic over a GRE tunnel between it's port2 private IP (10.0.3.x/24) and an IP out of Transit Gateway CIDR block (100.64.0.x/24).  This GRE tunnel is going over the TGW-Connect-security-connect-attachment, so this is all over a private path. Also Transit Gateway can support jumbo frames up to 8500 bytes for traffic between VPCs, AWS Direct Connect, Transit Gateway Connect, and peering attachments. However, traffic over VPN connections can have an MTU of 1500 bytes. Find out more in [**AWS Documentation**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-quotas.html#mtu-quotas).
 
-BGP peering can be either iBGP or eBGP but the IP addresseing will always us the inside tunnel IPs from a specific selection of CIDRs from 169.254.0.0/16.  To find out which ones can or can't be used, please reference [**AWS Documentation**](https://docs.aws.amazon.com/vpc/latest/tgw/tgw-connect.html#tgw-connect-peer).
+BGP peering can be either iBGP or eBGP but the IP addressing will always us the inside tunnel IPs from a specific selection of CIDRs from 169.254.0.0/16.  To find out which ones can or can't be used, please reference [**AWS Documentation**](https://docs.aws.amazon.com/vpc/latest/tgw/tgw-connect.html#tgw-connect-peer).
 
 Regardless which type of BGP is used, each connect peer is only required to create one GRE tunnel to peer to the redundant BGP peers on the Transit Gateway side. For more information, reference [**AWS Documentation](https://aws.amazon.com/blogs/networking-and-content-delivery/simplify-sd-wan-connectivity-with-aws-transit-gateway-connect/).
 {{% /notice %}}
@@ -154,7 +174,7 @@ Regardless which type of BGP is used, each connect peer is only required to crea
 - **6.3:** Run the command **`curl ipinfo.io`** to connect to a resource on the internet.
    - Ping and curl should connect successfully through FGT2 which is connected to Transit Gateway over a VPC attachment (IPsec + BGP over the internet).
    - The public IP returned from ipinfo.io should match the public IP of FGT2
-- **6.4:** In the **VPC Console** go to the **Tranist gateway route tables page**.
+- **6.4:** In the **VPC Console** go to the **Transit gateway route tables page**.
 - **6.4:** Find **TGW-Connect-spoke-tgw-rtb** go to the **Routes tab** and notice there are **ECMP routes for 0.0.0.0/0** since there are two VPN tunnels configured.
 
     {{% /expand %}}
@@ -164,7 +184,7 @@ Regardless which type of BGP is used, each connect peer is only required to crea
     {{% expand title = "**Detailed Steps...**" %}}
 	
 {{% notice info %}}	
-FortiGate2 is getting data-plane traffic over **two IPsec tunnels** between it's port1 private ip (10.0.3.x/24) that has an associated [**Elastic IP**](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html) and two public IPs managed by AWS, so this is all over a public path but encrypted. This means that jumbo frames are not supported for VPN based attachments.
+FortiGate2 is getting data-plane traffic over **two IPsec tunnels** between its port1 private ip (10.0.3.x/24) that has an associated [**Elastic IP**](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html) and two public IPs managed by AWS, so this is all over a public path but encrypted. This means that jumbo frames are not supported for VPN based attachments.
 
 Since there are two tunnels with a BGP peer configured for each, FortiGate2 is able to advertise ECMP paths which Transit Gateway can use.  [**TGW supports ECMP**](https://docs.aws.amazon.com/vpc/latest/tgw/how-transit-gateways-work.html#tgw-ecmp) for different attachment types.
 {{% /notice %}}
@@ -177,7 +197,7 @@ Since there are two tunnels with a BGP peer configured for each, FortiGate2 is a
     {{% expand title = "**Detailed Steps...**" %}}
 
 - **8.1:** Login to **FortiGate1**, using the outputs **FGT1LoginURL**, **Username**, and **Password**.
-- **8.2:** Upon login in the **upper right hand corner** click on the **>_** icon to open a CLI session.
+- **8.2:** Upon login in the **upper-right hand corner** click on the **>_** icon to open a CLI session.
 - **8.3:** Run the command **`show router route-map rmap-aspath1`** and notice **the as-path is set to 6500 just like FortiGate2**.
 - **8.4:** Copy and paste the commands below to configure default-route-originate with the route-map to advertise 0.0.0.0/0 with an as-path of 6500:
   ```
@@ -211,7 +231,7 @@ Since there are two tunnels with a BGP peer configured for each, FortiGate2 is a
 - **9.3:** Run the command **`curl ipinfo.io`** to connect to a resource on the internet.
    - Ping and curl should connect successfully through FGT1 which is connected to Transit Gateway over a Connect attachment (GRE + BGP over a VPC attachment).
    - The public IP returned from ipinfo.io should match the public IP of FGT1
-- **9.4:** In the **VPC Console** go to the **Tranist gateway route tables page**.
+- **9.4:** In the **VPC Console** go to the **Transit gateway route tables page**.
 - **9.5:** Find **TGW-Connect-spoke-tgw-rtb** go to the **Routes tab** and notice there **is only one route for 0.0.0.0/0 since Transit Gateway only supports ECMP routing from the same attachment types**.
 
     {{% /expand %}}
@@ -227,9 +247,7 @@ While Transit Gateway does support ECMP routing, it only does so for the same at
 
     {{% /expand %}}
 
-
-
-- **5.3** Below is a step by step of the packet handling for the outbound web traffic from Spoke1-Instance1.
+- **10.1** Below is a step by step of the packet handling for the outbound web traffic from Spoke1-Instance1.
 
 Hop | Component | Description | Packet |
 ---|---|---|---|
@@ -245,6 +263,14 @@ Hop | Component | Description | Packet |
 
   ![](image-t3-4.png)
 
+11. Lab Environment Teardown
+
+    {{% expand title="**Detailed Steps...**" %}}
+
+- **11.1:** Navigate to the **CloudFormation Console**, select the main stack you created and click **Delete**.
+- **11.2:** Once the stack is deleted, proceed to the next task.
+
+    {{% /expand %}}
 
 ### Discussion Points
 - TGW handles inter-VPC routing for full-mesh connectivity.

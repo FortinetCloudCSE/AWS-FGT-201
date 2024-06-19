@@ -22,6 +22,27 @@ There are no security controls in this example. Instance-B can freely communicat
 
 #### Summarized Steps (click to expand each for details)
 
+0. Lab Environment Setup
+
+    {{% expand title="**Detailed Steps...**" %}}
+
+- **0.1:** In the **QwikLabs Console left menu** find and copy the URL from the output **TemplateA**.
+- **0.2:** In your AWS account, navigate to the **CloudFormation Console**, click **Create stack** in the upper right, then **With new resources (standard)**.
+- **0.3:** **Paste** the URL copied previously into the **Amazon S3 URL** and click **Next**.
+- **0.4:** Provide an alphanumeric name for the stack, such as part1, task1, etc and cick **Next**.
+- **0.5:** **You must select an IAM role in the Permissions section** of the configure stack options page, then scroll down and click **Next**.
+  ![](image-t0-1.png)
+  {{% notice warning %}}
+**If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
+  {{% /notice %}}
+
+- **0.6:** On the review and create page, scroll to the bottom, check the boxes to acknowledge the warnings, and click **Submit**.
+  ![](image-t0-2.png)
+- **0.7:** Once the main (ie not NESTED) CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
+  ![](image-t0-3.png)
+
+    {{% /expand %}}
+
 1. Find EC2 Instance-A and verify it can't access Instance-B or C.
 
     {{% expand title="**Detailed Steps...**" %}}
@@ -57,10 +78,10 @@ There are no security controls in this example. Instance-B can freely communicat
 
 - **2.1:** Navigate to the **VPC Console** and go to the **Peering connections page** (menu on the left) and click **Create peering connection**.
 - **2.2:** Provide a name then select **VPC-A as the requester** and **VPC-B as the Accepter** and click **Create peering connection** at the bottom of the page.
-- **2.3:** On the next page, click **Action** and select **Accept Request**, and again on the pop up window.
+- **2.3:** On the next page, click **Action** and select **Accept Request**, and again on the pop-up window.
 - **2.4:** Go to the **Route tables page** and find **VPC-A-PrivateRouteTable** , select the **Routes tab** and click **Edit Routes**.
 - **2.5:** Create a route for **0.0.0.0/0** with the peering connection as your target.
-- **2.5:** Repeat the same steps above to create a route for **10.1.0.0/16** in **VPC-B-PrivateRouteTable** to allow reply traffic.
+- **2.6:** Repeat the same steps above to create a route for **10.1.0.0/16** in **VPC-B-PrivateRouteTable** to allow reply traffic.
   ![](image-t1-3.png)
   ![](image-t1-4.png)
   ![](image-t1-5.png)
@@ -159,5 +180,16 @@ Hop | Component | Description | Packet |
 - You can create additional RTBs within a VPC, and then associate each RTB to one or more subnets, altering the routing behavior of ALL TRAFFIC within that subnet.
 - This is a very basic setup and is often used as a "hello world" demo for intro to cloud. 
   - Without any additional actions taken, this EC2 instance is wide open to the Internet, meaning it can communicate freely to anywhere on the Internet and anybody on the Internet can communicate freely to it. As we'll see later, there are already inbound probing attempts against this instance even though it was just launched in the last 30 minutes.
+
+5. Lab Environment Teardown
+
+    {{% expand title="**Detailed Steps...**" %}}
+
+- **5.1:** Before deleting the main CloudFormation Stack, we must remove the VPC routes referencing the VPC peering connection, and the VPC peering connection itself.
+- **5.2:** Navigate to the **VPC Console** and go to the **Peering connections page** (menu on the left), select the peering for VPC-A to B and click **Actions**, then select **Delete peering connection**. This will **prompt you to delete the related route table entries**. Select **Delete related route table entries**, then to confirm, type **delete** in the field and click **Delete**.
+- **5.3:** Navigate to the **CloudFormation Console**, select the main stack you created and click **Delete**.
+- **5.4:** Once the stack is deleted, proceed to the next task.
+
+    {{% /expand %}}
 
 **This concludes this task**

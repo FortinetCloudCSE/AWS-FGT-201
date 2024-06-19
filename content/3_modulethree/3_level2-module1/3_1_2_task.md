@@ -15,11 +15,31 @@ weight: 2
 
 #### Summarized Steps (click to expand each for details)
 
+0. Lab Environment Setup
+
+    {{% expand title="**Detailed Steps...**" %}}
+
+- **0.1:** In the **QwikLabs Console left menu** find and copy the URL from the output **TemplateB**.
+- **0.2:** In your AWS account, navigate to the **CloudFormation Console**, click **Create stack** in the upper right, then **With new resources (standard)**.
+- **0.3:** **Paste** the URL copied previously into the **Amazon S3 URL** and click **Next**.
+- **0.4:** Provide an alphanumeric name for the stack, such as part2, task2, etc and cick **Next**.
+- **0.5:** **You must select an IAM role in the Permissions section** of the configure stack options page, then scroll down and click **Next**.
+  ![](image-t0-1.png)
+  {{% notice warning %}}
+**If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
+  {{% /notice %}}
+
+- **0.6:** On the review and create page, scroll to the bottom, check the boxes to acknowledge the warnings, and click **Submit**.
+  ![](image-t0-2.png)
+- **0.7:** Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
+
+    {{% /expand %}}
+
 1. Inspect the Transit Gateway VPC attachments.
 
     {{% expand title = "**Detailed Steps...**" %}}
 
-- **1.1:** In the **VPC Console** go to the **Tranist gateway attachments page** (menu on the left), then find and select the **VPC-A-spoke-vpc-attachment** attachment.
+- **1.1:** In the **VPC Console** go to the **Transit gateway attachments page** (menu on the left), then find and select the **VPC-A-spoke-vpc-attachment** attachment.
 - **1.2:** On the **Details tab**, click **2 Subnets** under Subnet IDs.
   ![](image-t2-1.png)
 - **1.3:** Copy the **Transit gateway attachment ID** and navigate to the **EC2 Console**.
@@ -80,7 +100,7 @@ NGFW-sharedservices-tgw-rtb | VPC-C-spoke-vpc-attachment | VPC-A-spoke-vpc-attac
 If you accidentally did not use the new layout, you can change it by clicking on **Classic Layout** in the top right and switch to **Use new layout**.
 {{% /notice %}}
 
-- **4.7:** Create a new policy with the **settings shown below** and click **OK** to allow east/west icmp.
+- **4.7:** Create a new policy with the **settings shown below** and click **OK** to allow east/west ICMP.
 
 ![](image-t2-7.png)
 
@@ -120,11 +140,11 @@ Due to the configuration of the Transit gateway route tables, the east/west traf
 - **6.6:** Run the command **`curl https://ipinfo.io** to connect to a public application over HTTPS.
 - **6.7:** To test downloading an EICAR test virus over HTTPS to a local file, run the command **`curl -k --retry 2 --retry-all-errors https://secure.eicar.org/eicar.com.txt -o file.txt`**.
 - **6.8:** To check the content of the file, run the command **`cat file.txt | grep -A 15 'High Security Alert'`**.
-  - You will see you were blocked and a block page was returned.
+  - You will see you were blocked, and a block page was returned.
   - Ping and curl with HTTPS should work while curl with HTTP should fail due to firewall policy
 
 {{% notice tip %}}
-Due to the configuration of the Transit gateway route tables, the east/west traffic between VPC-A to VPC-B and VPC-A & B to the internet is being routed through the inspection VPC. This is allowing us to have better visibility and control from both layer 4 & 7. This allows us to trust but verify what is allowed and occuring in our environment.
+Due to the configuration of the Transit gateway route tables, the east/west traffic between VPC-A to VPC-B and VPC-A & B to the internet is being routed through the inspection VPC. This is allowing us to have better visibility and control from both layer 4 & 7. This allows us to trust but verify what is allowed and occurring in our environment.
 {{% /notice %}}
 
    {{% /expand %}}
@@ -141,7 +161,7 @@ In this section, we used Transit gateway to provide open and direct east/west be
 
 Key points to understand is that:
   - a single Transit gateway can have multiple route tables
-  - multiple attachment types exist (VPC, VPN, Direct Connect (dedicated curcit), TGW Connect (GRE))
+  - multiple attachment types exist (VPC, VPN, Direct Connect (dedicated circuit), TGW Connect (GRE))
   - each attachment can only be associated to one route table
   - each attachment can be propagated to multiple route tables (ie VPC A & B)
   - additionally static and dynamic routes (covered in next section) can be added to route tables
@@ -171,6 +191,15 @@ Hop | Component | Description | Packet |
 9 | Spoke1-TGW-Attachment -> Instance-A | Spoke1-TGW-Attachment is attached to subnets in Spoke1 VPC which have a local VPC route to reach Instance-A. | **<span style="color:blue">x.x.x.x:80</span> -> <span style="color:black">10.1.2.10:dst-port</span>** |
 
   ![](../image-tgw-static-example-flow1.png)
+
+    {{% /expand %}}
+
+8. Lab Environment Teardown
+
+    {{% expand title="**Detailed Steps...**" %}}
+
+- **8.1:** Navigate to the **CloudFormation Console**, select the main stack you created and click **Delete**.
+- **8.2:** Once the stack is deleted, proceed to the next task.
 
     {{% /expand %}}
 
