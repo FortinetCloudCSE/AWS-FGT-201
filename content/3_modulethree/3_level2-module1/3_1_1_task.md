@@ -173,14 +173,6 @@ Hop | Component | Description | Packet |
   
   {{% /expand %}}
 
-### Discussion Points
-- EC2 instances can be assigned an EIP for public reachability.
-- VPC's must have an IGW associated to provide Internet access to any subnet in the VPC.
-- Subnets have a default RTB associated to them upon creation, allowing default reachability between all subnets in the VPC. 
-- You can create additional RTBs within a VPC, and then associate each RTB to one or more subnets, altering the routing behavior of ALL TRAFFIC within that subnet.
-- This is a very basic setup and is often used as a "hello world" demo for intro to cloud. 
-  - Without any additional actions taken, this EC2 instance is wide open to the Internet, meaning it can communicate freely to anywhere on the Internet and anybody on the Internet can communicate freely to it. As we'll see later, there are already inbound probing attempts against this instance even though it was just launched in the last 30 minutes.
-
 5. Lab Environment Teardown
 
     {{% expand title="**Detailed Steps...**" %}}
@@ -191,5 +183,16 @@ Hop | Component | Description | Packet |
 - **5.4:** Once the stack is deleted, proceed to the next task.
 
     {{% /expand %}}
+
+### Discussion Points
+- VPC peering is a point to point connection only (no transitive routing).
+- Full mesh is required to connect all VPCs together. 
+  - For example connecting 10 VPCs would require 45 connections.
+- VPC peering supports connections between VPCs:
+  - In the same or different AWS Accounts
+  - In the same (intra) or across (inter) regions
+- When using inter-region peering, encryption is used.
+- No Internet Gateway is required for VPC Peering (even when inter-region)
+- Jumbo frames (9001 btyes) are only supported for intra-region connections, inter-region is limited to 1500 bytes.
 
 **This concludes this task**
