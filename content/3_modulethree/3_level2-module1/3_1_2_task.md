@@ -204,8 +204,17 @@ Hop | Component | Description | Packet |
     {{% /expand %}}
 
 ### Discussion Points
-- TGW handles inter-VPC routing for full-mesh connectivity.
-- Centralized Security VPC handles FortiGate NGFW inspection for any traffic flow (Inbound, Outbound, East/West).
-  - advanced architectures for all of these scenarios can be [**found here**](https://github.com/FortinetCloudCSE/.github/blob/main/profile/AWS/README.md).
+- TGW is essentially a regional router.
+- TGW supports transitive routing and has many [**use cases**](https://docs.aws.amazon.com/vpc/latest/tgw/TGW_Scenarios.html).
+- TGW supports the following attachments in the same region:
+  - VPC (static propagation of VPC CIDR)
+  - VPN (static or dynamic routing)
+  - Direct Connect Gateway (static or dynamic routing)
+  - TGW Connect (GRE over VPC or Direct Connect attachment, supports static or dynamic routing)
+- TGW supports peering between TGWs in the same or different regions.
+- Jumbo frames (8500 bytes) are supported for all connections except VPC (1500 bytes).
+- Centralized Inspection VPC handles FortiGate NGFW inspection for any traffic flow (Inbound, Outbound, East/West).
+  - [**Appliance Mode**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-appliance-scenario.html) is required for active-passive designs to keep flows sticky to the primary FortiGate.
+  - Advanced architectures for all of these scenarios can be [**found here**](https://github.com/FortinetCloudCSE/.github/blob/main/profile/AWS/README.md).
   
 **This concludes this task**

@@ -245,8 +245,6 @@ Since there are two tunnels with a BGP peer configured for each, FortiGate2 is a
 While Transit Gateway does support ECMP routing, it only does so for the same attachment types. There is a [**route evaluation order**](https://docs.aws.amazon.com/vpc/latest/tgw/how-transit-gateways-work.html#tgw-route-evaluation-overview) that takes place. The reason behind this is that different attachment types go over different paths (ie connect over private vpc-attachment vs vpc over public internet) which can have different latency, RTTs, etc and even different MTUs supported.
 {{% /notice %}}
 
-    {{% /expand %}}
-
 - **10.1** Below is a step by step of the packet handling for the outbound web traffic from Spoke1-Instance1.
 
 Hop | Component | Description | Packet |
@@ -263,6 +261,8 @@ Hop | Component | Description | Packet |
 
   ![](image-t3-4.png)
 
+    {{% /expand %}}
+
 11. Lab Environment Teardown
 
     {{% expand title="**Detailed Steps...**" %}}
@@ -273,8 +273,12 @@ Hop | Component | Description | Packet |
     {{% /expand %}}
 
 ### Discussion Points
-- TGW handles inter-VPC routing for full-mesh connectivity.
-- Centralized Security VPC handles FortiGate NGFW inspection for any traffic flow (Inbound, Outbound, East/West).
-  - advanced architectures for all of these scenarios can be [**found here**](https://github.com/FortinetCloudCSE/.github/blob/main/profile/AWS/README.md).
+- TGW supports ECMP routing with routes from the same attachment type.
+   - This allows scalable active-active centralized ingress/egress inspection.
+   - East/West inspection requires SNAT to keep flows sticky to the same FortiGate'
+- TGW has a route evaluation priority to select the best path for the same route.
+- Each TGW VPC connection (2x IPsec tunnels per connection) supports up to 1.5 Gbps.
+- Each TGW Connect peer supports up to 5 Gbps.
+- TGW supports multiple peers per TGW Connect attachment and multiple attachments to a single VPC.
 
 **This concludes this task**
