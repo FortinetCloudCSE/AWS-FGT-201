@@ -8,6 +8,6 @@ weight: 2
 
 - [**Qwiklabs account**](2_moduletwo/21_logistics.html)
   - QL provisioned AWS Account and FortiGate Cluster in AWS
-- [**Detailed Diagram**](3_modulethree/image-fgcp-tgw.png)
+- [**AWS Networking Cheat Sheet**](2_moduletwo/22_awsnetworkingconcepts.html)
   - Open this in new tab
 - [**AWS Tips and Tricks**](2_moduletwo/23_awstipstricks.html)

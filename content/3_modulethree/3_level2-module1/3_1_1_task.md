@@ -4,7 +4,7 @@ weight: 1
 ---
 
 
-## **Public Inbound: Single VPC with IGW**
+## **Point to Point**
 |                            |    |  
 |----------------------------| ----
 | **Goal**                   | Establish point to point access from VPC A to VPC B

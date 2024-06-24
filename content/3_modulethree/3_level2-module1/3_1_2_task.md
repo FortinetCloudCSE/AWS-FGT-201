@@ -4,7 +4,7 @@ weight: 2
 ---
 
 
-## **Private Outbound: Single VPC with NATGW** 
+## **Regional Router** 
 |                            |    |  
 |----------------------------| ----
 | **Goal**                   | Establish open and secured east/west (Inter-VPC) and outbound flows through the provisioned NGFW VPC and Transit gateway architecture.
@@ -136,8 +136,8 @@ Due to the configuration of the Transit gateway route tables, the east/west traf
 - **6.3:** Run the command **`curl 10.2.2.10`** to connect to Instance-B.
    - Ping should work while curl should fail due to firewall policy
 - **6.4:** Run the command **`ping 8.8.8.8`** to ping a resource on the internet.
-- **6.5:** Run the command **`curl ipinfo.io** to connect to a public application over HTTP.
-- **6.6:** Run the command **`curl https://ipinfo.io** to connect to a public application over HTTPS.
+- **6.5:** Run the command **`curl ipinfo.io`** to connect to a public application over HTTP.
+- **6.6:** Run the command **`curl https://ipinfo.io`** to connect to a public application over HTTPS.
 - **6.7:** To test downloading an EICAR test virus over HTTPS to a local file, run the command **`curl -k --retry 2 --retry-all-errors https://secure.eicar.org/eicar.com.txt -o file.txt`**.
 - **6.8:** To check the content of the file, run the command **`cat file.txt | grep -A 15 'High Security Alert'`**.
   - You will see you were blocked, and a block page was returned.
