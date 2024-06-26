@@ -26,6 +26,9 @@ There are no security controls in this example. Instance-B can freely communicat
 
     {{% expand title="**Detailed Steps...**" %}}
 
+
+[![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png?lightbox=false)](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=task1&templateURL=https%3A%2F%2Fhacorp-cloud-cse-workshop-us-east-1.s3.amazonaws.com%2Faws-fgt-201%2FMaster_FGT_201_Part1.template.json)
+
 - **0.1:** In the **QwikLabs Console left menu** find and copy the URL from the output **TemplateA**.
 - **0.2:** In your AWS account, navigate to the **CloudFormation Console**, click **Create stack** in the upper right, then **With new resources (standard)**.
 - **0.3:** **Paste** the URL copied previously into the **Amazon S3 URL** and click **Next**.
@@ -79,7 +82,7 @@ There are no security controls in this example. Instance-B can freely communicat
 - **2.1:** Navigate to the **VPC Console** and go to the **Peering connections page** (menu on the left) and click **Create peering connection**.
 - **2.2:** Provide a name then select **VPC-A as the requester** and **VPC-B as the Accepter** and click **Create peering connection** at the bottom of the page.
 - **2.3:** On the next page, click **Action** and select **Accept Request**, and again on the pop-up window.
-- **2.4:** Go to the **Route tables page** and find **VPC-A-PrivateRouteTable** , select the **Routes tab** and click **Edit Routes**.
+- **2.4:** Go to the **VPC Route tables page** and find **VPC-A-PrivateRouteTable** , select the **Routes tab** and click **Edit Routes**.
 - **2.5:** Create a route for **0.0.0.0/0** with the peering connection as your target.
 - **2.6:** Repeat the same steps above to create a route for **10.1.0.0/16** in **VPC-B-PrivateRouteTable** to allow reply traffic.
   ![](image-t1-3.png)
@@ -106,17 +109,13 @@ There are no security controls in this example. Instance-B can freely communicat
 - **3.6:** Run the command **`ping 10.3.2.10`** to ping Instance-C.
 - **3.7:** Run the command **`curl ipinfo.io`** to access the internet through VPC-B.
    - Instance-A **SHOULD NOT** be able to ping Instance-C or access the internet through VPC-B.
-
-  {{% notice warning %}}
-    
-If you are unable to access the instance webpage, you may need to disconnect from your corporate VPN or change your Web Filter settings to allow access. An upstream proxy or web filter is blocking access.
-
-  {{% /notice %}}
   
     {{% /expand %}}
 
-4. Let's dig deeper to understand how all of this works.
-   - VPC Peering is purely point to point between VPC CIDRs.
+4. Let's dig deeper to understand how all of VPC Peering works.
+   - VPC Peering permits point to point connectivity between **instances in 2 directly peered VPC's** and nothing else
+   - Transitive peering or peering from **VPC A _through_ VPC B to VPC C** is not permitted
+   - Accessing AWS Services (like NAT or Internet GW) via a peering connection does not work
 
     {{% expand title="**Detailed Steps...**" %}}
 
@@ -155,19 +154,19 @@ Hop | Component | Description | Packet |
 
   {{% notice info %}}
 
-  When Instance-A attempts to ping Instance-C or access the internet through VPC-B (using the default route), the VPC router at step 2 above would drop the traffic as the destination does not match the CIDR of VPC-B.
+  When Instance-A attempts to ping Instance-C or access the Internet through VPC-B (using the default route), the VPC router at step 2 above would drop the traffic as the destination does not match the CIDR of VPC-B.
     
   {{% /notice %}}
 
 - **4.8** Below is a step by step of the packet handling for the traffic from Instance-B to the internet.
 
-Hop | Component | Description | Packet |
----|---|---|---|
-1 | Instance-B -> 0.0.0.0/0 NAT GW | Instance-B sends outbound traffic to the VPC router (it's default gw) which routes the traffic to NAT GW as configured in the VPC-B-PrivateRouteTable. | **<span style="color:black">10.2.2.10:src-port</span> -> <span style="color:blue">x.x.x.x:80</span>** |
+Hop | Component | Description                                                                                                                                                               | Packet |
+---|---|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---|
+1 | Instance-B -> 0.0.0.0/0 NAT GW | Instance-B sends outbound traffic to the VPC router (it's default gw) which routes the traffic to NAT GW as configured in the VPC-B-PrivateRouteTable.                    | **<span style="color:black">10.2.2.10:src-port</span> -> <span style="color:blue">x.x.x.x:80</span>** |
 2 | NAT GW -> 0.0.0.0/0 IGW | NAT GW changes the source IP to its own private IP and sends the traffic to VPC router. The VPC router routes traffic to IGW as configured in the VPC-B-PublicRouteTable. | **<span style="color:purple">y.y.y.y:src-port</span> -> <span style="color:blue">x.x.x.x:80</span>** |
-3 | IGW -> Internet | IGW changes the source IP to the associated EIP of NAT GW and routes the traffic to the internet. | **<span style="color:brown">z.z.z.z:src-port</span> -> <span style="color:blue">x.x.x.x:80</span>** |
-4 | Internet -> IGW | IGW receives reply traffic, changes the source IP to the private IP of NAT GW, and sends the traffic to VPC router. The VPC router routes traffic to the NAT GW. | **<span style="color:blue">x.x.x.x:80</span> -> <span style="color:purple">y.y.y.y:dst-port</span>** |
-5 | NAT GW -> Instance-B | NAT GW changes the source IP back to the private IP of Instance-B and routes the traffic to the VPC router which delivers the traffic to Instance-B. | **<span style="color:blue">x.x.x.x:80</span> -> <span style="color:black">10.2.2.10:dst-port</span>** |
+3 | IGW -> Internet | IGW changes the source IP to the associated EIP of NAT GW and routes the traffic to the internet.                                                                         | **<span style="color:brown">z.z.z.z:src-port</span> -> <span style="color:blue">x.x.x.x:80</span>** |
+4 | Internet -> IGW | IGW receives reply traffic, changes the DEST IP to the private IP of NAT GW, and sends the traffic to VPC router. The VPC router routes traffic to the NAT GW.            | **<span style="color:blue">x.x.x.x:80</span> -> <span style="color:purple">y.y.y.y:dst-port</span>** |
+5 | NAT GW -> Instance-B | NAT GW changes the DEST IP back to the private IP of Instance-B and routes the traffic to the VPC router which delivers the traffic to Instance-B.                        | **<span style="color:blue">x.x.x.x:80</span> -> <span style="color:black">10.2.2.10:dst-port</span>** |
 
   ![](../image-vpc-peering-example-flow2.png)
   
@@ -187,7 +186,7 @@ Hop | Component | Description | Packet |
 ### Discussion Points
 - VPC peering is a point to point connection only (no transitive routing).
 - Full mesh is required to connect all VPCs together. 
-  - For example connecting 10 VPCs would require 45 connections.
+  - For example connecting 10 VPCs would require (10*9)/2 = 45 connections.
 - VPC peering supports connections between VPCs:
   - In the same or different AWS Accounts
   - In the same (intra) or across (inter) regions

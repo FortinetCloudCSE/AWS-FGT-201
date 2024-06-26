@@ -19,6 +19,8 @@ weight: 3
 
     {{% expand title="**Detailed Steps...**" %}}
 
+[![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png?lightbox=false)](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=task3&templateURL=https%3A%2F%2Fhacorp-cloud-cse-workshop-us-east-1.s3.amazonaws.com%2Faws-fgt-201%2FMaster_FGT_201_Part3.template.json)
+
 - **0.1:** In the **QwikLabs Console left menu** find and copy the URL from the output **TemplateC**.
 - **0.2:** In your AWS account, navigate to the **CloudFormation Console**, click **Create stack** in the upper right, then **With new resources (standard)**.
 - **0.3:** **Paste** the URL copied previously into the **Amazon S3 URL** and click **Next**.
@@ -99,7 +101,7 @@ TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 & 10.2.0.0/16 |
   ```
   get router info bgp summary
   get router info bgp neighbors 169.254.6.2 advertised-routes
-  get router info bgp neighbors 169.254.6.2 advertised-routes
+  get router info bgp neighbors 169.254.6.3 advertised-routes
   ```
     {{% /expand %}}
 
@@ -144,7 +146,7 @@ Regardless which type of BGP is used, each connect peer is only required to crea
 - **5.3:** Login to **FortiGate2**, using the outputs **FGT2LoginURL**, **Username**, and **Password**.
 - **5.4:** Upon login in the **upper right hand corner** click on the **>_** icon to open a CLI session.
 - **5.5:** Run the command **`show vpn ipsec phase1-interface`** and notice **there are two tunnels where the remote-gw values are public IPs and the interfaces are port1**.
-- **5.6:** Run the command **`show router route-map rmap-aspath1`** and notice **the as-path is set to 6500**.
+- **5.6:** Run the command **`show router route-map rmap-aspath1`** and notice **the as-path is set to 65000**.
 - **5.7:** Copy and paste the commands below to configure default-route-originate with the route-map to advertise 0.0.0.0/0 with an as-path of 6500:
   ```
   config router bgp
@@ -202,8 +204,8 @@ Since there are two tunnels with a BGP peer configured for each, FortiGate2 is a
 
 - **8.1:** Login to **FortiGate1**, using the outputs **FGT1LoginURL**, **Username**, and **Password**.
 - **8.2:** Upon login in the **upper-right hand corner** click on the **>_** icon to open a CLI session.
-- **8.3:** Run the command **`show router route-map rmap-aspath1`** and notice **the as-path is set to 6500 just like FortiGate2**.
-- **8.4:** Copy and paste the commands below to configure default-route-originate with the route-map to advertise 0.0.0.0/0 with an as-path of 6500:
+- **8.3:** Run the command **`show router route-map rmap-aspath1`** and notice **the as-path is set to 65000 just like FortiGate2**.
+- **8.4:** Copy and paste the commands below to configure default-route-originate with the route-map to advertise 0.0.0.0/0 with an as-path of 65000:
   ```
   config router bgp
   config neighbor

@@ -19,6 +19,8 @@ weight: 4
 
     {{% expand title="**Detailed Steps...**" %}}
 
+[![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png?lightbox=false)](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=task4&templateURL=https%3A%2F%2Fhacorp-cloud-cse-workshop-us-east-1.s3.amazonaws.com%2Faws-fgt-201%2FMaster_FGT_201_Part4.template.json)
+
 - **0.1:** In the **QwikLabs Console left menu** find and copy the URL from the output **TemplateD**.
 - **0.2:** In your AWS account, navigate to the **CloudFormation Console**, click **Create stack** in the upper right, then **With new resources (standard)**.
 - **0.3:** **Paste** the URL copied previously into the **Amazon S3 URL** and click **Next**.
@@ -117,7 +119,7 @@ Gateway Load Balancer provides a very scalable active - active design for bump i
 
 Gateway Load Balancer receives all traffic through Gateway Load Balancer Endpoints (ie GWLBE also called VPC Endpoints or VPCE for short). GWLB does not have a route table to track source CIDRs but rather relies on the GWLBE/VPCE ID and will return inspected traffic directly back to the endpoint for VPC routing to then take over. 
 
-Gateway Load Balancers is both a gateway in that it can be (more specifically the GWLBE/VPCE) a route target and it is a load balancer in that it is flow aware (tracks 3/5 tuple flows) and keeps flows sticky to each FortiGate.
+Gateway Load Balancer is both a gateway in that it can be (more specifically the GWLBE/VPCE) a route target and it is a load balancer in that it is flow aware (tracks 3/5 tuple flows) and keeps flows sticky to each FortiGate.
 
 The GWLBE/VPCE ID, a flow cookie, and other information is actually stored and passed to the FortiGates via the GENEVE tunnel headers.  Geneve is similar to VXLAN with optional TLVs (type length value triplets in the headers) to provide more context on the encapsulated data-plane traffic.  Reference [AWS Documentation](https://aws.amazon.com/blogs/networking-and-content-delivery/integrate-your-custom-logic-or-appliance-with-aws-gateway-load-balancer/) to find out more.
 
@@ -126,14 +128,14 @@ On a side note, sinve GWLB does not track source CIDRs for routing, this means t
 
 - **4.2** Below is a step by step of the packet handling for the ingress web traffic to Public NLB1 in VPC-A.
 
-Hop | Component | Description | Packet |
----|---|---|---|
-1 | Internet -> 10.1.x.x/24 GWLBE/VPCE | An inbound connection starts with DNS resolution of the Public NLB to a public IP for one of the Availability Aones. The first packet (TCP sync) will be seen at the IGW attached to the VPC where the NLB is deployed. The IGW will perform destination NAT to the private IP of the public NLB and forward this to the GWLBE/VPCE as configured in **VPC-A-IgwRouteTable**. | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:purple">10.1.x.x:80</span>** |
-2 | GWLBE/VPCE -> GWLB | GWLBE/VPCE will route the traffic to the associated GWLB network interface in the same Availability Zone. This is done behind the scene using AWS Private Link. | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:purple">10.1.x.x:80</span>** |
-3 | GWLB -> FGTs-Port1 | GWLB receives the traffic, encapsulates this in a GENEVE tunnel and forwards this flow to one of the FGTs. Post inspection the FGTs return the traffic to GWLB, which then hairpins the traffic back to the original GWLBE/VPCE | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:purple">10.1.x.x:80</span>** |
-4 | GLBE/VPCE -> 10.1.0.0/16 Local | he GWLBe endpoint will then route the inspected traffic to the intrinsic router. The intrinsic router will route traffic directly to the NLB’s ENI as specified in the VPC route table assigned to the subnet. | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:purple">10.1.x.x:80</span>** |
-5 | NLB -> Instance-A | The NLB will send traffic to a healthy target, in either AZ since cross zone load balancing is enabled. Instance-A is the only target so it receives the traffic | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:black">10.1.2.10:80</span>** |
-6 | Instance-A -> NLB | Instance-A will receive the traffic and respond. The return traffic will follow these steps in reverse.| **<span style="color:black">10.1.2.10:80</span> -> <span style="color:blue">x.x.x.x:src-port</span>** |
+Hop | Component                           | Description                                                                                                                                                                                                                                                                                                                                                                   | Packet |
+---|-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---|
+1 | Internet -> 10.1.x.x/24 GWLBE(VPCE) | An inbound connection starts with DNS resolution of the Public NLB to a public IP for one of the Availability Zones. The first packet (TCP sync) will be seen at the IGW attached to the VPC where the NLB is deployed. The IGW will perform destination NAT to the private IP of the public NLB and forward this to the GWLBE/VPCE as configured in **VPC-A-IgwRouteTable**. | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:purple">10.1.x.x:80</span>** |
+2 | GWLBE(VPCE) -> GWLB                 | GWLBE/VPCE will route the traffic to the associated GWLB network interface in the same Availability Zone. This is done behind the scene using AWS Private Link.                                                                                                                                                                                                               | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:purple">10.1.x.x:80</span>** |
+3 | GWLB -> FGTs-Port1                  | GWLB receives the traffic, encapsulates this in a GENEVE tunnel and forwards this flow to one of the FGTs. Post inspection the FGTs return the traffic to GWLB, which then hairpins the traffic back to the original GWLBE/VPCE                                                                                                                                               | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:purple">10.1.x.x:80</span>** |
+4 | GLBE(VPCE) -> 10.1.0.0/16 Local     | The GWLBe endpoint will then route the inspected traffic to the intrinsic router. The intrinsic router will route traffic directly to the NLB’s ENI as specified in the VPC route table assigned to the subnet.                                                                                                                                                               | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:purple">10.1.x.x:80</span>** |
+5 | NLB -> Instance-A                   | The NLB will send traffic to a healthy target, in either AZ since cross zone load balancing is enabled. Instance-A is the only target so it receives the traffic                                                                                                                                                                                                              | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:black">10.1.2.10:80</span>** |
+6 | Instance-A -> NLB                   | Instance-A will receive the traffic and respond. The return traffic will follow these steps in reverse.                                                                                                                                                                                                                                                                       | **<span style="color:black">10.1.2.10:80</span> -> <span style="color:blue">x.x.x.x:src-port</span>** |
 
   ![](../image-gwlb-example-flow1.png)
 
@@ -167,7 +169,7 @@ Hop | Component | Description | Packet |
 
 GWLB supports two different models of firewall deployments, one-arm and two-arm where a firewall appliance can also perform NAT.
 
-In the one-arm model, the FortiGates will inspect traffic and forward this back to GWLB where internet bound traffic is has NAT applied by a NAT GW.  Typically, the NAT GW will be in a workload VPC in a distributed design.  Distributed designs have GWLBe endpoints in each workload VPC that requires to have an attached Internet Gateway (IGW) and public load balancer or NAT GW.
+In the one-arm model, the FortiGates will inspect traffic and forward this back to GWLB where Internet bound traffic is has NAT applied by a NAT GW.  Typically, the NAT GW will be in a workload VPC in a distributed design.  Distributed designs have GWLBe endpoints in each workload VPC requiring an attached Internet Gateway (IGW) and public load balancer or NAT GW.
 
 ![](image-one-arm.png)
 
@@ -277,16 +279,16 @@ next
 
 - **6.2** Below is a step by step of the packet handling for the centralized egress from Instance-B.
 
-Hop | Component | Description | Packet |
----|---|---|---|
-1 | Instance-B -> 0.0.0.0/0 TGW | Instance-B sends egress traffic to the VPC router (its default gw) which routes traffic to TGW as configured in the VPC-B-Private1RouteTable. | **<span style="color:black">10.2.2.10:src-port</span> -> <span style="color:blue">y.y.y.y:80</span>** |
-2 | VPC-B-TGW-Attachment -> 0.0.0.0/0 NGFW-security-vpc-attachment | VPC-B-TGW-Attachment is associated to the Spoke VPC TGW RTB. This TGW RTB has a default route to NGFW-security-vpc-attachment, so traffic is forwarded there. | **<span style="color:black">10.2.2.10:src-port</span> -> <span style="color:blue">y.y.y.y:80</span>** |
-3 | NGFW-security-vpc-attachment -> 0.0.0.0/0 VPCE-... | NGFW-security-vpc-attachment is attached to the NGFW VPC TGW Attach Subnets which have a default route to pthe GWLBE/VPCE in the same Availability Zone. | **<span style="color:black">10.2.2.10:src-port</span> -> <span style="color:blue">y.y.y.y:80</span>** |
-4 | GWLBE/VPCE -> GWLB | GWLBE/VPCE will route the traffic to the associated GWLB network interface in the same Availability Zone. This is done behind the scene using AWS Private Link | **<span style="color:black">10.2.2.10:src-port</span> -> <span style="color:blue">y.y.y.y:80</span>** |
-5 | GWLB -> FGTs-Port1 | GWLB receives the traffic, encapsulates this in a GENEVE tunnel and forwards this flow to one of the FGTs. | **<span style="color:black">10.2.2.10:src-port</span> -> <span style="color:blue">y.y.y.y:80</span>** |
+Hop | Component | Description                                                                                                                                                                                                                                                        | Packet |
+---|---|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---|
+1 | Instance-B -> 0.0.0.0/0 TGW | Instance-B sends egress traffic to the VPC router (its default gw) which routes traffic to TGW as configured in the VPC-B-Private1RouteTable.                                                                                                                      | **<span style="color:black">10.2.2.10:src-port</span> -> <span style="color:blue">y.y.y.y:80</span>** |
+2 | VPC-B-TGW-Attachment -> 0.0.0.0/0 NGFW-security-vpc-attachment | VPC-B-TGW-Attachment is associated to the Spoke VPC TGW RTB. This TGW RTB has a default route to NGFW-security-vpc-attachment, so traffic is forwarded there.                                                                                                      | **<span style="color:black">10.2.2.10:src-port</span> -> <span style="color:blue">y.y.y.y:80</span>** |
+3 | NGFW-security-vpc-attachment -> 0.0.0.0/0 VPCE-... | NGFW-security-vpc-attachment is attached to the NGFW VPC TGW Attach Subnets which have a default route to the GWLBE/VPCE in the same Availability Zone.                                                                                                            | **<span style="color:black">10.2.2.10:src-port</span> -> <span style="color:blue">y.y.y.y:80</span>** |
+4 | GWLBE/VPCE -> GWLB | GWLBE/VPCE will route traffic to the associated GWLB network interface in the same Availability Zone. This is done behind the scenes using AWS Private Link                                                                                                        | **<span style="color:black">10.2.2.10:src-port</span> -> <span style="color:blue">y.y.y.y:80</span>** |
+5 | GWLB -> FGTs-Port1 | GWLB receives the traffic, encapsulates this in a GENEVE tunnel and forwards this flow to one of the FGTs.                                                                                                                                                         | **<span style="color:black">10.2.2.10:src-port</span> -> <span style="color:blue">y.y.y.y:80</span>** |
 6 | FGTs-Port1 -> 0.0.0.0/0 IGW | FGTs changes the source IP to the private IP of Port1 as this has an EIP associated. FGTs sends inspected & allowed traffic to the VPC router via Port1 (its default gw), which routes traffic to the IGW as configured in the NGFW Public Subnet VPC Route Table. | **<span style="color:red">10.0.x.x:src-port</span> -> <span style="color:blue">y.y.y.y:80</span>** |
-7 | IGW -> Internet | IGW changes the source IP to the associated EIP of FortiGates Port1 and routes traffic to the internet. | **<span style="color:red">z.z.z.z:src-port</span> -> <span style="color:blue">y.y.y.y:80</span>** |
-8 | Internet -> IGW | IGW receives reply traffic and changes the source IP to the private IP of FortiGates Port1. The VPC router routes traffic to FortiGates Port1. The return traffic will follow these steps in reverse. | **<span style="color:blue">y.y.y.y:80</span> -> <span style="color:red">10.0.x.x:src-port</span>** |
+7 | IGW -> Internet | IGW changes the source IP to the associated EIP of FortiGates Port1 and routes traffic to the internet.                                                                                                                                                            | **<span style="color:red">z.z.z.z:src-port</span> -> <span style="color:blue">y.y.y.y:80</span>** |
+8 | Internet -> IGW | IGW receives reply traffic and changes the source IP to the private IP of FortiGates Port1. The VPC router routes traffic to FortiGates Port1. The return traffic will follow these steps in reverse.                                                              | **<span style="color:blue">y.y.y.y:80</span> -> <span style="color:red">10.0.x.x:src-port</span>** |
 
   ![](../image-gwlb-example-flow2.png)
 
@@ -312,7 +314,7 @@ VPC-A-Public2RouteTable | 0.0.0.0/0 | VPCE-... AZ2
     {{% /expand %}}
 
 ### Discussion Points
-- GWLB is a regional service that is both a gateway (VPC route targe) and flow aware load balancer.
+- GWLB is a regional service that is both a gateway (VPC route target) and flow aware load balancer.
   - This allows very scalable active-active inspection for all directions of traffic.
   - No SNAT requirement to keep flows sticky to the same FGT as GWLB is flow aware.
 - GWLB and FortiGates supports one and two arm mode (distributed vs centralized egress access & NAT GW replacement).

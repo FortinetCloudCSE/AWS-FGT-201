@@ -19,6 +19,8 @@ weight: 2
 
     {{% expand title="**Detailed Steps...**" %}}
 
+[ ![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png?lightbox=false) ](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=task2&templateURL=https%3A%2F%2Fhacorp-cloud-cse-workshop-us-east-1.s3.amazonaws.com%2Faws-fgt-201%2FMaster_FGT_201_Part2.template.json)
+
 - **0.1:** In the **QwikLabs Console left menu** find and copy the URL from the output **TemplateB**.
 - **0.2:** In your AWS account, navigate to the **CloudFormation Console**, click **Create stack** in the upper right, then **With new resources (standard)**.
 - **0.3:** **Paste** the URL copied previously into the **Amazon S3 URL** and click **Next**.
