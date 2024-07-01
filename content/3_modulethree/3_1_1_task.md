@@ -11,10 +11,12 @@ weight: 1
 | **Task**                   | Create a peering connection and VPC routes so EC2 Instance-A can ping Instance-B
 | **Verify task completion** | Confirm point to point VPC connectivity with ping from EC2 Instance-A to B and Instance-B to C
 
+{{% notice tip %}} 
+In this task, there are multiple VPCs in the same region that have one instance each. VPC peering and the appropriate VPC routes are already configured for VPC-B to VPC-C. VPC peering and VPC routes will need to be configured between VPC-A and VPC-B. Then traffic will be tested to confirm what traffic routing is and is not supported with VPC peering.
+{{% /notice %}}
+
 {{% notice warning %}} 
-
 There are no security controls in this example. Instance-B can freely communicate with the Internet.
-
 {{% /notice %}}
 
 ![](image-vpc-peering-example.png)
@@ -31,17 +33,20 @@ There are no security controls in this example. Instance-B can freely communicat
   
   [![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png?lightbox=false)](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=task1&templateURL=https%3A%2F%2Fhacorp-cloud-cse-workshop-us-east-1.s3.amazonaws.com%2Faws-fgt-201%2FMaster_FGT_201_Part1.template.json)
 
+- **0.2:** **You must:** 
+    - **select an IAM role in the Permissions section**
+	- **check the boxes to acknowledge the warnings in the Capabilities section**
+	- then scroll down and click **Create stack**
 
-- **0.2:** **You must select an IAM role in the Permissions section** of the configure stack options page, then scroll down and click **Next**.
-  ![](image-t0-1.png)
-  {{% notice warning %}}
+{{% notice warning %}}
 **If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
-  {{% /notice %}}
+{{% /notice %}}
+  
+  ![](image-t0-1a.png)
 
-- **0.3:** On the review and create page, scroll to the bottom, check the boxes to acknowledge the warnings, and click **Submit**.
+- **0.3:** Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
+
   ![](image-t0-2.png)
-- **0.4:** Once the main (ie not NESTED) CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
-  ![](image-t0-3.png)
 
     {{% /expand %}}
 

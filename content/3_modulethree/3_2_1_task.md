@@ -11,6 +11,12 @@ weight: 3
 | **Task**                   | Create attachment associations & propagations, update/create FortiGate routes and firewall policy to allow secured traffic.
 | **Verify task completion** | Confirm outbound and east/west connectivity from EC2 Instance-A via Ping, HTTP, HTTPS.
 
+{{% notice tip %}} 
+In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway is configured with multiple Transit Gateway Route Tables.  You will need to create the appropriate VPC attachment associations and propagations to the correct TGW Route Tables, FW policy and update BPG configuration on the independent FortiGates.
+
+In this scenario the FortiGates are completely independent of each other (not clustered, sharing config/sessions, etc) and are showing different connectivity options to attach remote locations to Transit Gateway. VPN attachments can be used to connect to any IPsec capable device located anywhere, while TGW Connect attachments require a private path to reach a VM deployed in a VPC or HW/VM deployed on premise and is reachable over Direct Connect (a dedicated, private circuit).
+{{% /notice %}}
+
 ![](image-tgw-dynamic-example.png)
 
 #### Summarized Steps (click to expand each for details)
@@ -24,15 +30,18 @@ weight: 3
   
 [![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png?lightbox=false)](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=task3&templateURL=https%3A%2F%2Fhacorp-cloud-cse-workshop-us-east-1.s3.amazonaws.com%2Faws-fgt-201%2FMaster_FGT_201_Part3.template.json)
 
-- **0.2:** **You must select an IAM role in the Permissions section** of the configure stack options page, then scroll down and click **Next**.
-  ![](image-t0-1.png)
-  {{% notice warning %}}
-**If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
-  {{% /notice %}}
+- **0.2:** **You must:** 
+    - **select an IAM role in the Permissions section**
+	- **check the boxes to acknowledge the warnings in the Capabilities section**
+	- then scroll down and click **Create stack**
 
-- **0.3:** On the review and create page, scroll to the bottom, check the boxes to acknowledge the warnings, and click **Submit**.
-  ![](image-t0-2.png)
-- **0.4:** Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
+{{% notice warning %}}
+**If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
+{{% /notice %}}
+  
+  ![](image-t0-1c.png)
+
+- **0.3:** Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
 
     {{% /expand %}}
 
@@ -266,7 +275,7 @@ While Transit Gateway does support ECMP routing, it only does so for the same at
 ### Discussion Points
 - TGW supports ECMP routing with routes from the same attachment type.
    - This allows scalable active-active centralized ingress/egress inspection.
-   - East/West inspection requires SNAT to keep flows sticky to the same FortiGate'
+   - East/West inspection requires SNAT to keep flows sticky to the same FortiGate.
 - TGW has a route evaluation priority to select the best path for the same route.
 - Each TGW VPC connection (2x IPsec tunnels per connection) supports up to 1.5 Gbps.
 - Each TGW Connect peer supports up to 5 Gbps.

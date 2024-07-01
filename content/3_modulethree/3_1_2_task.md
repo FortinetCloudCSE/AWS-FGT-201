@@ -11,6 +11,12 @@ weight: 2
 | **Task**                   | Create attachment associations & propagations, update/create FortiGate routes and firewall policy to allow secured traffic.
 | **Verify task completion** | Confirm outbound and east/west connectivity from EC2 Instance-A via Ping, HTTP, HTTPS.
 
+{{% notice tip %}} 
+In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway is configured with multiple Transit Gateway Route Tables.  You will need to create the appropriate VPC attachment associations and propagations to the correct TGW Route Tables, FW policy and update a static route on the FortiGate Active-Passive cluster.
+
+In this scenario you will allow traffic between the workload and shared services VPC to communicate directly (without going through the FortiGate A-P cluster), while inspecting outbound and east/west connectivity with the workload VPCs.
+{{% /notice %}}
+
 ![](image-tgw-static-example.png)
 
 #### Summarized Steps (click to expand each for details)
@@ -23,15 +29,19 @@ weight: 2
 - **0.1:** Login to your AWS account, and click this **Launch Stack** button to Launch the CloudFormation Stack for Task 2
 - 
 [ ![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png?lightbox=false) ](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=task2&templateURL=https%3A%2F%2Fhacorp-cloud-cse-workshop-us-east-1.s3.amazonaws.com%2Faws-fgt-201%2FMaster_FGT_201_Part2.template.json)
-- **0.2:** **You must select an IAM role in the Permissions section** of the configure stack options page, then scroll down and click **Next**.
-  ![](image-t0-1.png)
-  {{% notice warning %}}
-**If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
-  {{% /notice %}}
 
-- **0.3:** On the review and create page, scroll to the bottom, check the boxes to acknowledge the warnings, and click **Submit**.
-  ![](image-t0-2.png)
-- **0.4:** Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
+- **0.2:** **You must:** 
+    - **select an IAM role in the Permissions section**
+	- **check the boxes to acknowledge the warnings in the Capabilities section**
+	- then scroll down and click **Create stack**
+
+{{% notice warning %}}
+**If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
+{{% /notice %}}
+  
+  ![](image-t0-1b.png)
+
+- **0.3:** Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
 
     {{% /expand %}}
 
@@ -91,6 +101,10 @@ NGFW-sharedservices-tgw-rtb | VPC-C-spoke-vpc-attachment | VPC-A-spoke-vpc-attac
 - **4.4:** Upon login, navigate to **Network > Static Routes**.
 - **4.5:** Edit the existing route to **10.0.0.0/16**.
   - This route needs to be updated to allow access to both the Spoke VPCs that are part of this centralized design. Change the destination to **10.0.0.0/8** and click **OK** to save the change.
+
+{{% notice tip %}}
+Since these FortiGates are in separate availability zones and subnets, the gateway IP address will be different for each FortiGate. Thus, there are exceptions for what configuration can be synchronized such as interface settings and static routes. In production you would need to log into the secondary FortiGate and repeat this step to update the static route.
+{{% /notice %}}
 
 ![](image-t2-6.png)
 
@@ -216,7 +230,6 @@ Hop | Component | Description | Packet |
 - TGW supports peering between TGWs in the same or different regions.
 - Jumbo frames (8500 bytes) are supported for all connections except VPC (1500 bytes).
 - Centralized Inspection VPC handles FortiGate NGFW inspection for any traffic flow (Inbound, Outbound, East/West).
-  - [**Appliance Mode**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-appliance-scenario.html) is required for active-passive designs to keep flows sticky to the primary FortiGate.
   - Advanced architectures for all of these scenarios can be [**found here**](https://github.com/FortinetCloudCSE/.github/blob/main/profile/AWS/README.md).
   
 **This concludes this task**
