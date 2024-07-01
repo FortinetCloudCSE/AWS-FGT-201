@@ -241,7 +241,7 @@ next
 
 **Supporting Both Models**
 
-In a single region, you can have one deployment of FGTs & GWLB support both distributed and centralized designs.  This all comes down to implementing the appropriate routing at the VPC & TGW route tables and FortiGate routes.  For examples on the VPC & TGW routes for different designs, reference [**common architecture patterns**](71_usecase1.html).
+In a single region, you can have one deployment of FGTs & GWLB support both distributed and centralized designs.  This all comes down to implementing the appropriate routing at the VPC & TGW route tables and FortiGate routes.  For examples on the VPC & TGW routes for different designs, reference [**common architecture patterns**](https://fortinetcloudcse.github.io/FortiCNF/2_moduletwo/23_awscommonarchitecturepatterns.html).
 
 Here is an example of the static & policy routes to support a distributed spoke1 VPC (CIDR 10.1.0.0/16) and centralized spoke2 VPC.  
 
