@@ -11,6 +11,13 @@ weight: 4
 | **Task**                   | Create VPC routes and FortiGate Policy objects allowing both flows of traffic.
 | **Verify task completion** | Confirm connectivity to Public NLB1 and from Instance-B.
 
+{{% notice tip %}} 
+In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway is configured with multiple Transit Gateway Route Tables and Gateway Load Balancer and endpoints are already configured as well.  You will need to create the appropriate VPC routes to redirect traffic to Gateway Load Balancer via the deployed endpoints so the Active-Active FortiGates can inspect the traffic.
+
+In this scenario these FortiGates are working together in an Active-Active design to provide more capacity for bump in the wire inspection. This design can work with workload VPCs that have a direct path to/from the Internet via an attached Internet Gateway and or NAT GW (commonly referred to a distributed design). This design can also work with a common networking design using Transit Gateway to offer centralized egress, ingress, and east/west inspection (commonly referred to a centralized design).
+{{% /notice %}}
+
+
 ![](image-gwlb-example.png)
 
 #### Summarized Steps (click to expand each for details)
@@ -22,15 +29,18 @@ weight: 4
 
 [![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png?lightbox=false)](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=task4&templateURL=https%3A%2F%2Fhacorp-cloud-cse-workshop-us-east-1.s3.amazonaws.com%2Faws-fgt-201%2FMaster_FGT_201_Part4.template.json)
 
-- **0.2:** **You must select an IAM role in the Permissions section** of the configure stack options page, then scroll down and click **Next**.
-  ![](image-t0-1.png)
-  {{% notice warning %}}
-**If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
-  {{% /notice %}}
+- **0.2:** **You must:** 
+    - **select an IAM role in the Permissions section**
+	- **check the boxes to acknowledge the warnings in the Capabilities section**
+	- then scroll down and click **Create stack**
 
-- **0.3:** On the review and create page, scroll to the bottom, check the boxes to acknowledge the warnings, and click **Submit**.
-  ![](image-t0-2.png)
-- **0.4:** Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
+{{% notice warning %}}
+**If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
+{{% /notice %}}
+  
+  ![](image-t0-1d.png)
+
+- **0.3:** Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
 
     {{% /expand %}}
 
@@ -42,17 +52,17 @@ weight: 4
 
 - **1.2:** Go to the **Route tables page** (menu on the left) and find **VPC-A-IgwRouteTable**, select the **Routes tab** and click **Edit routes**. Create routes for the two public subnets to go to the VPC endpoint in the same Availability Zone.
 
-Route Table| CIDR | VPC Endpoint
+Route Table | CIDR | VPC Endpoint
 ---|---|---
-VPC-A-IgwRouteTable | 10.1.1.0/24 | VPCE-... AZ1
-VPC-A-IgwRouteTable | 10.1.10.0/24 | VPCE-... AZ2
+VPC-A-IgwRouteTable | 10.1.1.0/24 | NGFW-GWLB-VPCE-AZ1
+VPC-A-IgwRouteTable | 10.1.10.0/24 | NGFW-GWLB-VPCE-AZ2
 
 - **1.3:** On the **Route tables page** (menu on the left) and find both **VPC-A-Public1RouteTable** and **VPC-A-Public2RouteTable**, select the **Routes tab** and click **Edit routes**. Create a default routeto go to the VPC endpoint in the same Availability Zone.
 
 Route Table | CIDR | VPC Endpoint
 ---|---|---
-VPC-A-Public1RouteTable | 0.0.0.0/0 | VPCE-... AZ1
-VPC-A-Public2RouteTable | 0.0.0.0/0 | VPCE-... AZ2
+VPC-A-Public1RouteTable | 0.0.0.0/0 | NGFW-GWLB-VPCE-AZ1
+VPC-A-Public2RouteTable | 0.0.0.0/0 | NGFW-GWLB-VPCE-AZ2
 
     {{% /expand %}}
 
@@ -111,6 +121,8 @@ You can use FortiManager to manage a single policy set (FW policies, address & s
 
 	![](image-gwlb-tlv.png)
 
+	![](gwlb-geneve-header-info.png)
+
 {{% notice info %}}
 Gateway Load Balancer provides a very scalable active - active design for bump in the wire inspection with FortiGates applying NGFW, SSL MitM, etc. This is a regional setup that can support VPCs regardless if there is centralized networking (ie Transit Gateway used) or more of a distributed setup (each VPC is an island).
 
@@ -159,11 +171,11 @@ Hop | Component                           | Description                         
 - **6.1:** Note that the output of **`curl ipinfo.io`** returned the public IP of one of the FortiGates connected to GWLB. If you continue to run the command, you will see that your outbound traffic is flowing through both FortiGates and being Source NAT'd to look like traffic is coming from their Elastice IPs.
 
 {{% notice info %}}
-**One-Arm Model (Distributed)**
+**One-Arm Model**
 
 GWLB supports two different models of firewall deployments, one-arm and two-arm where a firewall appliance can also perform NAT.
 
-In the one-arm model, the FortiGates will inspect traffic and forward this back to GWLB where Internet bound traffic is has NAT applied by a NAT GW.  Typically, the NAT GW will be in a workload VPC in a distributed design.  Distributed designs have GWLBe endpoints in each workload VPC requiring an attached Internet Gateway (IGW) and public load balancer or NAT GW.
+In the one-arm model, the FortiGates will inspect traffic and forward this back to GWLB where Internet bound traffic is has NAT applied by a NAT GW.  Typically, the NAT GW will be in a workload VPC in a distributed design.  Distributed designs have GWLB endpoints in each workload VPC requiring an attached Internet Gateway (IGW) and public load balancer or NAT GW.  A centralized design can use NAT GW in an inspection VPC for centralized egress and have GWLB endpoints only deployed in the inspection VPC (no need for GWLB endpoints in each workload VPC).
 
 ![](image-one-arm.png)
 
@@ -193,9 +205,9 @@ set output-device gwlb1-az2
 next
 ```
 
-**Two-Arm Model (Centralized)**
+**Two-Arm Model**
 
-In the two-arm model, the FortiGates will inspect traffic and forward & SNAT traffic out port1 (public interface) to act as a NAT GW.  This removes the need for deploying NAT GWs in each AZ of each workload VPC.  This is a centralized design where the data plane traffic used TGW to reach the GWLBe endpoints in the inspection/security VPC and be inspected by the FortiGates.
+In the two-arm model, the FortiGates will inspect traffic and forward & SNAT traffic out port1 (public interface) to act as a NAT GW.  This removes the need for deploying NAT GWs in each AZ of each workload VPC.  This is typically used in a centralized design where the data plane traffic used TGW to reach the GWLB endpoints in the inspection/security VPC and be inspected by the FortiGates. In summary centralized vs distributed designs is in reference to the GWLB endpoint placement which impacts how traffic is routed to these for inspection of traffic for different directions (ingress, egress, and east/west).
 
 ![](image-two-arm.png)
 
@@ -314,7 +326,7 @@ VPC-A-Public2RouteTable | 0.0.0.0/0 | VPCE-... AZ2
 - GWLB and FortiGates supports one and two arm mode (distributed vs centralized egress access & NAT GW replacement).
 - Jumbo frames (8500 bytes) are supported.
 - Inspection VPC handles FortiGate NGFW inspection for any traffic flow (Inbound, Outbound, East/West) and for any network design (distributed vs centralized).
-  - [**Appliance Mode**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-appliance-scenario.html) is required for this design to keep flows sticky to the primary FortiGate.
+  - [**Appliance Mode**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-appliance-scenario.html) is required for this design to keep flows sticky to the correct availability zone which in turn means the correct GWLB enpoint.
   - Advanced architectures for all of these scenarios can be [**found here**](https://github.com/FortinetCloudCSE/.github/blob/main/profile/AWS/README.md).
 
 **This concludes this task**
