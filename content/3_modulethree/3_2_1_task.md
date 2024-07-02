@@ -49,7 +49,7 @@ In this scenario the FortiGates are completely independent of each other (not cl
 
     {{% expand title = "**Detailed Steps...**" %}}
 
-- **1.1:** In the **VPC Console** go to the **Tranist gateway route tables page** (menu on the left) and check out all of the **associations, propagations, and routes** for **each Transit gateway route table**.  You should see the following:
+- **1.1:** In the **VPC Console** go to the **Transit gateway route tables page** (menu on the left) and check out all of the **associations, propagations, and routes** for **each Transit gateway route table**.  You should see the following:
 
 TGW-RTB Name | Associations
 ---|---
@@ -72,8 +72,8 @@ TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 & 10.2.0.0/16 |
 - **1.2:** Navigate to the **EC2 Console** and connect to **Instance-A** using the **[Serial Console directions](../3_modulethree.html)** 
     - Password: **`FORTInet123!`**
 - **1.3:** Run the following commands to test connectivity and make sure the results match expectations 
-  SRC / DST | VPC B                                                   | VPC C
-  ---|--------------------------------------------------------------|---
+  SRC / DST | VPC B                                                  
+  ---|---
   **Instance A** | **`ping 10.2.2.10`** {{<fail>}} |
   **Instance A** | **`curl ipinfo.io`** {{<fail>}} |
 
@@ -86,7 +86,7 @@ TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 & 10.2.0.0/16 |
 - **2.1:** Navigate to the **CloudFormation Console** and **toggle View Nested to off**.
 - **2.2:** Select the main template and select the **Outputs tab**.
 - **2.3:** Login to **FortiGate1**, using the outputs **FGT1LoginURL**, **Username**, and **Password**.
-- **2.4:** Upon login in the **upper right hand corner** click on the **>_** icon to open a CLI session.
+- **2.4:** Upon login in the **upper right-hand corner** click on the **>_** icon to open a CLI session.
 - **2.5:** Run the command **`show system gre`** and notice **the interface and IPs that are used are private**.
 - **2.6:** Run the command **`show system interface tgw-conn-peer`** and notice **the IPs assigned to the inside interfaces of the GRE tunnel**.
 - **2.7:** Run the command **`show router bgp`** and notice the **BGP peers fall into the remote-ip CIDR** in the output of the command above.
@@ -110,7 +110,7 @@ TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 & 10.2.0.0/16 |
   ```
     {{% /expand %}}
 
-3. Test secured east/west connectivity from Instance-A to Instance-B.
+3. Test secured east/west connectivity from Instance-A to Instance-B and validate there is no internet connectivity.
 
     {{% expand title = "**Detailed Steps...**" %}}
 
@@ -119,7 +119,7 @@ TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 & 10.2.0.0/16 |
   SRC / DST | VPC B                              | Internet
   ---|------------------------------------|---
   **Instance A** | **`ping 10.2.2.10`** {{<success>}} | **`ping 8.8.8.8`** {{<fail>}}
-  **Instance A** | **`curl ipinfo.io`** {{<success>}} | **`curl ipinfo.io`** {{<fail>}}
+  **Instance A** | **`curl 10.2.2.10`** {{<success>}} | **`curl ipinfo.io`** {{<fail>}}
 
     {{% /expand %}}
 
@@ -127,7 +127,7 @@ TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 & 10.2.0.0/16 |
 
     {{% expand title = "**Detailed Steps...**" %}}
 
-- **4.1:** High level diagram showing how the Connect attachment goes over a VPC attachment which allows FortiGate1 to have a GRE tunnel over a private path which has BGP peering configured as well.  This provides an overlay tunnel where dynamic rotues and data-plane traffic can be routed without adding additional routes to the VPC router.
+- **4.1:** High level diagram showing how the Connect attachment goes over a VPC attachment which allows FortiGate1 to have a GRE tunnel over a private path which has BGP peering configured as well.  This provides an overlay tunnel where dynamic routes and data-plane traffic can be routed without adding additional routes to the VPC router.
 	
 ![](image-tgw-dynamic-example-flow1.png)
 	
@@ -148,7 +148,7 @@ Regardless which type of BGP is used, each connect peer is only required to crea
 - **5.1:** Navigate to the **CloudFormation Console** and **toggle View Nested to off**.
 - **5.2:** Select the main template and select the **Outputs tab**.
 - **5.3:** Login to **FortiGate2**, using the outputs **FGT2LoginURL**, **Username**, and **Password**.
-- **5.4:** Upon login in the **upper right hand corner** click on the **>_** icon to open a CLI session.
+- **5.4:** Upon login in the **upper right-hand corner** click on the **>_** icon to open a CLI session.
 - **5.5:** Run the command **`show vpn ipsec phase1-interface`** and notice **there are two tunnels where the remote-gw values are public IPs and the interfaces are port1**.
 - **5.6:** Run the command **`show router route-map rmap-aspath1`** and notice **the as-path is set to 65000**.
 - **5.7:** Copy and paste the commands below to configure default-route-originate with the route-map to advertise 0.0.0.0/0 with an as-path of 6500:
@@ -183,12 +183,12 @@ Regardless which type of BGP is used, each connect peer is only required to crea
 
   SRC / DST | VPC B                              | Internet
   ---|------------------------------------|---
-  **Instance A** | **`ping 10.2.2.10`** {{<success>}} | **`ping 8.8.8.8`** {{<success>}}
-  **Instance A** | **`curl ipinfo.io`** {{<success>}} | **`curl ipinfo.io`** {{<success>}} via FGT2
-  - Ping and curl should connect successfully through FGT2 which is connected to Transit Gateway over a VPC attachment (IPsec + BGP over the internet).
-  - The public IP returned from ipinfo.io should match the **public IP of FGT2**
+  **Instance A** | **`ping 10.2.2.10`** {{<success>}} via FGT1 | **`ping 8.8.8.8`** {{<success>}} via FGT2
+  **Instance A** | **`curl 10.2.2.10`** {{<success>}} via FGT1 | **`curl ipinfo.io`** {{<success>}} via FGT2
+  - Ping and curl to public resources should connect successfully through FGT2 which is connected to Transit Gateway over a VPC attachment (IPsec + BGP over the internet).
+  - The public IP returned from **`curl ipinfo.io`** should match the **public IP of FGT2**
 - **6.2:** In the **VPC Console** go to the **Transit gateway route tables page**.
-- **6.3:** Find **TGW-Connect-spoke-tgw-rtb** go to the **Routes tab** and notice there are **ECMP routes for 0.0.0.0/0** since there are two VPN tunnels configured.
+- **6.3:** Find **TGW-Connect-spoke-tgw-rtb** go to the **Routes tab** and notice there are **ECMP routes for 0.0.0.0/0** since there are two VPN tunnels configured and a single route for 10.0.0.0/8 for the TGW connect peer.
 
     {{% /expand %}}
 
@@ -205,12 +205,12 @@ Since there are two tunnels with a BGP peer configured for each, FortiGate2 is a
     {{% /expand %}}
 
 
-8. Configure FortiGate1 with default-route-orignate with a route-map as well.
+8. Configure FortiGate1 with default-route-originate with a route-map as well.
 
     {{% expand title = "**Detailed Steps...**" %}}
 
 - **8.1:** Login to **FortiGate1**, using the outputs **FGT1LoginURL**, **Username**, and **Password**.
-- **8.2:** Upon login in the **upper-right hand corner** click on the **>_** icon to open a CLI session.
+- **8.2:** Upon login in the **upper-right-hand corner** click on the **>_** icon to open a CLI session.
 - **8.3:** Run the command **`show router route-map rmap-aspath1`** and notice **the as-path is set to 65000 just like FortiGate2**.
 - **8.4:** Copy and paste the commands below to configure default-route-originate with the route-map to advertise 0.0.0.0/0 with an as-path of 65000:
   ```
@@ -243,8 +243,8 @@ Since there are two tunnels with a BGP peer configured for each, FortiGate2 is a
 
   SRC / DST | VPC B                              | Internet
   ---|------------------------------------|---
-  **Instance A** | **`ping 10.2.2.10`** {{<success>}} | **`ping 8.8.8.8`** {{<success>}}
-  **Instance A** | **`curl ipinfo.io`** {{<success>}} | **`curl ipinfo.io`** {{<success>}} via FGT1
+  **Instance A** | **`ping 10.2.2.10`** {{<success>}} via FGT1 | **`ping 8.8.8.8`** {{<success>}} via FGT1
+  **Instance A** | **`curl 10.2.2.10`** {{<success>}} via FGT1 | **`curl ipinfo.io`** {{<success>}} via FGT1
   - Ping and curl should connect successfully through FGT1 which is connected to Transit Gateway over a Connect attachment (GRE + BGP over a VPC attachment).
   - The public IP returned from ipinfo.io should match the **public IP of FGT1**
 - **9.3:** In the **VPC Console** go to the **Transit gateway route tables page**.
@@ -274,11 +274,12 @@ While Transit Gateway does support ECMP routing, it only does so for the same at
 
 ### Discussion Points
 - TGW supports ECMP routing with routes from the same attachment type.
-   - This allows scalable active-active centralized ingress/egress inspection.
-   - East/West inspection requires SNAT to keep flows sticky to the same FortiGate.
-- TGW has a route evaluation priority to select the best path for the same route.
-- Each TGW VPC connection (2x IPsec tunnels per connection) supports up to 1.5 Gbps.
+   - This allows scalable Active-Active centralized ingress/egress inspection.
+   - Active-Active East/West inspection requires SNAT to keep flows sticky to the same FortiGate.
+- TGW has a route evaluation priority to select the best path for the same route received.
+- Each TGW VPN connection (2x IPsec tunnels per connection) supports up to 1.5 Gbps.
 - Each TGW Connect peer supports up to 5 Gbps.
 - TGW supports multiple peers per TGW Connect attachment and multiple attachments to a single VPC.
+- TGW supports multiple VPN attachments to the same or different customer gateway (remote IPsec device).
 
 **This concludes this task**

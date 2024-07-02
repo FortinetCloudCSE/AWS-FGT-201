@@ -99,10 +99,10 @@ There are no security controls in this example. Instance-B can freely communicat
     - Password: **`FORTInet123!`**
   
 - **3.2:** Run the following commands to verify connectivity and make sure results match expectations
-  SRC / DST | VPC B                                                   | VPC C
-  ---|--------------------------------------------------------------|---
+  SRC / DST | VPC B                                                   | VPC C | Internet
+  ---|--------------------------------------------------------------|---|---
   **Instance A** | **`ping 10.2.2.10`** {{<success>}} |  **`ping 10.3.2.10`** {{<fail>}}
-  **Instance A** | **`curl ipinfo.io`** {{<fail>}}        |
+  **Instance A** | | | **`curl ipinfo.io`** {{<fail>}}
 
    - Now you can successfully ping Instance-B over the peering connection.
    - Instance-A **SHOULD NOT** be able to ping Instance-C or access the Internet through VPC-B.
@@ -119,19 +119,19 @@ There are no security controls in this example. Instance-B can freely communicat
 - **4.1:** In the **EC2 Console** go to the **Instances page** connect to **Instance-B** using the **[Serial Console directions](../3_modulethree.html)** 
     - Password: **`FORTInet123!`**
 - **4.2:** Run the following commands to verify connectivity and make sure results match expectations
-SRC / DST | Instance A                                                   | Instance C
-  ---|--------------------------------------------------------------|---
+SRC / DST | Instance A                                                   | Instance C | Internet
+  ---|--------------------------------------------------------------|---|---
   **Instance B** | **`ping 10.1.2.10`** {{<success>}}   |  **`ping 10.3.2.10`** {{<success>}}
-  **Instance B** | **`curl ipinfo.io`** {{<success>}}        |
+  **Instance B** | | | **`curl ipinfo.io`** {{<success>}} 
 
 
 - **4.3:** In the **EC2 Console** go to the **Instances page** connect to **Instance-C** using the **[Serial Console directions](../3_modulethree.html)** 
     - Password: **`FORTInet123!`**
 - **4.4:** Run the following commands to verify connectivity and make sure results match expectations
-SRC / DST | Instance A                                                   | Instance B
-  ---|--------------------------------------------------------------|---
-  **Instance C** | **`ping 10.1.2.10`** {{<success>}}  |  **`ping 10.2.2.10`** {{fail>}}
-  **Instance C** | **`curl ipinfo.io`** {{<fail>}}       |
+SRC / DST | Instance A                                                   | Instance B | Internet
+  ---|--------------------------------------------------------------|---|---
+  **Instance C** | **`ping 10.1.2.10`** {{<fail>}}  |  **`ping 10.2.2.10`** {{<success>}}
+  **Instance C** | | | **`curl ipinfo.io`** {{<fail>}}
 
    - Instance-C should ping Instance-B but not be able to ping Instance-A or access the internet through VPC-B.
   {{% notice info %}}
@@ -193,6 +193,6 @@ Hop | Component | Description                                                   
   - In the same (intra) or across (inter) regions
 - When using inter-region peering, encryption is used.
 - No Internet Gateway is required for VPC Peering (even when inter-region)
-- Jumbo frames (9001 btyes) are only supported for intra-region connections, inter-region is limited to 1500 bytes.
+- Jumbo frames (9001 bytes) are only supported for intra-region connections, inter-region is limited to 1500 bytes.
 
 **This concludes this task**

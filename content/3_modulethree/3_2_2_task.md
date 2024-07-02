@@ -48,21 +48,21 @@ In this scenario these FortiGates are working together in an Active-Active desig
 
     {{% expand title = "**Detailed Steps...**" %}}
 
-- **1.1:** In the **VPC Console** go to the **Endpoints page** (menu on the left) and look at the VPC Endpoints for VPC A.  You should see two endpoints, **one endpoint for each Availability Zone**.  Notes the **Endpoint IDs** as these will be used in the next step.
+- **1.1:** In the **VPC Console** go to the **Endpoints page** (menu on the left) and look at the VPC Endpoints for VPC A.  You should see four endpoints, **one endpoint for each Availability Zone** in both VPC-A and the NGFW VPC.  Note the **Endpoint IDs** as these will be used in the next step.
 
 - **1.2:** Go to the **Route tables page** (menu on the left) and find **VPC-A-IgwRouteTable**, select the **Routes tab** and click **Edit routes**. Create routes for the two public subnets to go to the VPC endpoint in the same Availability Zone.
 
-Route Table | CIDR | VPC Endpoint
+Route Table | CIDR | GWLB/VPC Endpoint
 ---|---|---
-VPC-A-IgwRouteTable | 10.1.1.0/24 | NGFW-GWLB-VPCE-AZ1
-VPC-A-IgwRouteTable | 10.1.10.0/24 | NGFW-GWLB-VPCE-AZ2
+VPC-A-IgwRouteTable | 10.1.1.0/24 | VPC-A-GWLB-VPCE-AZ1
+VPC-A-IgwRouteTable | 10.1.10.0/24 | VPC-A-GWLB-VPCE-AZ2
 
-- **1.3:** On the **Route tables page** (menu on the left) and find both **VPC-A-Public1RouteTable** and **VPC-A-Public2RouteTable**, select the **Routes tab** and click **Edit routes**. Create a default routeto go to the VPC endpoint in the same Availability Zone.
+- **1.3:** On the **Route tables page** (menu on the left) and find both **VPC-A-Public1RouteTable** and **VPC-A-Public2RouteTable**, select the **Routes tab** and click **Edit routes**. Create a default route to go to the VPC endpoint in the same Availability Zone.
 
-Route Table | CIDR | VPC Endpoint
+Route Table | CIDR | GWLB/VPC Endpoint
 ---|---|---
-VPC-A-Public1RouteTable | 0.0.0.0/0 | NGFW-GWLB-VPCE-AZ1
-VPC-A-Public2RouteTable | 0.0.0.0/0 | NGFW-GWLB-VPCE-AZ2
+VPC-A-Public1RouteTable | 0.0.0.0/0 | VPC-A-GWLB-VPCE-AZ1
+VPC-A-Public2RouteTable | 0.0.0.0/0 | VPC-A-GWLB-VPCE-AZ2
 
     {{% /expand %}}
 
@@ -91,10 +91,10 @@ Dynamic address objects allows creating address objects based on resource metada
 
 ![](image-t4-3.png)
 
-- **2.9:** **Repeate the above steps on FortiGate2** as this is an active - active design.
+- **2.9:** **Repeat the above steps on FortiGate2** as this is an Active-Active design.
 
 {{% notice info %}}
-You can use FortiManager to manage a single policy set (FW policies, address & security objects, etc) and apply this across multiple FortiGates in the same or different deployments.
+You can use FortiManager to manage a single policy set (FW policies, address & security objects, etc) and apply this across multiple FortiGates in the same or different deployments. Alternatively, if you are using FortiGate Auto Scale, then there is configuration sync that occurs from the config-primary to all config-secondaries in the Auto Scale Group.
 {{% /notice %}}
 
     {{% /expand %}}
@@ -124,7 +124,7 @@ You can use FortiManager to manage a single policy set (FW policies, address & s
 	![](gwlb-geneve-header-info.png)
 
 {{% notice info %}}
-Gateway Load Balancer provides a very scalable active - active design for bump in the wire inspection with FortiGates applying NGFW, SSL MitM, etc. This is a regional setup that can support VPCs regardless if there is centralized networking (ie Transit Gateway used) or more of a distributed setup (each VPC is an island).
+Gateway Load Balancer provides a very scalable Active-Active design for bump in the wire inspection with FortiGates applying NGFW, SSL MitM, etc. This is a regional setup that can support VPCs regardless if there is centralized networking (ie Transit Gateway used) or more of a distributed setup (each VPC is an island).
 
 Gateway Load Balancer receives all traffic through Gateway Load Balancer Endpoints (ie GWLBE also called VPC Endpoints or VPCE for short). GWLB does not have a route table to track source CIDRs but rather relies on the GWLBE/VPCE ID and will return inspected traffic directly back to the endpoint for VPC routing to then take over. 
 
@@ -132,7 +132,7 @@ Gateway Load Balancer is both a gateway in that it can be (more specifically the
 
 The GWLBE/VPCE ID, a flow cookie, and other information is actually stored and passed to the FortiGates via the GENEVE tunnel headers.  Geneve is similar to VXLAN with optional TLVs (type length value triplets in the headers) to provide more context on the encapsulated data-plane traffic.  Reference [AWS Documentation](https://aws.amazon.com/blogs/networking-and-content-delivery/integrate-your-custom-logic-or-appliance-with-aws-gateway-load-balancer/) to find out more.
 
-On a side note, sinve GWLB does not track source CIDRs for routing, this means that both GWLB and the FortiGates can support environments where there are overlapping CIDR blocks. You can inspect this traffic in the same regional deployment but this means you would be applying the same FW policies to the traffic.  It is best practice to either use separate deployments or to [use VDOMs and map your traffic from each GWLBE/VPCE to different VDOMs](https://docs.fortinet.com/document/fortigate-public-cloud/7.4.0/aws-administration-guide/299990/multitenancy-support-with-aws-gwlb) so that you can apply unique FW policies.
+On a side note, since GWLB does not track source CIDRs for routing, this means that both GWLB and the FortiGates can support environments where there are overlapping CIDR blocks. You can inspect this traffic in the same regional deployment but this means you would be applying the same FW policies to the traffic.  It is best practice to either use separate deployments or to [use VDOMs and map your traffic from each GWLBE/VPCE to different VDOMs](https://docs.fortinet.com/document/fortigate-public-cloud/7.4.0/aws-administration-guide/299990/multitenancy-support-with-aws-gwlb) so that you can apply unique FW policies.
 {{% /notice %}}
 
 - **4.2** Below is a step by step of the packet handling for the ingress web traffic to Public NLB1 in VPC-A.
@@ -168,7 +168,7 @@ Hop | Component                           | Description                         
 
     {{% expand title = "**Detailed Steps...**" %}}
 
-- **6.1:** Note that the output of **`curl ipinfo.io`** returned the public IP of one of the FortiGates connected to GWLB. If you continue to run the command, you will see that your outbound traffic is flowing through both FortiGates and being Source NAT'd to look like traffic is coming from their Elastice IPs.
+- **6.1:** Note that the output of **`curl ipinfo.io`** returned the public IP of one of the FortiGates connected to GWLB. If you continue to **run the command multiple times**, you will see that your outbound traffic is flowing through both FortiGates and being Source NAT'd to look like traffic is coming from their Elastic IPs.
 
 {{% notice info %}}
 **One-Arm Model**
@@ -309,13 +309,13 @@ Hop | Component | Description                                                   
 
 Route Table| CIDR | VPC Endpoint
 ---|---|---
-VPC-A-IgwRouteTable | 10.1.1.0/24 | VPCE-... AZ1
-VPC-A-IgwRouteTable | 10.1.10.0/24 | VPCE-... AZ2
-VPC-A-Public1RouteTable | 0.0.0.0/0 | VPCE-... AZ1
-VPC-A-Public2RouteTable | 0.0.0.0/0 | VPCE-... AZ2
+VPC-A-IgwRouteTable | 10.1.1.0/24 | VPC-A-GWLB-VPCE-AZ1
+VPC-A-IgwRouteTable | 10.1.10.0/24 | VPC-A-GWLB-VPCE-AZ2
+VPC-A-Public1RouteTable | 0.0.0.0/0 | VPC-A-GWLB-VPCE-AZ1
+VPC-A-Public2RouteTable | 0.0.0.0/0 | VPC-A-GWLB-VPCE-AZ2
 
 - **7.3:** Navigate to the **CloudFormation Console**, select the main stack you created and click **Delete**.
-- **7.4:** Once the stack is deleted, proceed to the next task.
+- **7.4:** Once the stack is deleted, take a long break :smile:, you deserve it!
 
     {{% /expand %}}
 
