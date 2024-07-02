@@ -103,7 +103,7 @@ NGFW-sharedservices-tgw-rtb | VPC-C-spoke-vpc-attachment | VPC-A-spoke-vpc-attac
   - This route needs to be updated to allow access to both the Spoke VPCs that are part of this centralized design. Change the destination to **10.0.0.0/8** and click **OK** to save the change.
 
 {{% notice tip %}}
-Since these FortiGates are in separate availability zones and subnets, the gateway IP address will be different for each FortiGate. Thus, there are exceptions for what configuration can be synchronized such as interface settings and static routes. In production you would need to log into the secondary FortiGate and repeat this step to update the static route.
+Since these FortiGates are in separate availability zones and subnets, the gateway IP address will be different for each FortiGate. Thus, there are exceptions for what configuration can be synchronized such as interface settings and static routes. In production you would need to log into the secondary FortiGate and repeat this step to update the static route so traffic handling is the same after a failover.
 {{% /notice %}}
 
 ![](image-t2-6.png)
@@ -135,7 +135,7 @@ If you accidentally did not use the new layout, you can change it by clicking on
   **Instance B** | **`curl 10.3.2.10`** {{<success>}}
 
 {{% notice tip %}}
-Due to the configuration of the Transit gateway route tables, the east/west traffic between VPC-A & B to VPC-C is not being routed through the inspection VPC. That is why you are able to allow HTTP, SSH, and other between these VPCs. While this may be acceptable for very trusted and low security risk environments, it is better practice to have clear visibility and control on what communication is allowed.
+Due to the configuration of the Transit gateway route tables, the east/west traffic between VPC-A & B to VPC-C is not being routed through the inspection VPC. That is why you are able to allow HTTP, SSH, and other between these VPCs. While this may be acceptable for trusted and low security risk environments, it is best practice to have clear visibility and control on what communication is allowed.
 {{% /notice %}}
 
    {{% /expand %}}
@@ -146,18 +146,18 @@ Due to the configuration of the Transit gateway route tables, the east/west traf
 
 - **6.1:** While still in the console session for Instance-A, Run the following commands to test connectivity and make sure the results match expectations 
   
-  SRC / DST | VPC B                               | VPC C (Shared Services)
+  SRC / DST | VPC B                               | Internet
   --- |-------------------------------------| ---
   **Instance A** | **`ping 10.2.2.10`** {{<success>}}  | **`ping 8.8.8.8`** {{<success>}} 
   **Instance A** | **`curl 10.2.2.10`** {{<fail>}}     | **`curl ipinfo.io`** {{<fail>}}
-  **Instance A** | ---                                 | **`curl https://ipinfo.io`** {{<success>}}
+  **Instance A** | ---                                 | **`curl https://ipinfo.io`** {{<fail>}}
   **Instance A** | ---                                 | **`curl -k --retry 2 --retry-all-errors https://secure.eicar.org/eicar.com.txt -o file.txt`** {{<fail>}}
   
   - A --> B succeeded for ping but not HTTP due to FortiGate Firewall Policy
-  - A --> C(Shared services) was successful for PING & HTTPS, but blocked for HTTP
+  - A --> Internet was successful for PING, Web Filtered for HTTPS, and blocked for HTTP due to FortiGate Firewall Policy
   
 - **6.2:** To check the content of the file, run the command **`cat file.txt | grep -A 15 'High Security Alert'`**.
-  - You will see you were blocked, and a block page was returned due to the **Application Control** policy
+  - You will see you were blocked, and a block page was returned due to the **Web Filtering** profile
 
 {{% notice tip %}}
 Due to the configuration of the Transit gateway route tables, the east/west traffic between VPC-A to VPC-B and VPC-A & B to the internet is being routed through the inspection VPC. This is allowing us to have better visibility and control from both layer 4 & 7. This allows us to trust but verify what is allowed and occurring in our environment.
