@@ -326,7 +326,7 @@ VPC-A-Public2RouteTable | 0.0.0.0/0 | VPCE-... AZ2
 - GWLB and FortiGates supports one and two arm mode (distributed vs centralized egress access & NAT GW replacement).
 - Jumbo frames (8500 bytes) are supported.
 - Inspection VPC handles FortiGate NGFW inspection for any traffic flow (Inbound, Outbound, East/West) and for any network design (distributed vs centralized).
-  - [**Appliance Mode**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-appliance-scenario.html) is required for this design to keep flows sticky to the correct availability zone which in turn means the correct GWLB enpoint.
+  - [**Appliance Mode**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-appliance-scenario.html) is required for this design to keep flows sticky to the correct availability zone which in turn means the correct GWLB endpoint.
   - Advanced architectures for all of these scenarios can be [**found here**](https://github.com/FortinetCloudCSE/.github/blob/main/profile/AWS/README.md).
 
 **This concludes this task**
