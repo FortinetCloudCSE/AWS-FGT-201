@@ -160,31 +160,36 @@ enableEmoji = true
   externalLinkTarget = "_blank"
 
 [[menu.shortcuts]]
+name = "<i class='far fa-lightbulb'></i> Xperts Preso"
+url = "Xperts-2024-AWS-201.pdf"
+weight = 10
+
+[[menu.shortcuts]]
 name = "<i class='far fa-lightbulb'></i> Fortinet's AWS Microsite"
 url = "https://fortinet.com/aws"
-weight = 10
+weight = 11
 
 [[menu.shortcuts]]
 name = "<i class='far fa-lightbulb'></i> Fortinet & AWS Documentation"
 url = "https://docs.fortinet.com/cloud-solutions/aws"
-weight = 11
+weight = 12
 
 [[menu.shortcuts]]
 name = "<i class='fas fa-tools'></i> AWS MP Listings for Fortinet"
 url = "https://aws.amazon.com/marketplace/search/results?searchTerms=fortinet"
-weight = 12
+weight = 13
 
 [[menu.shortcuts]]
 name = "<i class='fas fa-tools'></i> Fortinet CSE Cloud Github Org"
 url = "https://github.com/FortinetCloudCSE"
-weight = 13
+weight = 14
 
 [[menu.shortcuts]]
 name = "<i class='fas fa-tools'></i> Deep Dive on FGCP in AWS"
 url = "https://fortinetcloudcse.github.io/FGCP-in-AWS"
-weight = 14
+weight = 15
 
 [[menu.shortcuts]]
 name = "<i class='fas fa-tools'></i> Deep Dive on GWLB in AWS"
 url = "https://fortinetcloudcse.github.io/GWLB-in-AWS/"
-weight = 15
+weight = 16
