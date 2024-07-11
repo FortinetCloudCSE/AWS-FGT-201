@@ -10,17 +10,17 @@ weight: 2
   - VPC Route Tables (RT) are similar to static routes in traditional routing
     - Generally they are attached to a subnet impacting the destination routing decisions for that subnet only
     - Putting the pieces together, AWS routing decisions happen at every hop along the traffic path
-      {{% notice tip %}} 
-
-Symmetrical paths are the most important rule for AWS routing
-  - Traffic must follow the same path in the outbound and inbound direction
-
-     {{% /notice %}}
+      
+     {{% notice tip %}} 
+       Symmetrical paths are the most important rule for AWS routing
+         - Traffic must follow the same path in the outbound and inbound direction
+      {{% /notice %}}
+    
     - Sometimes RT can be associated with services (like IGW) allowing special routing decisions in specific scenarios
   - Every VPC has a default RT which allows communication between all subnets in the VPC
     - Every newly created subnet is associated with this default RT
-    - you cannot change the VPC CIDR route entry in the default RT
-    - You can add more specific subnet routes to a RT to do things like FortiGate NGFW Inspection of traffic _BETWEEN Subnets_ in a VPC
+    - You cannot change the VPC CIDR route entry in the default RT
+    - You can add more specific subnet routes to a RT to do things like FortiGate NGFW inspection of traffic _BETWEEN subnets_ in a VPC
 
 ### AWS Networking Services
 
@@ -46,7 +46,7 @@ TGW | TGW routing tables, VPC, VPN, DXC and other attachments | 5,000 attachment
 - [**Availability Zones (AZ)**](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-availability-zones) are multiple, isolated datacenter locations within each Region that have independent power, cooling, physical security, etc. A VPC spans all of the AZs in the Region. 
 - All [**subnets**](https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html) within a VPC are able to reach each other with the default or intrinsic router within the VPC. All resources in a subnet use the intrinsic router (1st host IP in each subnet) as the default gateway. Each subnet must be associated with a VPC route table, which specifies the allowed routes for outbound traffic leaving the subnet. Subnets are tied to a single AZ.
 - [**Internet Gateway (IGW)**](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html) is a horizontally scaled, redundant, and highly available VPC component that allows communication between instances in your VPC and the internet. It therefore imposes no availability risks or bandwidth constraints on your network traffic.
-- [**Elastic IP (EIP)**](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html) is a static IPv4 address designed for dynamic cloud computing within a region. Simply allocate one to a region in your account and associate this to an EC2 instance to access it over the public internet.[**NAT Gateway (NAT GW)**](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) is a Network Address Translation (NAT) service. You can use a NAT gateway so that instances in a private subnet can connect to services outside your VPC but external services cannot initiate a connection with those instances.
+- [**Elastic IP (EIP)**](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html) is a static IPv4 address designed for dynamic cloud computing within a region. Simply allocate one to a region in your account and associate this to an EC2 instance to access it over the public internet. [**NAT Gateway (NAT GW)**](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) is a Network Address Translation (NAT) service. You can use a NAT gateway so that instances in a private subnet can connect to services outside your VPC but external services cannot initiate a connection with those instances.
 
   ![](image-vpc-simple.png)
 
@@ -55,7 +55,7 @@ TGW | TGW routing tables, VPC, VPN, DXC and other attachments | 5,000 attachment
   ![](image-vpc-peering.png)
 - [**Transit Gateway (TGW)**](https://docs.aws.amazon.com/vpc/latest/tgw/how-transit-gateways-work.html) is a highly scalable cloud router that connects your VPCs in the same region to each other, to on-premise networks, and even to the internet through one hub. With the use of multiple route tables for a single TGW, you can design hub and spoke routing for traffic inspection and enforcement of security policy across multiple VPCs. As the name implies, [**Transit Gateway supports transitive routing**](https://docs.aws.amazon.com/vpc/latest/tgw/TGW_Scenarios.html).
   ![](image-tgw-appliance.png)
-- [**AWS (Gateway Load Balancer (GWLB)**](https://aws.amazon.com/blogs/aws/introducing-aws-gateway-load-balancer-easy-deployment-scalability-and-high-availability-for-partner-appliances/) is a transparent network gateway that distributes traffic (in a 3/5 tuple flow aware manner) to a fleet of virtual appliances for inspection. This is a regional load balancer that uses GWLB endpoints (GWLBe) to securely intercept data plane traffic within consumer VPCs in the same region.
+- [**AWS Gateway Load Balancer (GWLB)**](https://aws.amazon.com/blogs/aws/introducing-aws-gateway-load-balancer-easy-deployment-scalability-and-high-availability-for-partner-appliances/) is a transparent network gateway that distributes traffic (in a 3/5 tuple flow aware manner) to a fleet of virtual appliances for inspection. This is a regional load balancer that uses GWLB endpoints (GWLBe) to securely intercept data plane traffic within consumer VPCs in the same region.
 
 ![](image-gwlb.png)
 

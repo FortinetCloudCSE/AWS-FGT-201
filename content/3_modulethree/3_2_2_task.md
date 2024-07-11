@@ -3,24 +3,22 @@ title: "Gateway Load Balancer"
 weight: 4
 ---
 
-
-## **Service Insertion**
-|                            |    |  
-|----------------------------| ----
+|      |   |  
+|:----:|:--|
 | **Goal**                   | Utilize the provisioned Gateway Load Balancer architecture to provide security for distributed ingress and centralized egress flows with FortiGate NGFW.
 | **Task**                   | Create VPC routes and FortiGate Policy objects allowing both flows of traffic.
 | **Verify task completion** | Confirm connectivity to Public NLB1 and from Instance-B.
 
-{{% notice tip %}} 
+## Introduction
 In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway is configured with multiple Transit Gateway Route Tables and Gateway Load Balancer and endpoints are already configured as well.  You will need to create the appropriate VPC routes to redirect traffic to Gateway Load Balancer via the deployed endpoints so the Active-Active FortiGates can inspect the traffic.
 
 In this scenario these FortiGates are working together in an Active-Active design to provide more capacity for bump in the wire inspection. This design can work with workload VPCs that have a direct path to/from the Internet via an attached Internet Gateway and or NAT GW (commonly referred to a distributed design). This design can also work with a common networking design using Transit Gateway to offer centralized egress, ingress, and east/west inspection (commonly referred to a centralized design).
-{{% /notice %}}
+
 
 
 ![](image-gwlb-example.png)
 
-#### Summarized Steps (click to expand each for details)
+## Summarized Steps (click to expand each for details)
 
 0. Lab Environment Setup
 
@@ -319,7 +317,7 @@ VPC-A-Public2RouteTable | 0.0.0.0/0 | VPC-A-GWLB-VPCE-AZ2
 
     {{% /expand %}}
 
-### Discussion Points
+## Discussion Points
 - GWLB is a regional service that is both a gateway (VPC route target) and flow aware load balancer.
   - This allows very scalable active-active inspection for all directions of traffic.
   - No SNAT requirement to keep flows sticky to the same FGT as GWLB is flow aware.

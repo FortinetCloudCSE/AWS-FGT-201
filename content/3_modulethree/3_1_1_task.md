@@ -3,17 +3,16 @@ title: "VPC Peering"
 weight: 1
 ---
 
-
-## **Point to Point**
-|                            |    |  
-|----------------------------| ----
+|      |    |  
+|:----:|:---|
 | **Goal**                   | Establish point to point access from VPC A to VPC B
 | **Task**                   | Create a peering connection and VPC routes so EC2 Instance-A can ping Instance-B
-| **Verify task completion** | Confirm point to point VPC connectivity with ping from EC2 Instance-A to B and Instance-B to C
+| **Validation** | Confirm point to point VPC connectivity with ping from EC2 Instance-A to B and Instance-B to C
 
-{{% notice tip %}} 
+## Introduction 
+
 In this task, there are multiple VPCs in the same region that have one instance each. VPC peering and the appropriate VPC routes are already configured for VPC-B to VPC-C. VPC peering and VPC routes will need to be configured between VPC-A and VPC-B. Then traffic will be tested to confirm what traffic routing is and is not supported with VPC peering.
-{{% /notice %}}
+
 
 {{% notice warning %}} 
 There are no security controls in this example. Instance-B can freely communicate with the Internet.
@@ -22,7 +21,7 @@ There are no security controls in this example. Instance-B can freely communicat
 ![](image-vpc-peering-example.png)
 
 
-#### Summarized Steps (click to expand each for details)
+## Summarized Steps (click to expand each for details)
 
 0. Lab Environment Setup
 
@@ -184,7 +183,7 @@ Hop | Component | Description                                                   
 
     {{% /expand %}}
 
-### Discussion Points
+## Discussion Points
 - VPC peering is a point to point connection only (no transitive routing).
 - Full mesh is required to connect all VPCs together. 
   - For example connecting 10 VPCs would require (10*9)/2 = 45 connections.

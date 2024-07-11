@@ -2,24 +2,22 @@
 title: "Transit Gateway w/ BGP"
 weight: 3
 ---
-
-
-## **Dynamic Routing** 
+ 
 |                            |    |  
-|----------------------------| ----
+|:--------------------------:|:----|
 | **Goal**                   | Utilize dynamic routing with Transit Gateway and FortiGates.
 | **Task**                   | Create attachment associations & propagations, update/create FortiGate routes and firewall policy to allow secured traffic.
-| **Verify task completion** | Confirm outbound and east/west connectivity from EC2 Instance-A via Ping, HTTP, HTTPS.
+| **Validation** | Confirm outbound and east/west connectivity from EC2 Instance-A via Ping, HTTP, HTTPS.
 
-{{% notice tip %}} 
+## Introduction
 In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway is configured with multiple Transit Gateway Route Tables.  You will need to create the appropriate VPC attachment associations and propagations to the correct TGW Route Tables, FW policy and update BPG configuration on the independent FortiGates.
 
-In this scenario the FortiGates are completely independent of each other (not clustered, sharing config/sessions, etc) and are showing different connectivity options to attach remote locations to Transit Gateway. VPN attachments can be used to connect to any IPsec capable device located anywhere, while TGW Connect attachments require a private path to reach a VM deployed in a VPC or HW/VM deployed on premise and is reachable over Direct Connect (a dedicated, private circuit).
-{{% /notice %}}
+In this scenario the FortiGates are completely independent of each other (not clustered, nor sharing config/sessions, etc) and are showing different connectivity options to attach remote locations to Transit Gateway. VPN attachments can be used to connect to any IPsec capable device located anywhere.  TGW Connect attachments require a private path to reach a VM deployed in a VPC or HW/VM deployed on premise must be reachable over Direct Connect (a dedicated, private circuit).
+
 
 ![](image-tgw-dynamic-example.png)
 
-#### Summarized Steps (click to expand each for details)
+## Summarized Steps (click to expand each for details)
 
 0. Lab Environment Setup
 
@@ -272,7 +270,7 @@ While Transit Gateway does support ECMP routing, it only does so for the same at
 
     {{% /expand %}}
 
-### Discussion Points
+## Discussion Points
 - TGW supports ECMP routing with routes from the same attachment type.
    - This allows scalable Active-Active centralized ingress/egress inspection.
    - Active-Active East/West inspection requires SNAT to keep flows sticky to the same FortiGate.
