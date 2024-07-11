@@ -3,23 +3,22 @@ title: "Transit Gateway w/ VPCs"
 weight: 2
 ---
 
-
-## **Regional Router** 
 |                            |    |  
-|----------------------------| ----
+|:----------------------------:|:----
 | **Goal**                   | Establish open and secured east/west (Inter-VPC) and outbound flows through the provisioned NGFW VPC and Transit gateway architecture.
 | **Task**                   | Create attachment associations & propagations, update/create FortiGate routes and firewall policy to allow secured traffic.
-| **Verify task completion** | Confirm outbound and east/west connectivity from EC2 Instance-A via Ping, HTTP, HTTPS.
+| **Validation** | Confirm outbound and east/west connectivity from EC2 Instance-A via Ping, HTTP, HTTPS.
 
-{{% notice tip %}} 
-In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway is configured with multiple Transit Gateway Route Tables.  You will need to create the appropriate VPC attachment associations and propagations to the correct TGW Route Tables, FW policy and update a static route on the FortiGate Active-Passive cluster.
+## Introduction
+
+In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway (TGW) is configured with multiple Transit Gateway Route Tables.  You will need to create the appropriate VPC attachment associations and propagations to the correct TGW Route Tables, FW policy and update a static route on the FortiGate Active-Passive cluster.
 
 In this scenario you will allow traffic between the workload and shared services VPC to communicate directly (without going through the FortiGate A-P cluster), while inspecting outbound and east/west connectivity with the workload VPCs.
-{{% /notice %}}
+
 
 ![](image-tgw-static-example.png)
 
-#### Summarized Steps (click to expand each for details)
+## Summarized Steps (click to expand each for details)
 
 0. Lab Environment Setup
 
@@ -219,7 +218,7 @@ Hop | Component | Description | Packet |
 
     {{% /expand %}}
 
-### Discussion Points
+## Discussion Points
 - TGW is essentially a regional router.
 - TGW supports transitive routing and has many [**use cases**](https://docs.aws.amazon.com/vpc/latest/tgw/TGW_Scenarios.html).
 - TGW supports the following attachments in the same region:

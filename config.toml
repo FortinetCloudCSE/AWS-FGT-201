@@ -41,7 +41,7 @@ defaultContentLanguageInSubdir= "false"
 enableEmoji = true
 
 [outputs]
-  home = [ "HTML", "RSS", "JSON", "SEARCH", "SEARCHPAGE"]
+  home = [ "HTML", "RSS", "JSON", "SEARCH", "SEARCHPAGE", "PRINT"]
   section = ["HTML", "RSS"]
   page = ["HTML", "RSS"]
 
