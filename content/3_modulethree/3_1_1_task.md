@@ -109,11 +109,14 @@ There are no security controls in this example. Instance-B can freely communicat
     {{% /expand %}}
 
 ###### 4) Let's dig deeper to understand how VPC Peering works
+
+{{% expand title="**Detailed Steps...**" %}}
+
+   {{% notice info %}}
    - VPC Peering permits point to point connectivity between **instances in 2 directly peered VPC's** and nothing else
    - Transitive peering or peering from **VPC A _through_ VPC B to VPC C** is not permitted
    - Accessing AWS Services (like NAT or Internet GW) via a peering connection does not work
-
-{{% expand title="**Detailed Steps...**" %}}
+   {{% /notice %}}
 
 - **4.1:** In the **EC2 Console** go to the **Instances page** connect to **Instance-B** using the **[Serial Console directions](../3_modulethree.html)** 
     - Password: **`FORTInet123!`**

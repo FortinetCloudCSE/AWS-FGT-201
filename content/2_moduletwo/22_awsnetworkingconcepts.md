@@ -6,21 +6,21 @@ weight: 2
 ![](AWS_networking.png)
 
 ### AWS Network Routing
-  - AWS networking is [**Software Defined Networking**](https://www.vmware.com/topics/glossary/content/software-defined-networking.html.html) where VPCs have a built-in or implicit router
-  - VPC Route Tables (RT) are similar to static routes in traditional routing
-    - Generally they are attached to a subnet impacting the destination routing decisions for that subnet only
-    - Putting the pieces together, AWS routing decisions happen at every hop along the traffic path
+- AWS networking is [**Software Defined Networking**](https://www.vmware.com/topics/glossary/content/software-defined-networking.html.html) where VPCs have a built-in or implicit router
+- VPC Route Tables (RT) are similar to static routes in traditional routing
+  - Generally they are attached to a subnet impacting the destination routing decisions for that subnet only
+  - Putting the pieces together, AWS routing decisions happen at every hop along the traffic path
       
-     {{% notice tip %}} 
-       Symmetrical paths are the most important rule for AWS routing
-         - Traffic must follow the same path in the outbound and inbound direction
-      {{% /notice %}}
+{{% notice tip %}} 
+Symmetrical paths are the most important rule of AWS routing
+- Traffic must follow the same path in the outbound and inbound direction
+{{% /notice %}}
     
-    - Sometimes RT can be associated with services (like IGW) allowing special routing decisions in specific scenarios
-  - Every VPC has a default RT which allows communication between all subnets in the VPC
-    - Every newly created subnet is associated with this default RT
-    - You cannot change the VPC CIDR route entry in the default RT
-    - You can add more specific subnet routes to a RT to do things like FortiGate NGFW inspection of traffic _BETWEEN subnets_ in a VPC
+- Sometimes RT can be associated with services (like IGW) allowing special routing decisions in specific scenarios
+- Every VPC has a default RT which allows communication between all subnets in the VPC
+  - Every newly created subnet is associated with this default RT
+  - You cannot change the VPC CIDR route entry in the default RT
+  - You can add more specific subnet routes to a RT to do things like FortiGate NGFW inspection of traffic _BETWEEN subnets_ in a VPC
 
 ### AWS Networking Services
 
@@ -32,10 +32,9 @@ VPC | CIDR block (can add multiple CIDR blocks) | CIDR block between /16 and /28
 Region| Large geographical area | isolated from other regions (which can be connected with TGW) | can have many VPCs
 Availability Zone | generally 1 physical datacenter/MAN | power, cooling, and networking are shared in an AZ | each region has multiple AZ's
 Subnet | IP subnet of the VPC's CIDR definition | CIDR block between /16 and /28 | belongs to 1 VPC and 1 AZ only
-IGW | | VPC Route Tables (RTBs) can be associated to IGW to influence routing beyond subnet (advanced scenario) | belongs to 1 VPC
-NATGW | 1 (or more) EIPs | outbound traffic only | belongs to 1 subnet(AZ)
-EIP | single Public IP address | belongs to a region | attachment to EC2, NLB/ALB, NATGW
---- | --- | --- | ---
+Internet Gateway | VPC Configuration | VPC Route Tables (RTBs) can be associated to IGW to influence routing beyond subnet (advanced scenario) | belongs to 1 VPC
+NAT Gateway | 1 (or more) EIPs | outbound traffic only | belongs to 1 subnet(AZ)
+Elastic IP | single Public IP address | belongs to a region | attachment to EC2, NLB/ALB, NATGW
 VPC Peering | peering connection specifying 2 VPCs only | no transitive routing | routing path between 2 VPCs only (legacy)
 TGW | TGW routing tables, VPC, VPN, DXC and other attachments | 5,000 attachments per transit gateway | belongs to 1 region
 
@@ -46,7 +45,8 @@ TGW | TGW routing tables, VPC, VPN, DXC and other attachments | 5,000 attachment
 - [**Availability Zones (AZ)**](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-availability-zones) are multiple, isolated datacenter locations within each Region that have independent power, cooling, physical security, etc. A VPC spans all of the AZs in the Region. 
 - All [**subnets**](https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html) within a VPC are able to reach each other with the default or intrinsic router within the VPC. All resources in a subnet use the intrinsic router (1st host IP in each subnet) as the default gateway. Each subnet must be associated with a VPC route table, which specifies the allowed routes for outbound traffic leaving the subnet. Subnets are tied to a single AZ.
 - [**Internet Gateway (IGW)**](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html) is a horizontally scaled, redundant, and highly available VPC component that allows communication between instances in your VPC and the internet. It therefore imposes no availability risks or bandwidth constraints on your network traffic.
-- [**Elastic IP (EIP)**](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html) is a static IPv4 address designed for dynamic cloud computing within a region. Simply allocate one to a region in your account and associate this to an EC2 instance to access it over the public internet. [**NAT Gateway (NAT GW)**](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) is a Network Address Translation (NAT) service. You can use a NAT gateway so that instances in a private subnet can connect to services outside your VPC but external services cannot initiate a connection with those instances.
+- [**Elastic IP (EIP)**](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html) is a static IPv4 address designed for dynamic cloud computing within a region. Simply allocate one to a region in your account and associate this to an EC2 instance to access it over the public internet. 
+- [**NAT Gateway (NAT GW)**](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html) is a Network Address Translation (NAT) service. You can use a NAT gateway so that instances in a private subnet can connect to services outside your VPC but external services cannot initiate a connection with those instances.
 
   ![](image-vpc-simple.png)
 
