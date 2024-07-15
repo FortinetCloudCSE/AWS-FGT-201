@@ -6,7 +6,7 @@ weight: 3
 |                            |    |  
 |:--------------------------:|:----|
 | **Goal**                   | Utilize dynamic routing with Transit Gateway and FortiGates.
-| **Task**                   | Create attachment associations & propagations, update/create FortiGate routes and firewall policy to allow secured traffic.
+| **Task**                   | Create attachment associations and propagations, update or create FortiGate routes and firewall policies to allow secured traffic to pass.
 | **Validation** | Confirm outbound and east/west connectivity from EC2 Instance-A via Ping, HTTP, HTTPS.
 
 ## Introduction
@@ -19,18 +19,18 @@ In this scenario the FortiGates are completely independent of each other (not cl
 
 ## Summarized Steps (click to expand each for details)
 
-0. Lab Environment Setup
+###### 0) Lab environment setup
 
-    {{% expand title="**Detailed Steps...**" %}}
+{{% expand title="**Detailed Steps...**" %}}
 
 
-- **0.1:** Login to your AWS account, and click this **Launch Stack** button to Launch the CloudFormation Stack for Task 3
+- **0.1:** Login to your AWS account, and click the **Launch Stack** button below to launch the CloudFormation stack for Task 3
   
 [![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png?lightbox=false)](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=task3&templateURL=https%3A%2F%2Fhacorp-cloud-cse-workshop-us-east-1.s3.amazonaws.com%2Faws-fgt-201%2FMaster_FGT_201_Part3.template.json)
 
-- **0.2:** **You must:** 
-    - **select an IAM role in the Permissions section**
-	- **check the boxes to acknowledge the warnings in the Capabilities section**
+- **0.2:** When creating this stack, ensure the following options are configured (See screenshots below for additional guidance): 
+    - **An IAM role in the Permissions section**
+	- **Acknowledge the warnings in the Capabilities section**
 	- then scroll down and click **Create stack**
 
 {{% notice warning %}}
@@ -43,29 +43,29 @@ In this scenario the FortiGates are completely independent of each other (not cl
 
     {{% /expand %}}
 
-1. Check the Transit Gateway Route Tables and confirm east/west is not working.
+###### 1) Check the Transit Gateway Route Tables and confirm east/west is not working
 
-    {{% expand title = "**Detailed Steps...**" %}}
+{{% expand title = "**Detailed Steps...**" %}}
 
 - **1.1:** In the **VPC Console** go to the **Transit gateway route tables page** (menu on the left) and check out all of the **associations, propagations, and routes** for **each Transit gateway route table**.  You should see the following:
 
-TGW-RTB Name | Associations
+Transit Gateway Route Table Name | Associations
 ---|---
-TGW-Connect-security-tgw-rtb | TGW-Connect-security-vpc-attachment & TGW-Connect-security-connect-attachment & unnamed-vpn-attachment |
-TGW-Connect-spoke-tgw-rtb | VPC-A-spoke-vpc-attachment & VPC-B-spoke-vpc-attachment |
+TGW-Connect-security-tgw-rtb | TGW-Connect-security-vpc-attachment <br> TGW-Connect-security-connect-attachment <br> Unnamed-vpn-attachment |
+TGW-Connect-spoke-tgw-rtb | VPC-A-spoke-vpc-attachment <br> VPC-B-spoke-vpc-attachment |
 TGW-Connect-sharedservices-tgw-rtb | VPC-C-spoke-vpc-attachment |
 
-TGW-RTB Name | Propagations
+Transit Gateway Route Table Name | Propagations
 ---|---
-TGW-Connect-security-tgw-rtb | VPC-A-spoke-vpc-attachment & VPC-B-spoke-vpc-attachment |
-TGW-Connect-spoke-tgw-rtb | VPC-C-spoke-vpc-attachment & TGW-Connect-security-vpc-attachment & TGW-Connect-security-connect-attachment & unnamed-vpn-attachment |
-TGW-Connect-sharedservices-tgw-rtb | VPC-A-spoke-vpc-attachment & VPC-B-spoke-vpc-attachment |
+TGW-Connect-security-tgw-rtb | VPC-A-spoke-vpc-attachment <br> VPC-B-spoke-vpc-attachment |
+TGW-Connect-spoke-tgw-rtb | VPC-C-spoke-vpc-attachment <br> TGW-Connect-security-vpc-attachment <br> TGW-Connect-security-connect-attachment <br> Unnamed-vpn-attachment |
+TGW-Connect-sharedservices-tgw-rtb | VPC-A-spoke-vpc-attachment <br> VPC-B-spoke-vpc-attachment |
 
-TGW-RTB Name | Routes
+Transit Gateway Route Table Name | Routes
 ---|---
-TGW-Connect-security-tgw-rtb | 10.1.0.0/16 & 10.2.0.0/16 & 10.3.0.0/16 |
-TGW-Connect-spoke-tgw-rtb | 10.0.0.0/16 & 10.3.0.0/16 |
-TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 & 10.2.0.0/16 |
+TGW-Connect-security-tgw-rtb | 10.1.0.0/16 <br> 10.2.0.0/16 <br> 10.3.0.0/16 |
+TGW-Connect-spoke-tgw-rtb | 10.0.0.0/16 <br> 10.3.0.0/16 |
+TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 <br> 10.2.0.0/16 |
 
 - **1.2:** Navigate to the **EC2 Console** and connect to **Instance-A** using the **[Serial Console directions](../3_modulethree.html)** 
     - Password: **`FORTInet123!`**
@@ -77,9 +77,9 @@ TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 & 10.2.0.0/16 |
 
 {{% /expand %}}
 		
-2. Review FortiGate1's GRE + BGP config and advertise a summary route to Transit Gateway.
+###### 2) Review FortiGate1's GRE + BGP config and advertise a summary route to Transit Gateway
 
-    {{% expand title = "**Detailed Steps...**" %}}
+{{% expand title = "**Detailed Steps...**" %}}
 
 - **2.1:** Navigate to the **CloudFormation Console** and **toggle View Nested to off**.
 - **2.2:** Select the main template and select the **Outputs tab**.
@@ -108,9 +108,9 @@ TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 & 10.2.0.0/16 |
   ```
     {{% /expand %}}
 
-3. Test secured east/west connectivity from Instance-A to Instance-B and validate there is no internet connectivity.
+###### 3) Test east/west connectivity from Instance-A to Instance-B and validate there is no internet connectivity
 
-    {{% expand title = "**Detailed Steps...**" %}}
+{{% expand title = "**Detailed Steps...**" %}}
 
 - **3.1:** While still in the console session for Instance-A, run the following commands to test connectivity and make sure the results match expectations
 - 
@@ -121,9 +121,9 @@ TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 & 10.2.0.0/16 |
 
     {{% /expand %}}
 
-4. Let's dig deeper to understand how all of this works.....
+###### 4) Let's dig deeper to understand how all of this works
 
-    {{% expand title = "**Detailed Steps...**" %}}
+{{% expand title = "**Detailed Steps...**" %}}
 
 - **4.1:** High level diagram showing how the Connect attachment goes over a VPC attachment which allows FortiGate1 to have a GRE tunnel over a private path which has BGP peering configured as well.  This provides an overlay tunnel where dynamic routes and data-plane traffic can be routed without adding additional routes to the VPC router.
 	
@@ -139,9 +139,9 @@ Regardless which type of BGP is used, each connect peer is only required to crea
 
     {{% /expand %}}
 
-5. Review FortiGate2's VPN, BGP, route-map, and configure default-route-originate with a route-map.
+###### 5) Review FortiGate2's VPN and BGP configurations
 
-    {{% expand title = "**Detailed Steps...**" %}}
+{{% expand title = "**Detailed Steps...**" %}}
 
 - **5.1:** Navigate to the **CloudFormation Console** and **toggle View Nested to off**.
 - **5.2:** Select the main template and select the **Outputs tab**.
@@ -173,9 +173,9 @@ Regardless which type of BGP is used, each connect peer is only required to crea
 
     {{% /expand %}}
 
-6. Test secured egress connectivity from Instance-A through FortiGate2.
+###### 6) Test secured egress connectivity from Instance-A through FortiGate2
 
-    {{% expand title = "**Detailed Steps...**" %}}
+{{% expand title = "**Detailed Steps...**" %}}
 
 - **6.1:** While still in the console session for Instance-A, run the following commands to test connectivity and make sure the results match expectations
 
@@ -187,12 +187,6 @@ Regardless which type of BGP is used, each connect peer is only required to crea
   - The public IP returned from **`curl ipinfo.io`** should match the **public IP of FGT2**
 - **6.2:** In the **VPC Console** go to the **Transit gateway route tables page**.
 - **6.3:** Find **TGW-Connect-spoke-tgw-rtb** go to the **Routes tab** and notice there are **ECMP routes for 0.0.0.0/0** since there are two VPN tunnels configured and a single route for 10.0.0.0/8 for the TGW connect peer.
-
-    {{% /expand %}}
-
-7. Let's dig deeper to understand how all of this works.....
-
-    {{% expand title = "**Detailed Steps...**" %}}
 	
 {{% notice info %}}	
 FortiGate2 is getting data-plane traffic over **two IPsec tunnels** between its port1 private ip (10.0.2.x/24) that has an associated [**Elastic IP**](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html) and two public IPs managed by AWS, so this is all over a public path but encrypted. This means that jumbo frames are not supported for VPN based attachments.
@@ -203,14 +197,14 @@ Since there are two tunnels with a BGP peer configured for each, FortiGate2 is a
     {{% /expand %}}
 
 
-8. Configure FortiGate1 with default-route-originate with a route-map as well.
+###### 7) Configure FortiGate1 with default-route-originate and a route-map as well
 
-    {{% expand title = "**Detailed Steps...**" %}}
+{{% expand title = "**Detailed Steps...**" %}}
 
-- **8.1:** Login to **FortiGate1**, using the outputs **FGT1LoginURL**, **Username**, and **Password**.
-- **8.2:** Upon login in the **upper-right-hand corner** click on the **>_** icon to open a CLI session.
-- **8.3:** Run the command **`show router route-map rmap-aspath1`** and notice **the as-path is set to 65000 just like FortiGate2**.
-- **8.4:** Copy and paste the commands below to configure default-route-originate with the route-map to advertise 0.0.0.0/0 with an as-path of 65000:
+- **7.1:** Login to **FortiGate1**, using the outputs **FGT1LoginURL**, **Username**, and **Password**.
+- **7.2:** Upon login in the **upper-right-hand corner** click on the **>_** icon to open a CLI session.
+- **7.3:** Run the command **`show router route-map rmap-aspath1`** and notice **the as-path is set to 65000 just like FortiGate2**.
+- **7.4:** Copy and paste the commands below to configure default-route-originate with the route-map to advertise 0.0.0.0/0 with an as-path of 65000:
   ```
   config router bgp
   config neighbor
@@ -225,7 +219,7 @@ Since there are two tunnels with a BGP peer configured for each, FortiGate2 is a
   end
   end
   ```
-- **8.5:** Run the commands below to confirm that the 0.0.0.0/0 route is now being advertised to our BGP neighbors with an as-path of 6500.
+- **7.5:** Run the commands below to confirm that the 0.0.0.0/0 route is now being advertised to our BGP neighbors with an as-path of 6500.
   ```
   get router info bgp summary
   get router info bgp neighbors 169.254.6.2 advertised-routes
@@ -233,11 +227,11 @@ Since there are two tunnels with a BGP peer configured for each, FortiGate2 is a
   ```
     {{% /expand %}}
 
-9. Test secured egress connectivity from Instance-A through FortiGate1.
+###### 8) Test secured egress connectivity from Instance-A through FortiGate1
 
-    {{% expand title = "**Detailed Steps...**" %}}
+{{% expand title = "**Detailed Steps...**" %}}
 
-- **9.1:** While still in the console session for Instance-A, run the following commands to test connectivity and make sure the results match expectations
+- **8.1:** While still in the console session for Instance-A, run the following commands to test connectivity and make sure the results match expectations
 
   SRC / DST | VPC B                              | Internet
   ---|------------------------------------|---
@@ -245,28 +239,21 @@ Since there are two tunnels with a BGP peer configured for each, FortiGate2 is a
   **Instance A** | **`curl 10.2.2.10`** {{<success>}} via FGT1 | **`curl ipinfo.io`** {{<success>}} via FGT1
   - Ping and curl should connect successfully through FGT1 which is connected to Transit Gateway over a Connect attachment (GRE + BGP over a VPC attachment).
   - The public IP returned from ipinfo.io should match the **public IP of FGT1**
-- **9.3:** In the **VPC Console** go to the **Transit gateway route tables page**.
-- **9.4:** Find **TGW-Connect-spoke-tgw-rtb** go to the **Routes tab** and notice there **is only one route for 0.0.0.0/0 since Transit Gateway only supports ECMP routing from the same attachment types**.
+- **8.3:** In the **VPC Console** go to the **Transit gateway route tables page**.
+- **8.4:** Find **TGW-Connect-spoke-tgw-rtb** go to the **Routes tab** and notice there **is only one route for 0.0.0.0/0 since Transit Gateway only supports ECMP routing from the same attachment types**.
 
-    {{% /expand %}}
-
-
-10. Let's dig deeper to understand how all of this works.....
-
-    {{% expand title = "**Detailed Steps...**" %}}
-	
 {{% notice info %}}
 While Transit Gateway does support ECMP routing, it only does so for the same attachment types. There is a [**route evaluation order**](https://docs.aws.amazon.com/vpc/latest/tgw/how-transit-gateways-work.html#tgw-route-evaluation-overview) that takes place. The reason behind this is that different attachment types go over different paths (ie connect over private vpc-attachment vs vpc over public internet) which can have different latency, RTTs, etc and even different MTUs supported.
 {{% /notice %}}
 
     {{% /expand %}}
 
-11. Lab Environment Teardown
+###### 9) Lab environment teardown
 
-    {{% expand title="**Detailed Steps...**" %}}
+{{% expand title="**Detailed Steps...**" %}}
 
-- **11.1:** Navigate to the **CloudFormation Console**, select the main stack you created and click **Delete**.
-- **11.2:** Once the stack is deleted, proceed to the next task.
+- **9.1:** Navigate to the **CloudFormation Console**, select the main stack you created and click **Delete**.
+- **9.2:** Once the stack is deleted, proceed to the next task.
 
     {{% /expand %}}
 

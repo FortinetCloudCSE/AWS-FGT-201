@@ -23,9 +23,9 @@ There are no security controls in this example. Instance-B can freely communicat
 
 ## Summarized Steps (click to expand each for details)
 
-0. Lab Environment Setup
+###### 0) Lab environment setup
 
-    {{% expand title="**Detailed Steps...**" %}}
+{{% expand title="**Detailed Steps...**" %}}
 
 
 - **0.1:** Login to your AWS account, and click this **Launch Stack** button to Launch the CloudFormation Stack for Task 1
@@ -49,9 +49,9 @@ There are no security controls in this example. Instance-B can freely communicat
 
     {{% /expand %}}
 
-1. Find EC2 Instance-A and verify it can't access Instance-B or C.
+###### 1) Find EC2 Instance-A and verify it can't access Instance-B or C
 
-    {{% expand title="**Detailed Steps...**" %}}
+{{% expand title="**Detailed Steps...**" %}}
 
 - **1.1:** In your AWS account, navigate to the **EC2 Console** and go to the **Instances page** (menu on the left).
 - **1.2:** Find **Instance-A** and connect to it using the **[Serial Console directions](../3_modulethree.html)** 
@@ -73,9 +73,9 @@ There are no security controls in this example. Instance-B can freely communicat
   
     {{% /expand %}}
 
-2. Create a VPC peering connection and VPC routes to allow Instance-A in VPC-A to reach Instance-B in VPC-B.
+###### 2) Create a VPC peering connection and VPC routes to allow Instance-A in VPC-A to reach Instance-B in VPC-B
 
-    {{% expand title="**Detailed Steps...**" %}}
+{{% expand title="**Detailed Steps...**" %}}
 
 - **2.1:** Navigate to the **VPC Console** and go to the **Peering connections page** (menu on the left) and click **Create peering connection**.
 - **2.2:** Provide a name then select **VPC-A as the requester** and **VPC-B as the Accepter** and click **Create peering connection** at the bottom of the page.
@@ -90,9 +90,9 @@ There are no security controls in this example. Instance-B can freely communicat
 
   {{% /expand %}}
 
-3. Verify communication over the VPC Peering connection. 
+###### 3) Verify communication over the VPC Peering connection
 
-    {{% expand title="**Detailed Steps...**" %}}
+{{% expand title="**Detailed Steps...**" %}}
 
 - **3.1:** Navigate to the **EC2 Console** and connect to **Instance-A** using the **[Serial Console directions](../3_modulethree.html)** 
     - Password: **`FORTInet123!`**
@@ -108,12 +108,12 @@ There are no security controls in this example. Instance-B can freely communicat
   
     {{% /expand %}}
 
-4. Let's dig deeper to understand how all of VPC Peering works.
+###### 4) Let's dig deeper to understand how VPC Peering works
    - VPC Peering permits point to point connectivity between **instances in 2 directly peered VPC's** and nothing else
    - Transitive peering or peering from **VPC A _through_ VPC B to VPC C** is not permitted
    - Accessing AWS Services (like NAT or Internet GW) via a peering connection does not work
 
-    {{% expand title="**Detailed Steps...**" %}}
+{{% expand title="**Detailed Steps...**" %}}
 
 - **4.1:** In the **EC2 Console** go to the **Instances page** connect to **Instance-B** using the **[Serial Console directions](../3_modulethree.html)** 
     - Password: **`FORTInet123!`**
@@ -172,9 +172,9 @@ Hop | Component | Description                                                   
   
   {{% /expand %}}
 
-5. Lab Environment Teardown
+###### 5) Lab environment teardown
 
-    {{% expand title="**Detailed Steps...**" %}}
+{{% expand title="**Detailed Steps...**" %}}
 
 - **5.1:** Before deleting the main CloudFormation Stack, we must remove the VPC routes referencing the VPC peering connection, and the VPC peering connection itself.
 - **5.2:** Navigate to the **VPC Console** and go to the **Peering connections page** (menu on the left), select the peering for VPC-A to B and click **Actions**, then select **Delete peering connection**. This will **prompt you to delete the related route table entries**. Select **Delete related route table entries**, then to confirm, type **delete** in the field and click **Delete**.

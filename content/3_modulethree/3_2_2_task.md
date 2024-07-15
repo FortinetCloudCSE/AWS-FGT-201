@@ -7,12 +7,12 @@ weight: 4
 |:----:|:--|
 | **Goal**                   | Utilize the provisioned Gateway Load Balancer architecture to provide security for distributed ingress and centralized egress flows with FortiGate NGFW.
 | **Task**                   | Create VPC routes and FortiGate Policy objects allowing both flows of traffic.
-| **Verify task completion** | Confirm connectivity to Public NLB1 and from Instance-B.
+| **Validation** | Confirm connectivity to Public NLB1 and from Instance-B.
 
 ## Introduction
-In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway is configured with multiple Transit Gateway Route Tables and Gateway Load Balancer and endpoints are already configured as well.  You will need to create the appropriate VPC routes to redirect traffic to Gateway Load Balancer via the deployed endpoints so the Active-Active FortiGates can inspect the traffic.
+In this scenario, there are multiple VPCs in the same region that have one instance each. Transit Gateway is configured with multiple Transit Gateway Route Tables and Gateway Load Balancer and endpoints are already configured as well.  You will need to create the appropriate VPC routes to redirect traffic to Gateway Load Balancer via the deployed endpoints so the Active-Active FortiGates can inspect the traffic.
 
-In this scenario these FortiGates are working together in an Active-Active design to provide more capacity for bump in the wire inspection. This design can work with workload VPCs that have a direct path to/from the Internet via an attached Internet Gateway and or NAT GW (commonly referred to a distributed design). This design can also work with a common networking design using Transit Gateway to offer centralized egress, ingress, and east/west inspection (commonly referred to a centralized design).
+In this scenario these FortiGate NGFWs are working together in an Active-Active design to provide more capacity for bump in the wire inspection. This design is usable with workload VPCs that have a direct path to/from the Internet via an attached Internet Gateway (IGW), with or without a NAT Gateway (commonly referred to a distributed design). This design can also work in conjunction with Transit Gateway to offer centralized egress, ingress, and east/west inspection (commonly referred to a centralized design).
 
 
 
@@ -20,16 +20,16 @@ In this scenario these FortiGates are working together in an Active-Active desig
 
 ## Summarized Steps (click to expand each for details)
 
-0. Lab Environment Setup
+###### 0) Lab environment setup
 
-    {{% expand title="**Detailed Steps...**" %}}
-- **0.1:** Login to your AWS account, and click this **Launch Stack** button to Launch the CloudFormation Stack for Task 4
+{{% expand title="**Detailed Steps...**" %}}
+- **0.1:** Login to your AWS account, and click the **Launch Stack** button below to launch the CloudFormation stack for Task 4
 
 [![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png?lightbox=false)](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=task4&templateURL=https%3A%2F%2Fhacorp-cloud-cse-workshop-us-east-1.s3.amazonaws.com%2Faws-fgt-201%2FMaster_FGT_201_Part4.template.json)
 
-- **0.2:** **You must:** 
-    - **select an IAM role in the Permissions section**
-	- **check the boxes to acknowledge the warnings in the Capabilities section**
+- **0.2:** When creating this stack, ensure the following options are configured (See screenshots below for additional guidance): 
+    - **An IAM role in the Permissions section**
+	- **Acknowledge the warnings in the Capabilities section**
 	- then scroll down and click **Create stack**
 
 {{% notice warning %}}
@@ -42,9 +42,9 @@ In this scenario these FortiGates are working together in an Active-Active desig
 
     {{% /expand %}}
 
-1. Create VPC routes for ingress routing.
+###### 1) Create VPC routes for ingress routing
 
-    {{% expand title = "**Detailed Steps...**" %}}
+{{% expand title = "**Detailed Steps...**" %}}
 
 - **1.1:** In the **VPC Console** go to the **Endpoints page** (menu on the left) and look at the VPC Endpoints for VPC A.  You should see four endpoints, **one endpoint for each Availability Zone** in both VPC-A and the NGFW VPC.  Note the **Endpoint IDs** as these will be used in the next step.
 
@@ -64,9 +64,9 @@ VPC-A-Public2RouteTable | 0.0.0.0/0 | VPC-A-GWLB-VPCE-AZ2
 
     {{% /expand %}}
 
-2. Create an ingress FW policy using a dynamic address object for Public NLB1 in VPC-A on both FortiGate1 & 2.
+###### 2) Create an ingress FW policy using a dynamic address object for Public NLB1 in VPC-A on both FortiGates
 
-    {{% expand title = "**Detailed Steps...**" %}}
+{{% expand title = "**Detailed Steps...**" %}}
 
 - **2.1:** Navigate to the **CloudFormation Console** and **toggle View Nested to off**.
 - **2.2:** Select the main template and select the **Outputs tab**.
@@ -98,9 +98,9 @@ You can use FortiManager to manage a single policy set (FW policies, address & s
     {{% /expand %}}
 
 
-3.  Test distributed ingress to Public NLB1 (and Instance-A) through GWLB and FortiGate1 & 2.
+###### 3)  Test distributed ingress to Public NLB1 (and Instance-A) through GWLB and the FortiGates
 
-    {{% expand title = "**Detailed Steps...**" %}}
+{{% expand title = "**Detailed Steps...**" %}}
 
 - **3.1:** Navigate to the **CloudFormation Console** and **toggle View Nested to off**.
 - **3.2:** Select the main template and select the **Outputs tab**.
@@ -111,9 +111,9 @@ You can use FortiManager to manage a single policy set (FW policies, address & s
 
     {{% /expand %}}
 
-4. Let's dig deeper to understand how all of this works.
+###### 4) Let's dig deeper to understand how all of this works
 
-    {{% expand title = "**Detailed Steps...**" %}}
+{{% expand title = "**Detailed Steps...**" %}}
 
 - **4.2** Here is an example of how GWLB routing works at a low level, including what information is tracked, and included in the GENEVE tunnel headers.
 
@@ -148,9 +148,9 @@ Hop | Component                           | Description                         
 
     {{% /expand %}}
 
-5.  Test centralized egress from Instance-B through GWLB & FortiGates1/2.
+###### 5)  Test centralized egress from Instance-B through GWLB & the FortiGates
 
-    {{% expand title = "**Detailed Steps...**" %}}
+{{% expand title = "**Detailed Steps...**" %}}
 
 - **5.1:** Navigate to the **EC2 Console** and connect to  **Instance-B** using the **[Serial Console directions](../3_modulethree.html)** 
     - Password: **`FORTInet123!`**
@@ -162,9 +162,9 @@ Hop | Component                           | Description                         
 
     {{% /expand %}}
 
-6. Let's dig deeper to understand how all of this works.
+###### 6) Let's dig deeper to understand how all of this works
 
-    {{% expand title = "**Detailed Steps...**" %}}
+{{% expand title = "**Detailed Steps...**" %}}
 
 - **6.1:** Note that the output of **`curl ipinfo.io`** returned the public IP of one of the FortiGates connected to GWLB. If you continue to **run the command multiple times**, you will see that your outbound traffic is flowing through both FortiGates and being Source NAT'd to look like traffic is coming from their Elastic IPs.
 
@@ -298,9 +298,9 @@ Hop | Component | Description                                                   
 
     {{% /expand %}}
 
-7. Lab Environment Teardown
+###### 7. Lab environment teardown
 
-    {{% expand title="**Detailed Steps...**" %}}
+{{% expand title="**Detailed Steps...**" %}}
 
 - **7.1:** Before deleting the main CloudFormation Stack, we must remove the VPC routes referencing the GWLBE/VPCEs.
 - **7.2:** Navigate to the **VPC Console** and go to the **Route tables page** (menu on the left), and delete the following routes from the route tables shown below:

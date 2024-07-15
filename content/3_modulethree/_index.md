@@ -8,7 +8,7 @@ weight: 3
 
 ## Tasks in this workshop
 
-In this workshop, we will explore AWS common networking architectures and FortiGate Deployments to secure traffic flows in them. These architectures will be used to demonstrate how to secure traffic flows for the following scenarios:
+In this workshop, we will explore AWS common networking architectures and FortiGate Deployments to secure traffic flows in them. These architectures will be used to demonstrate how to secure traffic flows for the following services and network scenarios:
   1. [**VPC Peering**](3_modulethree/3_1_1_task.html)
   2. [**Transit Gateway with VPC attachments**](3_modulethree/3_1_2_task.html)
   3. [**Transit Gateway with Connect and VPN attachmentss**](3_modulethree/3_2_1_task.html)
