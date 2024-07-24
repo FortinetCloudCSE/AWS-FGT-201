@@ -56,14 +56,14 @@ There are no security controls in this example. Instance-B can freely communicat
 - **1.1:** In your AWS account, navigate to the **EC2 Console** and go to the **Instances page** (menu on the left).
 - **1.2:** Find **Instance-A** and connect to it using the **[Serial Console directions](../3_modulethree.html)** 
     - Password: **`FORTInet123!`**
-- **1.5:** Run the following commands to test connectivity and make sure the results match expectations 
+- **1.3:** Run the following commands to test connectivity and make sure the results match expectations 
   SRC / DST | VPC B                                                   | VPC C
   ---|--------------------------------------------------------------|---
   **Instance A** | **`ping 10.2.2.10`** {{<fail>}} |  **`ping 10.3.2.10`** {{<fail>}}
   **Instance A** | **`curl ipinfo.io`** {{<fail>}} |
 
-- **1.6:** Run the command **`ifconfig ens5`** and take note of the instance IPv4 address.
-- **1.7:** Run the command **`route -n`** and take note of the default route and the gateway IP for that route.
+- **1.4:** Run the command **`ifconfig ens5`** and take note of the instance IPv4 address.
+- **1.5:** Run the command **`route -n`** and take note of the default route and the gateway IP for that route.
 
   {{% notice info %}}
 
