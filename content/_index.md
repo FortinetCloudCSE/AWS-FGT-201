@@ -1,5 +1,5 @@
 ---
-title: "Securing Acme Corp's AWS Network with FortiGate NGFW"
+title: "Securing Acme Corps' AWS Network with FortiGate NGFW"
 weight: 1
 archetype: home
 ---
@@ -15,7 +15,7 @@ You will learn how FortiGates can address the following standard **concerns and 
   - Simple security policy across corporate cyber infrastructure    
   
 **Corporate Requirements:**    
-  - Regional, highly availabile architecture (multiple availability zones (AZs))
+  - Regional, highly available architecture (multiple availability zones (AZs))
   - NGFW protection featuring FortiGate FortiGuard advanced protection
   - Logging of all traffic
 

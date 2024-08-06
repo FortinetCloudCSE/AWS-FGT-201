@@ -12,7 +12,7 @@ weight: 3
 ## Introduction
 In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway is configured with multiple Transit Gateway Route Tables.  You will need to create the appropriate VPC attachment associations and propagations to the correct TGW Route Tables, FW policy and update BPG configuration on the independent FortiGates.
 
-In this scenario the FortiGates are completely independent of each other (not clustered, nor sharing config/sessions, etc) and are showing different connectivity options to attach remote locations to Transit Gateway. VPN attachments can be used to connect to any IPsec capable device located anywhere.  TGW Connect attachments require a private path to reach a VM deployed in a VPC or HW/VM deployed on premise must be reachable over Direct Connect (a dedicated, private circuit).
+In this scenario the FortiGates are completely independent of each other (not clustered, nor sharing config/sessions, etc.) and are showing different connectivity options to attach remote locations to Transit Gateway. VPN attachments can be used to connect to any IPsec capable device located anywhere.  TGW Connect attachments require a private path to reach a VM deployed in a VPC or HW/VM deployed on premise must be reachable over Direct Connect (a dedicated, private circuit).
 
 
 ![](image-tgw-dynamic-example.png)
@@ -47,7 +47,7 @@ In this scenario the FortiGates are completely independent of each other (not cl
 
 {{% expand title = "**Detailed Steps...**" %}}
 
-- **1.1:** In the **VPC Console** go to the **Transit gateway route tables page** (menu on the left) and check out all of the **associations, propagations, and routes** for **each Transit gateway route table**.  You should see the following:
+- **1.1:** In the **VPC Console** go to the **Transit gateway route tables page** (menu on the left) and check out all the **associations, propagations, and routes** for **each Transit gateway route table**.  You should see the following:
 
 Transit Gateway Route Table Name | Associations
 ---|---
@@ -132,7 +132,7 @@ TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 <br> 10.2.0.0/16 |
 {{% notice info %}}	
 FortiGate1 is getting data-plane traffic over a GRE tunnel between it's port2 private IP (10.0.3.x/24) and an IP out of Transit Gateway CIDR block (100.64.0.x/24).  This GRE tunnel is going over the TGW-Connect-security-connect-attachment, so this is all over a private path. Also Transit Gateway can support jumbo frames up to 8500 bytes for traffic between VPCs, AWS Direct Connect, Transit Gateway Connect, and peering attachments. However, traffic over VPN connections can have an MTU of 1500 bytes. Find out more in [**AWS Documentation**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-quotas.html#mtu-quotas).
 
-BGP peering can be either iBGP or eBGP but the IP addressing will always us the inside tunnel IPs from a specific selection of CIDRs from 169.254.0.0/16.  To find out which ones can or can't be used, please reference [**AWS Documentation**](https://docs.aws.amazon.com/vpc/latest/tgw/tgw-connect.html#tgw-connect-peer).
+BGP peering can be either iBGP or eBGP but the IP addressing will always use the inside tunnel IPs from a specific selection of CIDRs from 169.254.0.0/16.  To find out which ones can or can't be used, please reference [**AWS Documentation**](https://docs.aws.amazon.com/vpc/latest/tgw/tgw-connect.html#tgw-connect-peer).
 
 Regardless which type of BGP is used, each connect peer is only required to create one GRE tunnel to peer to the redundant BGP peers on the Transit Gateway side. For more information, reference [**AWS Documentation**](https://aws.amazon.com/blogs/networking-and-content-delivery/simplify-sd-wan-connectivity-with-aws-transit-gateway-connect/).
 {{% /notice %}}
@@ -243,7 +243,7 @@ Since there are two tunnels with a BGP peer configured for each, FortiGate2 is a
 - **8.4:** Find **TGW-Connect-spoke-tgw-rtb** go to the **Routes tab** and notice there **is only one route for 0.0.0.0/0 since Transit Gateway only supports ECMP routing from the same attachment types**.
 
 {{% notice info %}}
-While Transit Gateway does support ECMP routing, it only does so for the same attachment types. There is a [**route evaluation order**](https://docs.aws.amazon.com/vpc/latest/tgw/how-transit-gateways-work.html#tgw-route-evaluation-overview) that takes place. The reason behind this is that different attachment types go over different paths (ie connect over private vpc-attachment vs vpc over public internet) which can have different latency, RTTs, etc and even different MTUs supported.
+While Transit Gateway does support ECMP routing, it only does so for the same attachment types. There is a [**route evaluation order**](https://docs.aws.amazon.com/vpc/latest/tgw/how-transit-gateways-work.html#tgw-route-evaluation-overview) that takes place. The reason behind this is that different attachment types go over different paths (ie connect over private vpc-attachment vs vpc over public internet) which can have different latency, RTTs, etc. and even different MTUs supported.
 {{% /notice %}}
 
     {{% /expand %}}
