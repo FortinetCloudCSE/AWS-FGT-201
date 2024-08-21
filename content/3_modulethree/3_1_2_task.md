@@ -133,7 +133,7 @@ If you accidentally did not use the new layout, you can change it by clicking on
   **Instance B** | **`curl 10.3.2.10`** {{<success>}}
 
 {{% notice tip %}}
-Due to the configuration of the Transit gateway route tables, the east/west traffic between VPC-A and VPC-B to VPC-C is not being routed through the inspection VPC. That is why you are able to allow HTTP, SSH, and other between these VPCs. While this may be acceptable for trusted and low security risk environments, it is best practice to have clear visibility and control on what communication is allowed.
+Due to the configuration of the Transit gateway route tables, the east/west traffic between VPC-A and VPC-B to VPC-C is not being routed through the inspection VPC. That is why you are able to allow HTTP, SSH, and other traffic between these VPCs. While this may be acceptable for trusted and low security risk environments, it is best practice to have clear visibility and control on what communication is allowed.
 {{% /notice %}}
 
    {{% /expand %}}
@@ -148,7 +148,7 @@ Due to the configuration of the Transit gateway route tables, the east/west traf
   --- |-------------------------------------| ---
   **Instance A** | **`ping 10.2.2.10`** {{<success>}}  | **`ping 8.8.8.8`** {{<success>}} 
   **Instance A** | **`curl 10.2.2.10`** {{<fail>}}     | **`curl ipinfo.io`** {{<fail>}}
-  **Instance A** | ---                                 | **`curl https://ipinfo.io`** {{<fail>}}
+  **Instance A** | ---                                 | **`curl -k https://ipinfo.io`** {{<success>}}
   **Instance A** | ---                                 | **`curl -k --retry 2 --retry-all-errors https://secure.eicar.org/eicar.com.txt -o file.txt`** {{<fail>}}
   
   - A --> B succeeded for ping but not HTTP due to FortiGate Firewall Policy
