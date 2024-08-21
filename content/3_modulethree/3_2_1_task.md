@@ -57,7 +57,7 @@ TGW-Connect-sharedservices-tgw-rtb | VPC-C-spoke-vpc-attachment |
 
 Transit Gateway Route Table Name | Propagations
 ---|---
-TGW-Connect-security-tgw-rtb | VPC-A-spoke-vpc-attachment <br> VPC-B-spoke-vpc-attachment |
+TGW-Connect-security-tgw-rtb | VPC-A-spoke-vpc-attachment <br> VPC-B-spoke-vpc-attachment <br> VPC-C-spoke-vpc-attachment |
 TGW-Connect-spoke-tgw-rtb | VPC-C-spoke-vpc-attachment <br> TGW-Connect-security-vpc-attachment <br> TGW-Connect-security-connect-attachment <br> Unnamed-vpn-attachment |
 TGW-Connect-sharedservices-tgw-rtb | VPC-A-spoke-vpc-attachment <br> VPC-B-spoke-vpc-attachment |
 
