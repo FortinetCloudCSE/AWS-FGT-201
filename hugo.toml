@@ -23,7 +23,7 @@ uglyURLs = true     # true -> basic/index.html -> basic.html
 # use this theme ;-)
 theme = ["hugo-theme-relearn"]
 
-title = "AWS Networking 201 UpgradeHugo"
+title = "Advanced FortiGate Deployments on AWS"
 
 # We disable this for testing the exampleSite; you must do so too
 # if you want to use the themes parameter disableGeneratorVersion=true;
@@ -84,11 +84,11 @@ enableEmoji = true
   #Optional, By Default, the logo banner will match the Text from themeVariant Above
   # If you would like to change the primary logo banner text, uncommenet logoBannerText Parameter and set to desired text.
   
-  logoBannerText = "AWS Networking"
+  logoBannerText = "AWS 201"
   
   # Optional: If you'd like additional logo sub text/descriptions, use logoBannerSubText Parameter.  leave empty string to omit: ""
   
-  logoBannerSubText = "Cloud Workshop: AWS 201"
+  logoBannerSubText = "Advanced FortiGate Deployments"
   
 
   # Shows a checkmark for visited pages on the menu
@@ -220,4 +220,9 @@ weight = 50
 [[menu.shortcuts]]
 name = "<i class='fas fa-tools'></i> Deep Dive on GWLB in AWS"
 url = "https://fortinetcloudcse.github.io/GWLB-in-AWS"
+weight = 60
+
+[[menu.shortcuts]]
+name = "<i class='fas fa-tools'></i> Public Cloud 101: AWS Networking Fundamentals"
+url = "https://fortinetcloudcse.github.io/AWS-FGT-101/"
 weight = 60

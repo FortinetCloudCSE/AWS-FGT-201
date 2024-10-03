@@ -1,53 +1,60 @@
 {
   "repoName": "AWS-FGT-201",
   "author":"Hiruy Aberra, Jeff Kopko, and Jeremy Furtney",
-  "workshopTitle":"AWS Networking 201 UpgradeHugo",
+  "workshopTitle":"Advanced FortiGate Deployments on AWS",
   "themeVariant":"Xperts2024",
-  "logoBannerText":"AWS Networking",
-  "logoBannerSubText":"Cloud Workshop: AWS 201",
+  "logoBannerText":"AWS 201",
+  "logoBannerSubText":"Advanced FortiGate Deployments",
   "errorLevel":"warning",
   "googleServicesID":"G-5RZBH288ST",
   "shortcuts": [
     {
-    "text": "Xperts Preso",
-    "URL": "Xperts-2024-AWS-201.pdf",
-    "icon": "fa-graduation-cap",
-    "weight":2
-  },
-  {
-    "text": "Fortinet's AWS Microsite",
-    "URL": "https://fortinet.com//aws",
-    "icon": "fa-lightbulb",
-    "weight":10
-  },
-  {
-    "text": "Fortinet & AWS Documentation",
-    "URL": "https://docs.fortinet.com/cloud-solutions/aws",
-    "icon": "fa-lightbulb",
-    "weight":20
-  },
-  {
-    "text": "AWS MP Listings for Fortinet",
-    "URL": "https://aws.amazon.com/marketplace/search/results?searchTerms=fortinet",
-    "icon": "fa-tools",
-    "weight":30
-  },
-  {
-    "text": "Fortinet CSE Cloud Github Org",
-    "URL": "https://github.com/FortinetCloudCSE/UserRepo",
-    "icon": "fa-tools",
-    "weight":40
-  },
-  {
-    "text": "Deep Dive on FGCP in AWS",
-    "URL": "https://fortinetcloudcse.github.io/FGCP-in-AWS",
-    "icon": "fa-tools",
-    "weight":50
-  },  {
-    "text": "Deep Dive on GWLB in AWS",
-    "URL": "https://fortinetcloudcse.github.io/GWLB-in-AWS",
-    "icon": "fa-tools",
-    "weight":60
-  }
+      "text": "Xperts Preso",
+      "URL": "Xperts-2024-AWS-201.pdf",
+      "icon": "fa-graduation-cap",
+      "weight":2
+    },
+    {
+      "text": "Fortinet's AWS Microsite",
+      "URL": "https://fortinet.com//aws",
+      "icon": "fa-lightbulb",
+      "weight":10
+    },
+    {
+      "text": "Fortinet & AWS Documentation",
+      "URL": "https://docs.fortinet.com/cloud-solutions/aws",
+      "icon": "fa-lightbulb",
+      "weight":20
+    },
+    {
+      "text": "AWS MP Listings for Fortinet",
+      "URL": "https://aws.amazon.com/marketplace/search/results?searchTerms=fortinet",
+      "icon": "fa-tools",
+      "weight":30
+    },
+    {
+      "text": "Fortinet CSE Cloud Github Org",
+      "URL": "https://github.com/FortinetCloudCSE/UserRepo",
+      "icon": "fa-tools",
+      "weight":40
+    },
+    {
+      "text": "Deep Dive on FGCP in AWS",
+      "URL": "https://fortinetcloudcse.github.io/FGCP-in-AWS",
+      "icon": "fa-tools",
+      "weight":50
+    },
+    {
+      "text": "Deep Dive on GWLB in AWS",
+      "URL": "https://fortinetcloudcse.github.io/GWLB-in-AWS",
+      "icon": "fa-tools",
+      "weight":60
+    },
+    {
+      "text": "Public Cloud 101: AWS Networking Fundamentals",
+      "URL": "https://fortinetcloudcse.github.io/AWS-FGT-101/",
+      "icon": "fa-tools",
+      "weight": 60
+    }
   ]
 }

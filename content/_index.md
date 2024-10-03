@@ -1,8 +1,14 @@
 ---
-title: "Public Cloud 201: Advanced FortiGate Deployments on AWS: TGW & GWLB"
+title: "Fortinet XPerts 2024"
 weight: 1
 archetype: home
 ---
+
+
+{{< Xperts24Banner line1="Public Cloud 201:" line2="Advanced FortiGate Deployments on AWS" line3="TGW &amp; GWLB" >}}
+
+{{< launchdemoform >}}
+
 
 Acme Corp is migrating an on-premises 3-tier web app (web, application, database) to Amazon Web Services (AWS).
 
