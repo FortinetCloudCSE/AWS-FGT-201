@@ -39,7 +39,7 @@ In this scenario you will allow traffic between the workload and shared services
   
   ![](image-t0-1b.png)
 
-- **0.3:** Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
+- **0.3:** The CloudFormation stack will take ~10 minutes to finish deploying. Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
 
     {{% /expand %}}
 
@@ -124,7 +124,7 @@ If you accidentally did not use the new layout, you can change it by clicking on
 
 - **5.1:** Navigate to the **EC2 Console** and connect to **Instance-A** and/or **Instance-B** using the **[Serial Console directions](../3_modulethree.html)** 
     - Password: **`FORTInet123!`** 
-- **5.2:**  Run the following commands to test connectivity and make sure the results match expectations 
+- **5.2:** Run the following commands to test connectivity and make sure the results match expectations 
   SRC / DST | VPC C (Shared Services)
   ---|----
   **Instance A** | **`ping 10.3.2.10`** {{<success>}}
@@ -181,7 +181,7 @@ Key points to understand is that:
   - additionally static and dynamic routes (covered in next section) can be added to route tables
 {{% /notice %}}
 
-- **7.1:** In the FortiGate GUI navigate to **Log & Report > Forward Traffic**.  You should logs for the traffic you generated. 
+- **7.1:** In the FortiGate GUI navigate to **Log & Report > Forward Traffic**.  You should see logs for the traffic you generated. 
 - **7.2:** **Double click** a log entry to view the **Log Details**.
 
 {{% notice info %}}
@@ -213,7 +213,7 @@ Hop | Component | Description | Packet |
 {{% expand title="**Detailed Steps...**" %}}
 
 - **8.1:** Navigate to the **CloudFormation Console**, select the main stack you created and click **Delete**.
-- **8.2:** Once the stack is deleted, proceed to the next task.
+- **8.2:** The CloudFormation stack will take ~10 minutes to clean up. Once the stack is deleted, proceed to the next task.
 
     {{% /expand %}}
 

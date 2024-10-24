@@ -10,7 +10,7 @@ weight: 2
 - Upon login the Console Home page is displayed.
 - Use the **Search Box** at the top to search for services such as EC2, VPC, etc.
 - When results appear, **right-click** the service name to open the desired console in a new tab. 
-  - Multiple tabs simplifies navigation when using multiple AWS services.
+  - Multiple tabs simplify navigation when using multiple AWS services.
 
 ![](image-awsconsole1.png)
 
