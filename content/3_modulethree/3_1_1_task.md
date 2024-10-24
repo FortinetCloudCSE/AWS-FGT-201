@@ -43,7 +43,7 @@ There are no security controls in this example. Instance-B can freely communicat
   
   ![](image-t0-1a.png)
 
-- **0.3:** Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
+- **0.3:** The CloudFormation stack will take ~5 minutes to finish deploying. Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
 
   ![](image-t0-2.png)
 
@@ -182,7 +182,7 @@ Hop | Component | Description                                                   
 - **5.1:** Before deleting the main CloudFormation Stack, we must remove the VPC routes referencing the VPC peering connection, and the VPC peering connection itself.
 - **5.2:** Navigate to the **VPC Console** and go to the **Peering connections page** (menu on the left), select the peering for VPC-A to B and click **Actions**, then select **Delete peering connection**. This will **prompt you to delete the related route table entries**. Select **Delete related route table entries**, then to confirm, type **delete** in the field and click **Delete**.
 - **5.3:** Navigate to the **CloudFormation Console**, select the main stack you created and click **Delete**.
-- **5.4:** Once the stack is deleted, proceed to the next task.
+- **5.4:** The CloudFormation stack will take ~5 minutes to clean up. Once the stack is deleted, proceed to the next task.
 
     {{% /expand %}}
 

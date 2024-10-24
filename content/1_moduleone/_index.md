@@ -31,7 +31,7 @@ The following Fortinet & AWS components will be used during this workshop:
     * Gateway Load Balancer (GWLB)
   * FortiGate instances running FortiOS (Amazon Machine Images (AMI) on EC2)
 
-## AWS Reference Architecture Diagram
+## AWS Architecture Patterns
 
 AWS networking offers multiple ways to organize your AWS architecture to take advantage of FortiGate traffic inspection. The most important part of designing your network is to ensure **traffic follows a symmetrical routing path** (for forward and reverse flows). As long as flows are symmetrical, the architecture will work and traffic will flow through the FortiGate NGFW for inspection.
   
@@ -39,5 +39,5 @@ We will investigate the configuration of different architecture patterns, includ
 
   * **VPC Peering**  
   * **FortiGate Centralized Architecture for Selective inspection of East/West & Egress traffic**
-  * **FortiGate Centralized Architecture with Dynamic Routing for inspection of East/West & Egresss Traffic with multiple VPCs**
-  * **Fortigate Centralized Inspection architecture featuring AWS GWLB**
+  * **FortiGate Centralized Architecture with Dynamic Routing for inspection of East/West & Egress Traffic with multiple VPCs**
+  * **FortiGate Centralized Inspection architecture featuring AWS GWLB**

@@ -38,7 +38,7 @@ In this scenario these FortiGate NGFWs are working together in an Active-Active 
   
   ![](image-t0-1d.png)
 
-- **0.3:** Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
+- **0.3:** The CloudFormation stack will take ~12 minutes to finish deploying. Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
 
     {{% /expand %}}
 
@@ -75,7 +75,7 @@ VPC-A-Public2RouteTable | 0.0.0.0/0 | VPC-A-GWLB-VPCE-AZ2
 - **2.5:** Create a dynamic address object with the **settings shown below**, including searching for the NLB with **PublicNLB1** to find the full filter, then click **OK**.
 
 {{% notice tip %}}
-Dynamic address objects allows creating address objects based on resource metadata such as VPC ID, Auto Scale Group, EKS Cluster or Pod, and even Tag Name + Value pairs applied to the resource. FortiOS is using AWS API calls behind the scenes such as ec2:DescribeInstances, ec2:DescribeNetworkInterfaces, eks:ListClusters, eks:DescribeCluster, etc. to find running resources to match based on metadata and pull their IP address information. This is done on a frequent basis to keep the dynamic address object up to date automatically. **To learn more about all the public and private clouds this feature supports, check out our [**documentation**](https://docs.fortinet.com/document/fortigate/7.4.3/administration-guide/753961/public-and-private-sdn-connectors)**.
+Dynamic address objects allow creating address objects based on resource metadata such as VPC ID, Auto Scale Group, EKS Cluster or Pod, and even Tag Name + Value pairs applied to the resource. FortiOS is using AWS API calls behind the scenes such as ec2:DescribeInstances, ec2:DescribeNetworkInterfaces, eks:ListClusters, eks:DescribeCluster, etc. to find running resources to match based on metadata and pull their IP address information. This is done on a frequent basis to keep the dynamic address object up to date automatically. **To learn more about all the public and private clouds this feature supports, check out our [**documentation**](https://docs.fortinet.com/document/fortigate/7.4.3/administration-guide/753961/public-and-private-sdn-connectors)**.
 {{% /notice %}}
 
 ![](image-t4-1.png)
@@ -98,14 +98,14 @@ You can use FortiManager to manage a single policy set (FW policies, address & s
     {{% /expand %}}
 
 
-###### 3)  Test distributed ingress to Public NLB1 (and Instance-A) through GWLB and the FortiGates
+###### 3) Test distributed ingress to Public NLB1 (and Instance-A) through GWLB and the FortiGates
 
 {{% expand title = "**Detailed Steps...**" %}}
 
 - **3.1:** Navigate to the **CloudFormation Console** and **toggle View Nested to off**.
 - **3.2:** Select the main template and select the **Outputs tab**.
-- **3.1:** Copy the URL from **Application1URL** and navigate to this in your browser.
-- **3.2:** You should see the web page with Instance-A and your connection details.
+- **3.3:** Copy the URL from **Application1URL** and navigate to this in your browser.
+- **3.4:** You should see the web page with Instance-A and your connection details.
 
     ![](image-t4-4.png)
 
@@ -115,11 +115,23 @@ You can use FortiManager to manage a single policy set (FW policies, address & s
 
 {{% expand title = "**Detailed Steps...**" %}}
 
-- **4.2** Here is an example of how GWLB routing works at a low level, including what information is tracked, and included in the GENEVE tunnel headers.
+- **4.1** Here is an example of how GWLB routing works at a low level, including what information is tracked, and included in the GENEVE tunnel headers.
 
 	![](image-gwlb-tlv.png)
 
 	![](gwlb-geneve-header-info.png)
+
+- **4.2** To see this in your own environment, you can use the steps below.  **You will need Wireshark installed** or another tool to handle .pcap files to do this.
+
+- **4.3** In the FortiGate GUI (either one), navigate to **Network > Diagnostics > Packet Capture**.
+
+- **4.4** Create a new packet capture with the **settings shown below** and click **Start capture** to see GENEVE traffic. **Keep in mind** that this is an active-active setup, so sessions are being sent to both FortiGates. You may need to generate multiple sessions before traffic is captured on your current FortiGate.
+
+	![](fortios-pcap-geneve.png)
+
+- **4.5** After enough packets have been seen, click **Stop capture**, then click **Save as .pcap**.
+
+- **4.6** Open the .pcap file and drill into the GENEVE header like shown at the beginning of this section to find the GWLBVPC Endpoint and match this to the endpoints seen in your VPC console. Keep in mind that **leading zeros** of the endpoint ID are not listed in Wireshark.
 
 {{% notice info %}}
 Gateway Load Balancer provides a very scalable Active-Active design for bump in the wire inspection with FortiGates applying NGFW, SSL MitM, etc. This is a regional setup that can support VPCs regardless if there is centralized networking (ie Transit Gateway used) or more of a distributed setup (each VPC is an island).
@@ -128,17 +140,17 @@ Gateway Load Balancer receives all traffic through Gateway Load Balancer Endpoin
 
 Gateway Load Balancer is both a gateway in that it can be (more specifically the GWLBE/VPCE) a route target, and it is a load balancer in that it is flow aware (tracks 3/5 tuple flows) and keeps flows sticky to each FortiGate.
 
-The GWLBE/VPCE ID, a flow cookie, and other information is actually stored and passed to the FortiGates via the GENEVE tunnel headers.  Geneve is similar to VXLAN with optional TLVs (type length value triplets in the headers) to provide more context on the encapsulated data-plane traffic.  Reference [AWS Documentation](https://aws.amazon.com/blogs/networking-and-content-delivery/integrate-your-custom-logic-or-appliance-with-aws-gateway-load-balancer/) to find out more.
+The GWLBE/VPCE ID, a flow cookie, and other information is stored and passed to the FortiGates via the GENEVE tunnel headers.  Geneve is similar to VXLAN with optional TLVs (type length value triplets in the headers) to provide more context on the encapsulated data-plane traffic.  Reference [AWS Documentation](https://aws.amazon.com/blogs/networking-and-content-delivery/integrate-your-custom-logic-or-appliance-with-aws-gateway-load-balancer/) to find out more.
 
-On a side note, since GWLB does not track source CIDRs for routing, this means that both GWLB and the FortiGates can support environments where there are overlapping CIDR blocks. You can inspect this traffic in the same regional deployment but this means you would be applying the same FW policies to the traffic.  It is best practice to either use separate deployments or to [use VDOMs and map your traffic from each GWLBE/VPCE to different VDOMs](https://docs.fortinet.com/document/fortigate-public-cloud/7.4.0/aws-administration-guide/299990/multitenancy-support-with-aws-gwlb) so that you can apply unique FW policies.
+On a side note, since GWLB does not track source CIDRs for routing, this means that both GWLB and the FortiGates can support environments where there are overlapping CIDR blocks. You can inspect this traffic in the same regional deployment, but this means you would be applying the same FW policies to the traffic.  It is best practice to either use separate deployments or to [use VDOMs and map your traffic from each GWLBE/VPCE to different VDOMs](https://docs.fortinet.com/document/fortigate-public-cloud/7.4.0/aws-administration-guide/299990/multitenancy-support-with-aws-gwlb) so that you can apply unique FW policies.
 {{% /notice %}}
 
-- **4.2** Below is a step by step of the packet handling for the ingress web traffic to Public NLB1 in VPC-A.
+- **4.7** Below is a step by step of the packet handling for the ingress web traffic to Public NLB1 in VPC-A.
 
 Hop | Component                           | Description                                                                                                                                                                                                                                                                                                                                                                   | Packet |
 ---|-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---|
 1 | Internet -> 10.1.x.x/24 GWLBE(VPCE) | An inbound connection starts with DNS resolution of the Public NLB to a public IP for one of the Availability Zones. The first packet (TCP sync) will be seen at the IGW attached to the VPC where the NLB is deployed. The IGW will perform destination NAT to the private IP of the public NLB and forward this to the GWLBE/VPCE as configured in **VPC-A-IgwRouteTable**. | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:purple">10.1.x.x:80</span>** |
-2 | GWLBE(VPCE) -> GWLB                 | GWLBE/VPCE will route the traffic to the associated GWLB network interface in the same Availability Zone. This is done behind the scene using AWS Private Link.                                                                                                                                                                                                               | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:purple">10.1.x.x:80</span>** |
+2 | GWLBE(VPCE) -> GWLB                 | GWLBE/VPCE will route the traffic to the associated GWLB network interface in the same Availability Zone. This is done behind the scenes using AWS Private Link.                                                                                                                                                                                                               | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:purple">10.1.x.x:80</span>** |
 3 | GWLB -> FGTs-Port1                  | GWLB receives the traffic, encapsulates this in a GENEVE tunnel and forwards this flow to one of the FGTs. Post inspection the FGTs return the traffic to GWLB, which then hairpins the traffic back to the original GWLBE/VPCE                                                                                                                                               | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:purple">10.1.x.x:80</span>** |
 4 | GLBE(VPCE) -> 10.1.0.0/16 Local     | The GWLBe endpoint will then route the inspected traffic to the intrinsic router. The intrinsic router will route traffic directly to the NLB’s ENI as specified in the VPC route table assigned to the subnet.                                                                                                                                                               | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:purple">10.1.x.x:80</span>** |
 5 | NLB -> Instance-A                   | The NLB will send traffic to a healthy target, in either AZ since cross zone load balancing is enabled. Instance-A is the only target so it receives the traffic                                                                                                                                                                                                              | **<span style="color:blue">x.x.x.x:src-port</span> -> <span style="color:black">10.1.2.10:80</span>** |
@@ -148,11 +160,11 @@ Hop | Component                           | Description                         
 
     {{% /expand %}}
 
-###### 5)  Test centralized egress from Instance-B through GWLB & the FortiGates
+###### 5) Test centralized egress from Instance-B through GWLB & the FortiGates
 
 {{% expand title = "**Detailed Steps...**" %}}
 
-- **5.1:** Navigate to the **EC2 Console** and connect to  **Instance-B** using the **[Serial Console directions](../3_modulethree.html)** 
+- **5.1:** Navigate to the **EC2 Console** and connect to **Instance-B** using the **[Serial Console directions](../3_modulethree.html)** 
     - Password: **`FORTInet123!`**
 - **5.2:** Run the following commands to test connectivity and make sure the results match expectations 
   SRC / DST | Internet 
@@ -313,7 +325,7 @@ VPC-A-Public1RouteTable | 0.0.0.0/0 | VPC-A-GWLB-VPCE-AZ1
 VPC-A-Public2RouteTable | 0.0.0.0/0 | VPC-A-GWLB-VPCE-AZ2
 
 - **7.3:** Navigate to the **CloudFormation Console**, select the main stack you created and click **Delete**.
-- **7.4:** Once the stack is deleted, take a long break :smile:, you deserve it!
+- **7.4:** The CloudFormation stack will take ~12 minutes to clean up. Once the stack is deleted, take a long break :smile:, you deserve it!
 
     {{% /expand %}}
 

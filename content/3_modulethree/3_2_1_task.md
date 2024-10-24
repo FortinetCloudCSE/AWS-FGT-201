@@ -39,7 +39,7 @@ In this scenario the FortiGates are completely independent of each other (not cl
   
   ![](image-t0-1c.png)
 
-- **0.3:** Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
+- **0.3:** The CloudFormation stack will take ~10 minutes to finish deploying. Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
 
     {{% /expand %}}
 
@@ -89,7 +89,7 @@ TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 <br> 10.2.0.0/16 |
 - **2.6:** Run the command **`show system interface tgw-conn-peer`** and notice **the IPs assigned to the inside interfaces of the GRE tunnel**.
 - **2.7:** Run the command **`show router bgp`** and notice the **BGP peers fall into the remote-ip CIDR** in the output of the command above.
 - **2.8:** Run the command **`get router info routing-table all`** and notice the **routes received match the routes tab of TGW-Connect-security-tgw-rtb**.
-- **2.8:** Copy and paste the commands below to configure a 10.0.0.0/8 summary route to be advertised back to Transit gateway:
+- **2.9:** Copy and paste the commands below to configure a 10.0.0.0/8 summary route to be advertised back to Transit gateway:
   ```
   config router bgp
   config aggregate-address
@@ -100,7 +100,7 @@ TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 <br> 10.2.0.0/16 |
   end
   end
   ```
-- **2.9:** Run the commands below to confirm that the 10.0.0.0/8 route is now being advertised to our BGP neighbors.
+- **2.10:** Run the commands below to confirm that the 10.0.0.0/8 route is now being advertised to our BGP neighbors.
   ```
   get router info bgp summary
   get router info bgp neighbors 169.254.6.2 advertised-routes
@@ -239,8 +239,8 @@ Since there are two tunnels with a BGP peer configured for each, FortiGate2 is a
   **Instance A** | **`curl 10.2.2.10`** {{<success>}} via FGT1 | **`curl ipinfo.io`** {{<success>}} via FGT1
   - Ping and curl should connect successfully through FGT1 which is connected to Transit Gateway over a Connect attachment (GRE + BGP over a VPC attachment).
   - The public IP returned from ipinfo.io should match the **public IP of FGT1**
-- **8.3:** In the **VPC Console** go to the **Transit gateway route tables page**.
-- **8.4:** Find **TGW-Connect-spoke-tgw-rtb** go to the **Routes tab** and notice there **is only one route for 0.0.0.0/0 since Transit Gateway only supports ECMP routing from the same attachment types**.
+- **8.2:** In the **VPC Console** go to the **Transit gateway route tables page**.
+- **8.3:** Find **TGW-Connect-spoke-tgw-rtb** go to the **Routes tab** and notice there **is only one route for 0.0.0.0/0 since Transit Gateway only supports ECMP routing from the same attachment types**.
 
 {{% notice info %}}
 While Transit Gateway does support ECMP routing, it only does so for the same attachment types. There is a [**route evaluation order**](https://docs.aws.amazon.com/vpc/latest/tgw/how-transit-gateways-work.html#tgw-route-evaluation-overview) that takes place. The reason behind this is that different attachment types go over different paths (ie connect over private vpc-attachment vs vpc over public internet) which can have different latency, RTTs, etc. and even different MTUs supported.
@@ -253,7 +253,7 @@ While Transit Gateway does support ECMP routing, it only does so for the same at
 {{% expand title="**Detailed Steps...**" %}}
 
 - **9.1:** Navigate to the **CloudFormation Console**, select the main stack you created and click **Delete**.
-- **9.2:** Once the stack is deleted, proceed to the next task.
+- **9.2:** The CloudFormation stack will take ~10 minutes to clean up. Once the stack is deleted, proceed to the next task.
 
     {{% /expand %}}
 

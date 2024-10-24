@@ -10,22 +10,22 @@ archetype: home
 {{< launchdemoform >}}
 
 
-Acme Corp is migrating an on-premises 3-tier web app (web, application, database) to Amazon Web Services (AWS).
-
 You will learn how FortiGates can address the following standard **concerns and requirements** when migrating applications and workloads to public cloud. 
 
-**Concerns:**    
+**Common Concerns:**    
   - Exposure to inbound internet attacks
   - Environment and application segmentation to reduce exploit blast radius
   - Next generation firewall (**NGFW**) protection and URL filtering for outbound web traffic 
   - Simple security policy across corporate cyber infrastructure    
   
-**Corporate Requirements:**    
+**Common Requirements:**    
   - Regional, highly available architecture (multiple availability zones (AZs))
   - NGFW protection featuring FortiGate FortiGuard advanced protection
   - Logging of all traffic
 
-![](1_moduleone/FTNTSecVPC-simple.png)
+![](fortios-image.png)
+
+![](secured-by-fortinet-image.png)
 
 ## Workshop Goals
 
