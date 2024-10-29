@@ -63,8 +63,8 @@ enableEmoji = true
     # - set the following `style` to a predefined style name
     # - remove the `@import` of the self-defined chroma stylesheet from your CSS files
     #   (here eg.: theme-relearn-light.css / theme-relearn-dark.css)
-    noClasses = false
-    style = "native"
+    noClasses = true
+    style = "catppuccin-latte"
 
   [markup.goldmark.renderer]
     # activated for this showcase to use HTML and JavaScript; decide on your own needs;
@@ -81,7 +81,7 @@ enableEmoji = true
   # For added variants, please contact fortinetcloudcse@fortinet.com
   themeVariant = "Xperts2024"
 
-  #Optional, By Default, the logo banner will match the Text from themeVariant Above
+  # Optional, By Default, the logo banner will match the Text from themeVariant Above
   # If you would like to change the primary logo banner text, uncommenet logoBannerText Parameter and set to desired text.
   
   logoBannerText = "AWS 201"
@@ -90,6 +90,9 @@ enableEmoji = true
   
   logoBannerSubText = "Advanced FortiGate Deployments"
   
+
+  # Optional parameter to set Marketing/Event code per repo from repoConfig.json
+  marketingCode = "CloudCSE-Xperts2024"
 
   # Shows a checkmark for visited pages on the menu
   showVisitedLinks = true
