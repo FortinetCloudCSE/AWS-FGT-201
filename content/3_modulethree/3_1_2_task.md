@@ -5,8 +5,8 @@ weight: 2
 
 |                            |    |  
 |:----------------------------:|:----
-| **Goal**                   | Establish open and secured east/west (Inter-VPC) and outbound flows through the provisioned NGFW VPC and Transit gateway architecture.
-| **Task**                   | Create attachment associations and propagations, update/create FortiGate routes and firewall policy to allow secured traffic.
+| **Goal**                   | Establish open, secured east/west (Inter-VPC), and outbound flows through the provisioned NGFW VPC and Transit gateway architecture.
+| **Task**                   | Create attachment associations + propagations and configure FortiGate routes and firewall policy to allow secured traffic.
 | **Validation** | Confirm outbound and east/west connectivity from EC2 Instance-A via Ping, HTTP, HTTPS.
 
 ## Introduction
@@ -133,7 +133,7 @@ If you accidentally did not use the new layout, you can change it by clicking on
   **Instance B** | **`curl 10.3.2.10`** {{<success>}}
 
 {{% notice tip %}}
-Due to the configuration of the Transit gateway route tables, the east/west traffic between VPC-A and VPC-B to VPC-C is not being routed through the inspection VPC. That is why you are able to allow HTTP, SSH, and other traffic between these VPCs. While this may be acceptable for trusted and low security risk environments, it is best practice to have clear visibility and control on what communication is allowed.
+Due to the configuration of the Transit gateway route tables, the east/west traffic between VPC-A and VPC-B to VPC-C is not being routed through the inspection VPC. That is why you are able to allow HTTP, SSH, and other traffic between these VPCs. While this may be acceptable for trusted and low security risk environments, it is best practice to have clear visibility and control on what communication is allowed by routing this through a security stack.
 {{% /notice %}}
 
    {{% /expand %}}
@@ -154,7 +154,7 @@ Due to the configuration of the Transit gateway route tables, the east/west traf
   - A --> B succeeded for ping but not HTTP due to FortiGate Firewall Policy
   - A --> Internet was successful for PING, Web Filtered for HTTPS, and blocked for HTTP due to FortiGate Firewall Policy
   
-- **6.2:** To check the content of the file, run the command **`cat file.txt | grep -A 15 'High Security Alert'`**.
+- **6.2:** To check the content of the file from the last command, run the command **`cat file.txt | grep -A 15 'High Security Alert'`**.
   - You will see you were blocked, and a block page was returned due to the **Web Filtering** profile
 
 {{% notice tip %}}
@@ -185,7 +185,7 @@ Key points to understand is that:
 - **7.2:** **Double click** a log entry to view the **Log Details**.
 
 {{% notice info %}}
-The instance has the private IP 10.1.2.10/24, but is seen as coming from a public IP. This is because the primary FortiGate is providing secured outbound access to the internet for this private EC2 instance. This is because of the **VPC routes in all the VPCs (VPC-A and Inspection) are working together with the Transit Gateway (TGW) and Transit Gateway route tables to route** the in/outbound traffic through the primary FortiGate. This is a [**centralized design**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-appliance-scenario.html) that is also commonly called an appliance, inspection, or security VPC.
+The instance has the private IP 10.1.2.10/24, but is seen as coming from a public IP when running 'curl -k https://ipinfo.io', etc. This is because the primary FortiGate is providing secured outbound access to the internet for this private EC2 instance. This is because of the **VPC routes in all the VPCs (VPC-A and Inspection) are working together with the Transit Gateway (TGW) and Transit Gateway route tables to route** the in/outbound traffic through the primary FortiGate. This is a [**centralized design**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-appliance-scenario.html) that is also commonly called an appliance, inspection, or security VPC.
 
 Navigate to **Policy & Objects > Firewall Policy** and look at the **security profiles** being applied to the **secured-outbound-traffic-with-nat policy**. This pre-configured policy is applying source NAT to act as a NAT Gateway but is also applying advanced NGFW protection such as SSL MitM, Application Control, Intrusion Prevention, and Anti-Virus features.
 {{% /notice %}}
@@ -226,7 +226,7 @@ Hop | Component | Description | Packet |
   - Direct Connect Gateway (static or dynamic routing)
   - TGW Connect (GRE over VPC or Direct Connect attachment, supports static or dynamic routing)
 - TGW supports peering between TGWs in the same or different regions.
-- Jumbo frames (8500 bytes) are supported for all connections except VPC (1500 bytes).
+- Jumbo frames (8500 bytes) are supported for all attachments except VPN (1500 bytes).
 - Centralized Inspection VPC handles FortiGate NGFW inspection for any traffic flow (Inbound, Outbound, East/West).
   - Advanced architectures for all of these scenarios can be [**found here**](https://github.com/FortinetCloudCSE/.github/blob/main/profile/AWS/README.md).
   

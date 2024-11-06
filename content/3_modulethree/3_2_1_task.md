@@ -6,13 +6,13 @@ weight: 3
 |                            |    |  
 |:--------------------------:|:----|
 | **Goal**                   | Utilize dynamic routing with Transit Gateway and FortiGates.
-| **Task**                   | Create attachment associations and propagations, update or create FortiGate routes and firewall policies to allow secured traffic to pass.
+| **Task**                   | Create attachment associations + propagations and configure FortiGate routes and firewall policies to allow secured traffic to pass.
 | **Validation** | Confirm outbound and east/west connectivity from EC2 Instance-A via Ping, HTTP, HTTPS.
 
 ## Introduction
 In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway is configured with multiple Transit Gateway Route Tables.  You will need to create the appropriate VPC attachment associations and propagations to the correct TGW Route Tables, FW policy and update BPG configuration on the independent FortiGates.
 
-In this scenario the FortiGates are completely independent of each other (not clustered, nor sharing config/sessions, etc.) and are showing different connectivity options to attach remote locations to Transit Gateway. VPN attachments can be used to connect to any IPsec capable device located anywhere.  TGW Connect attachments require a private path to reach a VM deployed in a VPC or HW/VM deployed on premise must be reachable over Direct Connect (a dedicated, private circuit).
+In this scenario the FortiGates are completely independent of each other (not clustered, nor sharing config/sessions, etc.) and are showing different connectivity options to attach remote locations to Transit Gateway. VPN attachments can be used to connect to any IPsec capable device located anywhere.  TGW Connect attachments require a private path to reach a VM deployed in a VPC or HW/VM deployed on premise and must be reachable over Direct Connect (a dedicated, private circuit).
 
 
 ![](image-tgw-dynamic-example.png)
@@ -47,7 +47,7 @@ In this scenario the FortiGates are completely independent of each other (not cl
 
 {{% expand title = "**Detailed Steps...**" %}}
 
-- **1.1:** In the **VPC Console** go to the **Transit gateway route tables page** (menu on the left) and check out all the **associations, propagations, and routes** for **each Transit gateway route table**.  You should see the following:
+- **1.1:** In the **VPC Console** go to the **Transit gateway route tables page** (menu on the left) and check out all the **associations, propagations, and routes** for **each Transit gateway route table**. You can quickly **compare the attachment IDs** to the assigned names by opening another tab for the **Transit gateway attachments page**. You should see the following:
 
 Transit Gateway Route Table Name | Associations
 ---|---
@@ -70,10 +70,10 @@ TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 <br> 10.2.0.0/16 |
 - **1.2:** Navigate to the **EC2 Console** and connect to **Instance-A** using the **[Serial Console directions](../3_modulethree.html)** 
     - Password: **`FORTInet123!`**
 - **1.3:** Run the following commands to test connectivity and make sure the results match expectations 
-  SRC / DST | VPC B                                                  
-  ---|---
-  **Instance A** | **`ping 10.2.2.10`** {{<fail>}} |
-  **Instance A** | **`curl ipinfo.io`** {{<fail>}} |
+  SRC / DST | VPC B | Internet                                            
+  ---|---|---
+  **Instance A** | **`ping 10.2.2.10`** {{<fail>}} | |
+  **Instance A** | | **`curl ipinfo.io`** {{<fail>}} |
 
 {{% /expand %}}
 		
@@ -147,7 +147,7 @@ Regardless which type of BGP is used, each connect peer is only required to crea
 - **5.2:** Select the main template and select the **Outputs tab**.
 - **5.3:** Login to **FortiGate2**, using the outputs **FGT2LoginURL**, **Username**, and **Password**.
 - **5.4:** Upon login in the **upper right-hand corner** click on the **>_** icon to open a CLI session.
-- **5.5:** Run the command **`show vpn ipsec phase1-interface`** and notice **there are two tunnels where the remote-gw values are public IPs and the interfaces are port1**.
+- **5.5:** Run the command **`show vpn ipsec phase1-interface`** and notice **there are two tunnels where the remote-gw values are different public IPs and the interfaces are port1**.
 - **5.6:** Run the command **`show router route-map rmap-aspath1`** and notice **the as-path is set to 65000**.
 - **5.7:** Copy and paste the commands below to configure default-route-originate with the route-map to advertise 0.0.0.0/0 with an as-path of 6500:
   ```
@@ -184,9 +184,9 @@ Regardless which type of BGP is used, each connect peer is only required to crea
   **Instance A** | **`ping 10.2.2.10`** {{<success>}} via FGT1 | **`ping 8.8.8.8`** {{<success>}} via FGT2
   **Instance A** | **`curl 10.2.2.10`** {{<success>}} via FGT1 | **`curl ipinfo.io`** {{<success>}} via FGT2
   - Ping and curl to public resources should connect successfully through FGT2 which is connected to Transit Gateway over a VPC attachment (IPsec + BGP over the internet).
-  - The public IP returned from **`curl ipinfo.io`** should match the **public IP of FGT2**
+  - **Notice** that the public IP returned from **`curl ipinfo.io`** should match the **public IP of FGT2**
 - **6.2:** In the **VPC Console** go to the **Transit gateway route tables page**.
-- **6.3:** Find **TGW-Connect-spoke-tgw-rtb** go to the **Routes tab** and notice there are **ECMP routes for 0.0.0.0/0** since there are two VPN tunnels configured and a single route for 10.0.0.0/8 for the TGW connect peer.
+- **6.3:** Find **TGW-Connect-spoke-tgw-rtb** go to the **Routes tab** and notice there are **ECMP routes for 0.0.0.0/0** since there are two VPN tunnels configured and a **single route for 10.0.0.0/8** for the TGW connect peer.
 	
 {{% notice info %}}	
 FortiGate2 is getting data-plane traffic over **two IPsec tunnels** between its port1 private ip (10.0.2.x/24) that has an associated [**Elastic IP**](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html) and two public IPs managed by AWS, so this is all over a public path but encrypted. This means that jumbo frames are not supported for VPN based attachments.
@@ -238,7 +238,7 @@ Since there are two tunnels with a BGP peer configured for each, FortiGate2 is a
   **Instance A** | **`ping 10.2.2.10`** {{<success>}} via FGT1 | **`ping 8.8.8.8`** {{<success>}} via FGT1
   **Instance A** | **`curl 10.2.2.10`** {{<success>}} via FGT1 | **`curl ipinfo.io`** {{<success>}} via FGT1
   - Ping and curl should connect successfully through FGT1 which is connected to Transit Gateway over a Connect attachment (GRE + BGP over a VPC attachment).
-  - The public IP returned from ipinfo.io should match the **public IP of FGT1**
+  - **Notice** that the public IP returned from **`curl ipinfo.io`** should match the **public IP of FGT1**
 - **8.2:** In the **VPC Console** go to the **Transit gateway route tables page**.
 - **8.3:** Find **TGW-Connect-spoke-tgw-rtb** go to the **Routes tab** and notice there **is only one route for 0.0.0.0/0 since Transit Gateway only supports ECMP routing from the same attachment types**.
 
@@ -261,7 +261,7 @@ While Transit Gateway does support ECMP routing, it only does so for the same at
 - TGW supports ECMP routing with routes from the same attachment type.
    - This allows scalable Active-Active centralized ingress/egress inspection.
    - Active-Active East/West inspection requires SNAT to keep flows sticky to the same FortiGate.
-- TGW has a route evaluation priority to select the best path for the same route received.
+- TGW has a route evaluation priority to select the best path when multiple routes have the same CIDR.
 - Each TGW VPN connection (2x IPsec tunnels per connection) supports up to 1.5 Gbps.
 - Each TGW Connect peer supports up to 5 Gbps.
 - TGW supports multiple peers per TGW Connect attachment and multiple attachments to a single VPC.

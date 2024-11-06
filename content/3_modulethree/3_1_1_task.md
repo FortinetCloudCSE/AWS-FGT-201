@@ -80,8 +80,8 @@ There are no security controls in this example. Instance-B can freely communicat
 - **2.1:** Navigate to the **VPC Console** and go to the **Peering connections page** (menu on the left) and click **Create peering connection**.
 - **2.2:** Provide a name then select **VPC-A as the requester** and **VPC-B as the Accepter** and click **Create peering connection** at the bottom of the page.
 - **2.3:** On the next page, click **Action** and select **Accept Request**, and again on the pop-up window.
-- **2.4:** Go to the **VPC Route tables page** and find **VPC-A-PrivateRouteTable** , select the **Routes tab** and click **Edit Routes**.
-- **2.5:** Create a route for **0.0.0.0/0** with the peering connection as your target.
+- **2.4:** Go to the VPC **Route tables page** (menu on the left) and find **VPC-A-PrivateRouteTable** , select the **Routes tab** and click **Edit Routes**.
+- **2.5:** Create a route for **0.0.0.0/0** with the peering connection you just created as your target.
 - **2.6:** Repeat the same steps above to create a route for **10.1.0.0/16** in **VPC-B-PrivateRouteTable** to allow reply traffic.
   ![](image-t1-3.png)
   ![](image-t1-4.png)
@@ -113,7 +113,7 @@ There are no security controls in this example. Instance-B can freely communicat
 {{% expand title="**Detailed Steps...**" %}}
 
    {{% notice info %}}
-   - VPC Peering permits point to point connectivity between **instances in 2 directly peered VPC's** and nothing else
+   - VPC Peering permits point to point connectivity between **resources in 2 directly peered VPC's** and nothing else
    - Transitive peering or peering from **VPC A _through_ VPC B to VPC C** is not permitted
    - Accessing AWS Services (like NAT or Internet GW) via a peering connection does not work
    {{% /notice %}}
@@ -138,7 +138,7 @@ SRC / DST | Instance A                                                   | Insta
    - Instance-C should ping Instance-B but not be able to ping Instance-A or access the internet through VPC-B.
   {{% notice info %}}
 
-  The VPC peering connection is at the **VPC level**. This means the VPC peering connection is not directly tied to any VPC subnet or route table explicitly. AWS routing will only deliver traffic to an IP address that is within the destination VPC CIDR. The routes you created in both VPC-A and B's private route tables only direct traffic out of the local VPC to the target destination VPC. Reference this [**AWS documentation**](https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-basics.html#vpc-peering-limitations) to learn more about the limitations of VPC Peering.
+  The VPC peering connection is at the **VPC level**. This means the VPC peering connection is not directly tied to any VPC subnet or route table explicitly. AWS routing for VPC peering connections will only deliver traffic to an IP address that is within the destination VPC CIDR. The routes you created in both VPC-A and B's private route tables only direct traffic out of the local VPC to the target destination VPC. Reference this [**AWS documentation**](https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-basics.html#vpc-peering-limitations) to learn more about the limitations of VPC Peering.
     
   {{% /notice %}}
 
@@ -157,7 +157,7 @@ Hop | Component | Description | Packet |
     
   {{% /notice %}}
 
-  ![](image-vpc-peering-example-flow2.png)
+  ![](image-vpc-peering-example-flow1.png)
 
 
 

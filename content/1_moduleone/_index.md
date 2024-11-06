@@ -40,4 +40,4 @@ We will investigate the configuration of different architecture patterns, includ
   * **VPC Peering**  
   * **FortiGate Centralized Architecture for Selective inspection of East/West & Egress traffic**
   * **FortiGate Centralized Architecture with Dynamic Routing for inspection of East/West & Egress Traffic with multiple VPCs**
-  * **FortiGate Centralized Inspection architecture featuring AWS GWLB**
+  * **FortiGate Centralized & Distributed Inspection architectures featuring AWS GWLB**
