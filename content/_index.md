@@ -34,4 +34,4 @@ You will learn how to use FortiGate NGFW deployed as AWS EC2 instances to protec
 The intent is to help clarify the following:    
   * Advanced AWS networking concepts such as VPC Peering, Transit Gateway (TGW), and Gateway Load Balancer (GWLB)
   * Use of FortiGate instances in AWS to secure inbound, outbound, and East/West traffic flows
-  * AWS centralized architecture with Transit Gateway (TGW) and Gateway Load Balancer (GWLB), and the FortiGate security VPC concept
+  * AWS architectures with Transit Gateway (TGW) and Gateway Load Balancer (GWLB), and the FortiGate security VPC concept
