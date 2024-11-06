@@ -149,7 +149,7 @@ Regardless which type of BGP is used, each connect peer is only required to crea
 - **5.4:** Upon login in the **upper right-hand corner** click on the **>_** icon to open a CLI session.
 - **5.5:** Run the command **`show vpn ipsec phase1-interface`** and notice **there are two tunnels where the remote-gw values are different public IPs and the interfaces are port1**.
 - **5.6:** Run the command **`show router route-map rmap-aspath1`** and notice **the as-path is set to 65000**.
-- **5.7:** Copy and paste the commands below to configure default-route-originate with the route-map to advertise 0.0.0.0/0 with an as-path of 6500:
+- **5.7:** Copy and paste the commands below to configure default-route-originate with the route-map to advertise 0.0.0.0/0 with an as-path of 65000:
   ```
   config router bgp
   config neighbor
@@ -164,7 +164,7 @@ Regardless which type of BGP is used, each connect peer is only required to crea
   end
   end
   ```
-- **5.8:** Run the commands below to confirm that the 0.0.0.0/0 route is now being advertised to our BGP neighbors with an as-path of 6500.
+- **5.8:** Run the commands below to confirm that the 0.0.0.0/0 route is now being advertised to our BGP neighbors with an as-path of 65000.
   ```
   get router info bgp summary
   get router info bgp neighbors 169.254.10.1 advertised-routes
@@ -219,7 +219,7 @@ Since there are two tunnels with a BGP peer configured for each, FortiGate2 is a
   end
   end
   ```
-- **7.5:** Run the commands below to confirm that the 0.0.0.0/0 route is now being advertised to our BGP neighbors with an as-path of 6500.
+- **7.5:** Run the commands below to confirm that the 0.0.0.0/0 route is now being advertised to our BGP neighbors with an as-path of 65000.
   ```
   get router info bgp summary
   get router info bgp neighbors 169.254.6.2 advertised-routes
