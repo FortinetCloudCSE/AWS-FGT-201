@@ -10,7 +10,7 @@ weight: 3
 | **Validation** | Confirm outbound and east/west connectivity from EC2 Instance-A via Ping, HTTP, HTTPS.
 
 ## Introduction
-In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway is configured with multiple Transit Gateway Route Tables.  You will need to create the appropriate VPC attachment associations and propagations to the correct TGW Route Tables, FW policy and update BPG configuration on the independent FortiGates.
+In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway is configured with multiple Transit Gateway Route Tables.  You will need to create the appropriate VPC attachment associations and propagations to the correct TGW Route Tables, FW policy, and update BPG configuration on the independent FortiGates.
 
 In this scenario the FortiGates are completely independent of each other (not clustered, nor sharing config/sessions, etc.) and are showing different connectivity options to attach remote locations to Transit Gateway. VPN attachments can be used to connect to any IPsec capable device located anywhere.  TGW Connect attachments require a private path to reach a VM deployed in a VPC or HW/VM deployed on premise and must be reachable over Direct Connect (a dedicated, private circuit).
 
@@ -25,7 +25,7 @@ In this scenario the FortiGates are completely independent of each other (not cl
 
 
 - **0.1:** Login to your AWS account, and click the **Launch Stack** button below to launch the CloudFormation stack for Task 3
-  
+
 [![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png?lightbox=false)](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=task3&templateURL=https%3A%2F%2Fhacorp-cloud-cse-workshop-us-east-1.s3.amazonaws.com%2Faws-fgt-201%2FMaster_FGT_201_Part3.template.json)
 
 - **0.2:** When creating this stack, ensure the following options are configured (See screenshots below for additional guidance): 
@@ -37,7 +37,7 @@ In this scenario the FortiGates are completely independent of each other (not cl
 **If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
 {{% /notice %}}
   
-  ![](image-t0-1c.png)
+  ![](image-t0-1.png)
 
 - **0.3:** The CloudFormation stack will take ~10 minutes to finish deploying. Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
 
@@ -258,13 +258,20 @@ While Transit Gateway does support ECMP routing, it only does so for the same at
     {{% /expand %}}
 
 ## Discussion Points
-- TGW supports ECMP routing with routes from the same attachment type.
-   - This allows scalable Active-Active centralized ingress/egress inspection.
-   - Active-Active East/West inspection requires SNAT to keep flows sticky to the same FortiGate.
-- TGW has a route evaluation priority to select the best path when multiple routes have the same CIDR.
-- Each TGW VPN connection (2x IPsec tunnels per connection) supports up to 1.5 Gbps.
-- Each TGW Connect peer supports up to 5 Gbps.
-- TGW supports multiple peers per TGW Connect attachment and multiple attachments to a single VPC.
-- TGW supports multiple VPN attachments to the same or different customer gateway (remote IPsec device).
+- TGW Connect & VPN attachments allow a simple means to connecting remote resources to TGW
+- These attachment types are also helpful when dynamic routing is needed for a design
+   - Connect uses GRE + BGP to privately connect to an appliance reachable via Direct Connect or within a VPC
+   - VPN uses IPsec + BGP to publicly connect to an appliance reachable over the Internet
+- TGW has a route evaluation priority to select the best path when multiple routes have the same CIDR
+- TGW supports ECMP routing with routes from the same attachment type
+   - TGW is a stateless router which will result in asymmetric routing of traffic
+   - SNAT is required for flow symmetry to the correct FortiGate in Active-Active design
+   - Simple & scalable Active-Active for Ingress/Egress inspection
+   - Active-Active for East/West inspection possible with caveats
+- Each TGW VPN connection (2x IPsec tunnels per connection) supports up to 2.5 Gbps
+- Each TGW Connect peer supports up to 5 Gbps
+- TGW supports multiple peers per TGW Connect attachment and multiple attachments to a single VPC
+- TGW supports multiple VPN attachments to the same or different customer gateway (remote IPsec appliance)
+- Jumbo frames (8500 bytes) are supported for all attachments except VPN (1500 bytes)
 
 **This concludes this task**

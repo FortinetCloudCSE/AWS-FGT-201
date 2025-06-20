@@ -8,7 +8,7 @@ weight: 2
 ### Navigating the AWS Console
 
 - Upon login the Console Home page is displayed.
-- Use the **Search Box** at the top to search for services such as EC2, VPC, etc.
+- Use the **Search Box** at the top to search for services or features such as EC2, VPC, Network Manager, etc.
 - When results appear, **right-click** the service name to open the desired console in a new tab. 
   - Multiple tabs simplify navigation when using multiple AWS services.
 

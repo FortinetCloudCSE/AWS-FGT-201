@@ -36,7 +36,7 @@ In this scenario these FortiGate NGFWs are working together in an Active-Active 
 **If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
 {{% /notice %}}
   
-  ![](image-t0-1d.png)
+  ![](image-t0-1.png)
 
 - **0.3:** The CloudFormation stack will take ~12 minutes to finish deploying. Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
 
@@ -185,11 +185,11 @@ Hop | Component                           | Description                         
 
 GWLB supports two different models of firewall deployments, one-arm and two-arm where a firewall appliance can also perform NAT.
 
-In the one-arm model, the FortiGates will inspect traffic and forward this back to GWLB where Internet bound traffic is has NAT applied by a NAT GW.  Typically, the NAT GW will be in a workload VPC in a distributed design.  Distributed designs have GWLB endpoints in each workload VPC requiring an attached Internet Gateway (IGW) and public load balancer or NAT GW.  A centralized design can use NAT GW in an inspection VPC for centralized egress and have GWLB endpoints only deployed in the inspection VPC (no need for GWLB endpoints in each workload VPC).
+In the one-arm model, the FortiGates will inspect traffic and forward this back to GWLB where Internet bound traffic has NAT applied by a NAT GW.  Typically, the NAT GW will be in a workload VPC in a distributed design.  Distributed designs have GWLB endpoints in each workload VPC requiring an attached Internet Gateway (IGW) and public load balancer or NAT GW.  A centralized design can use NAT GW in an inspection VPC for centralized egress and have GWLB endpoints only deployed in the inspection VPC (no need for GWLB endpoints in each workload VPC).
 
 ![](image-one-arm.png)
 
-We can use static and policy routes like below to support this setup.  In a 2 AZ deployment there are two static routes using [**priority setting**](https://community.fortinet.com/t5/FortiGate/Technical-Note-Routing-behavior-depending-on-distance-and/ta-p/198221) to bypass the reverse path filtering check when receiving data plane traffic over the GENEVE tunnels.  The static routes are default routes to simplify the config, but you could also specify a route for each spoke VPC for each GENEVE tunnel.  Also, there are two policy routes to hairpin traffic received over each GENEVE tunnel, back to the same one.
+We can use static and policy routes like below to support this setup.  In a 2 AZ deployment there are two static routes using [**priority setting**](https://community.fortinet.com/t5/FortiGate/Technical-Note-Routing-behavior-depending-on-distance-and/ta-p/198221) to bypass the reverse path filtering check when receiving data plane traffic over the GENEVE tunnels.  The static routes are default routes to simplify the config, but you could also specify a route for each spoke VPC for each GENEVE tunnel.  Also, there are two policy routes to hairpin traffic received over each GENEVE tunnel, back to the same tunnel.
 
 ```
 config router static
@@ -217,7 +217,7 @@ next
 
 **Two-Arm Model**
 
-In the two-arm model, the FortiGates will inspect traffic and forward & SNAT traffic out port1 (public interface) to act as a NAT GW.  This removes the need for deploying NAT GWs in each AZ of each workload VPC.  This is typically used in a centralized design where the data plane traffic used TGW to reach the GWLB endpoints in the inspection/security VPC and be inspected by the FortiGates. In summary centralized vs distributed designs is in reference to the GWLB endpoint placement which impacts how traffic is routed to these for inspection of traffic for different directions (ingress, egress, and east/west).
+In the two-arm model, the FortiGates will inspect traffic, forward, & SNAT traffic out port1 (public interface) to act as a NAT GW.  This removes the need for deploying NAT GWs in each AZ of each workload VPC.  This is typically used in a centralized design where the data plane traffic used TGW to reach the GWLB endpoints in the inspection/security VPC and be inspected by the FortiGates. In summary centralized vs distributed designs is in reference to the GWLB endpoint placement which impacts how traffic is routed to these for inspection of traffic for different directions (ingress, egress, and east/west).
 
 ![](image-two-arm.png)
 
@@ -251,7 +251,7 @@ next
 
 **Supporting Both Models**
 
-In a single region, you can have one deployment of FGTs & GWLB support both distributed and centralized designs.  This all comes down to implementing the appropriate routing at the VPC & TGW route tables and FortiGate routes.  For examples on the VPC & TGW routes for different designs, reference [**common architecture patterns**](https://fortinetcloudcse.github.io/FortiCNF/2_moduletwo/23_awscommonarchitecturepatterns.html).
+In a single region, you can have one deployment of FGTs & GWLB support both distributed and centralized designs.  This all comes down to implementing the appropriate routing at the VPC & TGW route tables and FortiGates.  For examples on the VPC & TGW routes for different designs, reference [**common architecture patterns**](https://fortinetcloudcse.github.io/FortiCNF/2_moduletwo/23_awscommonarchitecturepatterns.html).
 
 Here is an example of the static & policy routes to support a distributed spoke1 VPC (CIDR 10.1.0.0/16) and centralized spoke2 VPC.  
 
@@ -325,18 +325,18 @@ VPC-A-Public1RouteTable | 0.0.0.0/0 | VPC-A-GWLB-VPCE-AZ1
 VPC-A-Public2RouteTable | 0.0.0.0/0 | VPC-A-GWLB-VPCE-AZ2
 
 - **7.3:** Navigate to the **CloudFormation Console**, select the main stack you created and click **Delete**.
-- **7.4:** The CloudFormation stack will take ~12 minutes to clean up. Once the stack is deleted, take a long break :smile:, you deserve it!
+- **7.4:** The CloudFormation stack will take ~12 minutes to clean up. Once the stack is deleted, proceed to the next task.
 
     {{% /expand %}}
 
 ## Discussion Points
-- GWLB is a regional service that is both a gateway (VPC route target) and a flow aware load balancer.
-  - This allows very scalable active-active inspection for all directions of traffic.
-  - No SNAT requirement to keep flows sticky to the same FGT as GWLB is flow aware.
-- GWLB and FortiGates supports one and two arm mode (distributed vs centralized egress access & NAT GW replacement).
-- Jumbo frames (8500 bytes) are supported.
-- Inspection VPC handles FortiGate NGFW inspection for any traffic flow (Inbound, Outbound, East/West) and for any network design (distributed vs centralized).
+- GWLB is a regional service that is both a gateway (VPC route target) and a flow aware load balancer
+  - This allows very scalable active-active inspection for all directions of traffic
+  - No SNAT requirement to achieve flow symmetry to the correct FortiGate as GWLB is flow aware
+- GWLB and FortiGates supports one and two arm mode (distributed vs centralized egress access & NAT GW replacement)
+- Jumbo frames (8500 bytes) are supported
+- Inspection VPC handles FortiGate NGFW inspection for any traffic flow (Inbound, Outbound, East/West) and for any network design (distributed vs centralized)
   - [**Appliance Mode**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-appliance-scenario.html) is required for this design to keep flows sticky to the correct availability zone which in turn means the correct GWLB endpoint.
-  - Advanced architectures for all of these scenarios can be [**found here**](https://github.com/FortinetCloudCSE/.github/blob/main/profile/AWS/README.md).
+  - Advanced architectures for all of these scenarios can be [**found here**](https://github.com/FortinetCloudCSE/.github/blob/main/profile/AWS/README.md)
 
 **This concludes this task**

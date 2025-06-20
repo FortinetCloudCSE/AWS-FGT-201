@@ -3,18 +3,7 @@ title: "Workshop Logistics"
 weight: 1
 ---
 
-#### New User Provisioning
-{{< notice warning >}} 
-<center>
-After submitting, this page will return with a blank email address box and no other indications. <br>  
-    
-<b><i>PLEASE DO NOT SUBMIT MULTIPLE TIMES</b></i>
-</center>
-{{< /notice >}}
-
-{{< launchdemoform labdefinition="aws-fgt-201">}}
-
-## Accessing Qwiklabs & AWS environment
+### Accessing Qwiklabs & AWS environment
 
 For Fortinet cloud workshops, we will use [**Qwiklabs**](https://fortinet.qwiklabs.com/paths) to provide a pre-staged AWS account with the workshop environment ready to use.
 

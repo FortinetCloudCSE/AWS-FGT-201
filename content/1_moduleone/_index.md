@@ -14,8 +14,9 @@ Upon completion of this workshop, you will gain an understanding of:
   * AWS VPC Peering
   * AWS Transit Gateway (TGW)
   * AWS Gateway Load Balancer (GWLB)
-  * Creating and applying firewall policies with security profiles and objects to control traffic flows *(10 minutes)*
-  * Testing traffic flows to validate the implemented networking and security controls *(20 minutes)*
+  * AWS Cloud WAN (CWAN)
+  * Creating and applying firewall policies with security profiles and objects to control traffic flows
+  * Testing traffic flows to validate the implemented networking and security controls
 
 ## Workshop Components
 
@@ -29,6 +30,10 @@ The following Fortinet & AWS components will be used during this workshop:
     * Route Tables (RTBs)
     * Transit Gateway (TGW)
     * Gateway Load Balancer (GWLB)
+	* Global & Core Networks
+	* Core Network Edge (CNE)
+	* Core Network Policy
+	* Network Segment
   * FortiGate instances running FortiOS (Amazon Machine Images (AMI) on EC2)
 
 ## AWS Architecture Patterns
