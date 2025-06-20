@@ -13,7 +13,7 @@ weight: 2
 
 In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway (TGW) is configured with multiple Transit Gateway Route Tables.  You will need to create the appropriate VPC attachment associations and propagations to the correct TGW Route Tables, FW policy and update a static route on the FortiGate Active-Passive cluster.
 
-In this scenario you will allow traffic between the workload and shared services VPC to communicate directly (without going through the FortiGate A-P cluster), while inspecting outbound and east/west connectivity with the workload VPCs.
+In this scenario you will allow traffic between the workload and shared services VPC to communicate directly (without going through the FortiGate A-P cluster), while inspecting outbound and east/west connectivity for the workload VPCs.
 
 
 ![](image-tgw-static-example.png)
@@ -37,7 +37,7 @@ In this scenario you will allow traffic between the workload and shared services
 **If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
 {{% /notice %}}
   
-  ![](image-t0-1b.png)
+  ![](image-t0-1.png)
 
 - **0.3:** The CloudFormation stack will take ~10 minutes to finish deploying. Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
 
@@ -127,10 +127,8 @@ If you accidentally did not use the new layout, you can change it by clicking on
 - **5.2:** Run the following commands to test connectivity and make sure the results match expectations 
   SRC / DST | VPC C (Shared Services)
   ---|----
-  **Instance A** | **`ping 10.3.2.10`** {{<success>}}
-  **Instance A** | **`curl 10.3.2.10`** {{<success>}}
-  **Instance B** | **`ping 10.3.2.10`** {{<success>}}
-  **Instance B** | **`curl 10.3.2.10`** {{<success>}}
+  **Instance A or B** | **`ping 10.3.2.10`** {{<success>}}
+  **Instance A or B** | **`curl 10.3.2.10`** {{<success>}}
 
 {{% notice tip %}}
 Due to the configuration of the Transit gateway route tables, the east/west traffic between VPC-A and VPC-B to VPC-C is not being routed through the inspection VPC. That is why you are able to allow HTTP, SSH, and other traffic between these VPCs. While this may be acceptable for trusted and low security risk environments, it is best practice to have clear visibility and control on what communication is allowed by routing this through a security stack.
@@ -218,16 +216,18 @@ Hop | Component | Description | Packet |
     {{% /expand %}}
 
 ## Discussion Points
-- TGW is essentially a regional router.
-- TGW supports transitive routing and has many [**use cases**](https://docs.aws.amazon.com/vpc/latest/tgw/TGW_Scenarios.html).
+- TGW is essentially a regional router
+- TGW supports transitive routing and has many [**use cases**](https://docs.aws.amazon.com/vpc/latest/tgw/TGW_Scenarios.html)
 - TGW supports the following attachments in the same region:
   - VPC (static propagation of VPC CIDR)
   - VPN (static or dynamic routing)
   - Direct Connect Gateway (static or dynamic routing)
   - TGW Connect (GRE over VPC or Direct Connect attachment, supports static or dynamic routing)
-- TGW supports peering between TGWs in the same or different regions.
-- Jumbo frames (8500 bytes) are supported for all attachments except VPN (1500 bytes).
-- Centralized Inspection VPC handles FortiGate NGFW inspection for any traffic flow (Inbound, Outbound, East/West).
-  - Advanced architectures for all of these scenarios can be [**found here**](https://github.com/FortinetCloudCSE/.github/blob/main/profile/AWS/README.md).
+- Jumbo frames (8500 bytes) are supported for all attachments except VPN (1500 bytes)
+- TGW supports peering directly between TGWs in the same or different regions (supports static routing only)
+  - FGTs can be attached to the TGWs to provide dynamic routing between them with an overlay tunnel
+- TGW supports default route table propagation and association settings which can be used to automate connecting spoke VPCs to a simple centralized design
+- Centralized Inspection VPC handles FortiGate NGFW inspection for any traffic flow (Inbound, Outbound, East/West)
+  - Advanced architectures for all of these scenarios can be [**found here**](https://github.com/FortinetCloudCSE/.github/blob/main/profile/AWS/README.md)
   
 **This concludes this task**

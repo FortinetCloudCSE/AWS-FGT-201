@@ -41,7 +41,7 @@ There are no security controls in this example. Instance-B can freely communicat
 **If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
 {{% /notice %}}
   
-  ![](image-t0-1a.png)
+  ![](image-t0-1.png)
 
 - **0.3:** The CloudFormation stack will take ~5 minutes to finish deploying. Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
 
@@ -57,10 +57,10 @@ There are no security controls in this example. Instance-B can freely communicat
 - **1.2:** Find **Instance-A** and connect to it using the **[Serial Console directions](../3_modulethree.html)** 
     - Password: **`FORTInet123!`**
 - **1.3:** Run the following commands to test connectivity and make sure the results match expectations 
-  SRC / DST | VPC B                                                   | VPC C
-  ---|--------------------------------------------------------------|---
+  SRC / DST | VPC B                                                   | VPC C | Internet
+  ---|--------------------------------------------------------------|---|---
   **Instance A** | **`ping 10.2.2.10`** {{<fail>}} |  **`ping 10.3.2.10`** {{<fail>}}
-  **Instance A** | **`curl ipinfo.io`** {{<fail>}} |
+  **Instance A** | | | **`curl ipinfo.io`** {{<fail>}}
 
 - **1.4:** Run the command **`ifconfig ens5`** and take note of the instance IPv4 address.
 - **1.5:** Run the command **`route -n`** and take note of the default route and the gateway IP for that route.
@@ -79,7 +79,7 @@ There are no security controls in this example. Instance-B can freely communicat
 
 - **2.1:** Navigate to the **VPC Console** and go to the **Peering connections page** (menu on the left) and click **Create peering connection**.
 - **2.2:** Provide a name then select **VPC-A as the requester** and **VPC-B as the Accepter** and click **Create peering connection** at the bottom of the page.
-- **2.3:** On the next page, click **Action** and select **Accept Request**, and again on the pop-up window.
+- **2.3:** On the next page, click **Actions** and select **Accept Request**, and again on the pop-up window.
 - **2.4:** Go to the VPC **Route tables page** (menu on the left) and find **VPC-A-PrivateRouteTable** , select the **Routes tab** and click **Edit Routes**.
 - **2.5:** Create a route for **0.0.0.0/0** with the peering connection you just created as your target.
 - **2.6:** Repeat the same steps above to create a route for **10.1.0.0/16** in **VPC-B-PrivateRouteTable** to allow reply traffic.
@@ -115,7 +115,7 @@ There are no security controls in this example. Instance-B can freely communicat
    {{% notice info %}}
    - VPC Peering permits point to point connectivity between **resources in 2 directly peered VPC's** and nothing else
    - Transitive peering or peering from **VPC A _through_ VPC B to VPC C** is not permitted
-   - Accessing AWS Services (like NAT or Internet GW) via a peering connection does not work
+   - Accessing AWS Services (like NAT GW or Internet GW) via a peering connection does not work
    {{% /notice %}}
 
 - **4.1:** In the **EC2 Console** go to the **Instances page** connect to **Instance-B** using the **[Serial Console directions](../3_modulethree.html)** 
@@ -138,7 +138,7 @@ SRC / DST | Instance A                                                   | Insta
    - Instance-C should ping Instance-B but not be able to ping Instance-A or access the internet through VPC-B.
   {{% notice info %}}
 
-  The VPC peering connection is at the **VPC level**. This means the VPC peering connection is not directly tied to any VPC subnet or route table explicitly. AWS routing for VPC peering connections will only deliver traffic to an IP address that is within the destination VPC CIDR. The routes you created in both VPC-A and B's private route tables only direct traffic out of the local VPC to the target destination VPC. Reference this [**AWS documentation**](https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-basics.html#vpc-peering-limitations) to learn more about the limitations of VPC Peering.
+  The VPC peering connection is at the **VPC level**. This means the VPC peering connection is not directly tied to any VPC subnet or route table explicitly. AWS routing for VPC peering connections will only deliver traffic to an IP address that is within the destination VPC CIDR. The routes you created in both VPC-A and B's private route tables only direct traffic out of the local VPC to the target destination VPC. Reference this [**AWS documentation**](https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-basics.html#vpc-peering-basics-multiple) to learn more about the limitations of VPC Peering.
     
   {{% /notice %}}
 
@@ -187,14 +187,16 @@ Hop | Component | Description                                                   
     {{% /expand %}}
 
 ## Discussion Points
-- VPC peering is a point to point connection only (no transitive routing).
-- Full mesh is required to connect all VPCs together. 
-  - For example connecting 10 VPCs would require (10*9)/2 = 45 connections.
+- VPC peering is a point-to-point connection only (no transitive routing)
+- It is best used when a few trusted VPCs are transferring large amounts of data between each other (ie DB replication)
+- Full mesh is required to connect all VPCs together
+  - For example connecting 16 VPCs in full mesh would require (16*15)/2 = 120 connections
+  - The max supported VPC peering connections per VPC is [**125**](https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-connection-quotas.html)
 - VPC peering supports connections between VPCs:
   - In the same or different AWS Accounts
   - In the same (intra) or across (inter) regions
-- When using inter-region peering, encryption is used.
+- When using inter-region peering, [**AEAD encryption**](https://aws.amazon.com/blogs/aws/new-almost-inter-region-vpc-peering/) is used
 - No Internet Gateway is required for VPC Peering (even when inter-region)
-- Jumbo frames (9001 bytes) are only supported for intra-region connections, inter-region is limited to 1500 bytes.
+- Jumbo frames (9001 bytes) are only supported for intra-region connections, inter-region is limited to 1500 bytes
 
 **This concludes this task**
