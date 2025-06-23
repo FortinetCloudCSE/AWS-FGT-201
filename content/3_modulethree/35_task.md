@@ -7,14 +7,14 @@ weight: 5
 |:----:|:--|
 | **Goal**                   | Utilize Cloud WAN components and Core Network Policy to provide a secured & orchestrated network.
 | **Task**                   | Update Core Networking Policy with logic to automate connecting resources to segments and propagating routes to allow secured traffic flow.
-| **Validation** | Confirm east/west connectivity from EC2 Instance-A via Ping, HTTP, HTTPS.
+| **Validation** | Confirm east/west connectivity from EC2 Instance-A via Ping, HTTP.
 
 ## Introduction
 In this design, there are multiple VPCs in the same region that have one instance each. Cloud WAN is configured with multiple segments and attachments (both VPC and Tunnel-less Connect).  You will need to create the appropriate Cloud WAN Core Network Policy to automatically enforce segment attachment rules and propagation of routes between segments to direct traffic to the independent FortiGates for traffic inspection.
 
 In this setup these FortiGate are independent (not clustered, nor sharing config) but are working together with FGSP in an Active-Active design to provide more capacity and synchronize session tables. This design specifically uses Tunnel-less Connect attachments to allow dynamic routing between EC2 instances and a Cloud WAN Core Network Edge (CNE) without needing IPsec or GRE based overlay tunnels. This removes the overhead and bottlenecks that come with overlay tunnel protocols while still providing dynamic routing. 
 
-![](image-gwlb-example.png)
+![](image-cwan-diag.png)
 
 ## Summarized Steps (click to expand each for details)
 

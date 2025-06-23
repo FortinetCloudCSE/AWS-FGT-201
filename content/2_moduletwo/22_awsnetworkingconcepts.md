@@ -56,8 +56,9 @@ TGW | TGW routing tables, VPC, VPN, DXC and other attachments | 5,000 attachment
 - [**Transit Gateway (TGW)**](https://docs.aws.amazon.com/vpc/latest/tgw/how-transit-gateways-work.html) is a highly scalable cloud router that connects your VPCs in the same region to each other, to on-premise networks, and even to the internet through one hub. With the use of multiple route tables for a single TGW, you can design hub and spoke routing for traffic inspection and enforcement of security policy across multiple VPCs. As the name implies, [**Transit Gateway supports transitive routing**](https://docs.aws.amazon.com/vpc/latest/tgw/TGW_Scenarios.html).
   ![](image-tgw-appliance.png)
 - [**AWS Gateway Load Balancer (GWLB)**](https://aws.amazon.com/blogs/aws/introducing-aws-gateway-load-balancer-easy-deployment-scalability-and-high-availability-for-partner-appliances/) is a transparent network gateway that distributes traffic (in a 3/5 tuple flow aware manner) to a fleet of virtual appliances for inspection. This is a regional load balancer that uses GWLB endpoints (GWLBe) to securely intercept data plane traffic within consumer VPCs in the same region.
-
 ![](image-gwlb.png)
+- [**AWS Cloud WAN (CWAN)**](https://docs.aws.amazon.com/network-manager/latest/cloudwan/what-is-cloudwan.html) is an intent-driven managed wide area network (WAN), described by a policy you define that unifies your data center, branch, and AWS networks. While you can create your own global network by interconnecting multiple Transit Gateways across Regions, Cloud WAN provides built-in automation, segmentation, and configuration management features designed specifically for building and operating global networks, based on your core network policy. Cloud WAN has added features such as automated VPC attachments, integrated performance monitoring, and centralized configuration.
+![](image-cwan-overview.png)
 
 ### AWS Data transfer cost considerations
 Below is a simplified description of the most basic AWS networking & data transfer charges.  The listed costs are examples only and change frequently based on the region in use.  Please consult [**AWS documentation for costs of your specific scenario**](https://aws.amazon.com/blogs/architecture/overview-of-data-transfer-costs-for-common-architectures/)
@@ -80,12 +81,14 @@ Outbound (to Internet) | $0.09/GB (volume discounts apply)
 Within an AZ | $0.00 (Free)
 Across AZs (within Region) | $0.01/GB
 Across Regions | $0.01-0.02/GB
---- | ---
-AWS Service costs | cost ($)
-VPC Peering | $0.00 (Free)
-TGW | [**See AWS TGW Pricing**](https://aws.amazon.com/transit-gateway/pricing/)
-IGW | [**See AWS VPC Pricing**](https://aws.amazon.com/vpc/pricing/)
-NATGW | [**See AWS VPC Pricing**](https://aws.amazon.com/vpc/pricing/) 
-EIP | [**See AWS VPC Pricing**](https://aws.amazon.com/vpc/pricing/)
 
-In this workshop we will use these components to highlight insertion of FortiGate NGFW into an enterprise architecture. 
+AWS Service costs | cost ($)
+--- | ---
+VPC Peering | $0.00 (Free)
+CWAN | $0.02/GB + $0.50/hr (per CNE) + $0.065-0.09 (per attachment) [**See AWS CWAN Pricing**](https://aws.amazon.com/cloud-wan/pricing/)
+TGW | $0.02/GB + $0.05/hr (per attachment) [**See AWS TGW Pricing**](https://aws.amazon.com/transit-gateway/pricing/)
+IGW |  $0.00 (Free) [**See AWS VPC Pricing**](https://aws.amazon.com/vpc/pricing/)
+NATGW | $0.045/GB + $0.045/hr [**See AWS VPC Pricing**](https://aws.amazon.com/vpc/pricing/) 
+EIP | $0.005/hr [**See AWS VPC Pricing**](https://aws.amazon.com/vpc/pricing/)
+
+In this workshop we will use these components to highlight insertion of FortiGate NGFW into an enterprise architecture.
