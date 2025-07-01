@@ -1,5 +1,5 @@
 ---
-title: "Fortinet XPerts 2024"
+title: "Fortinet XPerts 2025"
 weight: 1
 archetype: home
 ---

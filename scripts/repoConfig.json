@@ -2,12 +2,15 @@
   "repoName": "AWS-FGT-201",
   "author":"Hiruy Aberra, Jeff Kopko, and Jeremy Furtney",
   "workshopTitle":"AWS 201 Advanced FortiGate Deployments on AWS",
-  "themeVariant":"Xperts2024",
+  "themeVariant":"Xperts2025",
   "logoBannerText":"AWS 201",
   "logoBannerSubText":"Advanced FortiGate Deployments",
   "errorLevel":"warning",
   "googleServicesID":"G-5RZBH288ST",
   "marketingCode":"CloudCSE-Xperts2024",
+  "bannerLine1":"AWS 201",
+  "bannerLine2":"Advanced FortiGate Deployments on AWS",
+  "bannerLine3":"",
   "shortcuts": [
     {
       "text": "Xperts Preso",

@@ -6,7 +6,7 @@ weight: 2
 ![](AWS_networking.png)
 
 ### AWS Network Routing
-- AWS networking is [**Software Defined Networking**](https://www.vmware.com/topics/glossary/content/software-defined-networking.html.html) where VPCs have a built-in or implicit router
+- AWS networking is [**Software Defined Networking**](https://www.vmware.com/topics/glossary/content/software-defined-networking.html.html) where VPCs have a built-in or intrinsic router
 - VPC Route Tables (RT) are similar to static routes in traditional routing
   - Generally they are attached to a subnet impacting the destination routing decisions for that subnet only
   - Putting the pieces together, AWS routing decisions happen at every hop along the traffic path
@@ -40,9 +40,9 @@ TGW | TGW routing tables, VPC, VPN, DXC and other attachments | 5,000 attachment
 
 
 ### AWS Networking Base Services
-- [**Virtual Private Cloud (VPC)**](https://docs.aws.amazon.com/vpc/latest/userguide/how-it-works.html) is a logically isolated section of the AWS Cloud where you can launch AWS resources in a virtual network that you define. You have complete control over your virtual networking environment, including selection of your own IP address range, creation of subnets, and configuration of route tables and network gateways.
 - [**Region**](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-regions) is a collection of multiple Availability Zones in a geographic location. The collection of AZs in the same region are all interconnected via redundant, ultra-low-latency networks.
 - [**Availability Zones (AZ)**](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-availability-zones) are multiple, isolated datacenter locations within each Region that have independent power, cooling, physical security, etc. A VPC spans all of the AZs in the Region. 
+- [**Virtual Private Cloud (VPC)**](https://docs.aws.amazon.com/vpc/latest/userguide/how-it-works.html) is a logically isolated section of the AWS Cloud where you can launch AWS resources in a virtual network that you define. You have complete control over your virtual networking environment, including selection of your own IP address range, creation of subnets, and configuration of route tables and network gateways.
 - All [**subnets**](https://docs.aws.amazon.com/vpc/latest/userguide/configure-subnets.html) within a VPC are able to reach each other with the default or intrinsic router within the VPC. All resources in a subnet use the intrinsic router (1st host IP in each subnet) as the default gateway. Each subnet must be associated with a VPC route table, which specifies the allowed routes for outbound traffic leaving the subnet. Subnets are tied to a single AZ.
 - [**Internet Gateway (IGW)**](https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Internet_Gateway.html) is a horizontally scaled, redundant, and highly available VPC component that allows communication between instances in your VPC and the internet. It therefore imposes no availability risks or bandwidth constraints on your network traffic.
 - [**Elastic IP (EIP)**](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-eips.html) is a static IPv4 address designed for dynamic cloud computing within a region. Simply allocate one to a region in your account and associate this to an EC2 instance to access it over the public internet. 
