@@ -1,14 +1,8 @@
 ---
-title: "Fortinet XPerts 2025"
+title: "Public Cloud 201: Advanced FortiGate Deployments on AWS"
 weight: 1
 archetype: home
 ---
-
-
-{{< Xperts24Banner line1="Public Cloud 201:" line2="Advanced FortiGate Deployments on AWS" line3="TGW &amp; GWLB" >}}
-
-{{< launchdemoform >}}
-
 
 You will learn how FortiGates can address the following standard **concerns and requirements** when migrating applications and workloads to public cloud. 
 
@@ -32,6 +26,6 @@ You will learn how FortiGates can address the following standard **concerns and 
 You will learn how to use FortiGate NGFW deployed as AWS EC2 instances to protect traffic flows in Advanced AWS architecture patterns, as well as some fundamental AWS networking concepts.
 
 The intent is to help clarify the following:    
-  * Advanced AWS networking concepts such as VPC Peering, Transit Gateway (TGW), and Gateway Load Balancer (GWLB)
+  * Advanced AWS networking concepts such as VPC Peering, Transit Gateway (TGW), Gateway Load Balancer (GWLB), and Cloud WAN (CWAN)
   * Use of FortiGate instances in AWS to secure inbound, outbound, and East/West traffic flows
-  * AWS architectures with Transit Gateway (TGW) and Gateway Load Balancer (GWLB), and the FortiGate security VPC concept
+  * AWS architectures with Transit Gateway (TGW), Gateway Load Balancer (GWLB), Cloud WAN (CWAN), and the FortiGate security VPC concept
