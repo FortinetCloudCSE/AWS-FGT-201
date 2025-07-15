@@ -28,17 +28,17 @@ There are no security controls in this example. Instance-B can freely communicat
 {{% expand title="**Detailed Steps...**" %}}
 
 
-- **0.1:** Login to your AWS account, and click this **Launch Stack** button to Launch the CloudFormation Stack for Task 1
+- **0.1:** Login to your AWS account, and click **the Launch Stack button below** to Launch the CloudFormation Stack for Task 1
   
   [![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png?lightbox=false)](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=task1&templateURL=https%3A%2F%2Fhacorp-cloud-cse-workshop-us-east-1.s3.amazonaws.com%2Faws-fgt-201%2FMaster_FGT_201_Part1.template.json)
 
-- **0.2:** **You must:** 
-    - **select an IAM role in the Permissions section**
+- **0.2:** **When creating this stack, ensure the following options are configured (See screenshots below for additional guidance):** 
+    - **select the existing IAM role `qls-...CloudFormationService Role...` in the Permissions section**
 	- **check the boxes to acknowledge the warnings in the Capabilities section**
 	- then scroll down and click **Create stack**
 
 {{% notice warning %}}
-**If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
+**If you do not select the existing IAM role and continue with the stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
 {{% /notice %}}
   
   ![](image-t0-1.png)
