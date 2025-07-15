@@ -24,17 +24,17 @@ In this scenario you will allow traffic between the workload and shared services
 
 {{% expand title="**Detailed Steps...**" %}}
 
-- **0.1:** Login to your AWS account, and click the **Launch Stack** button below to launch the CloudFormation stack for Task 2
+- **0.1:** Login to your AWS account, and click **the Launch Stack button below** below to launch the CloudFormation stack for Task 2
 
 [ ![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png?lightbox=false) ](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=task2&templateURL=https%3A%2F%2Fhacorp-cloud-cse-workshop-us-east-1.s3.amazonaws.com%2Faws-fgt-201%2FMaster_FGT_201_Part2.template.json)
 
 - **0.2:** **You must:** 
-    - **select an IAM role in the Permissions section**
+    - **select the existing IAM role `qls-...CloudFormationService Role...` in the Permissions section**
 	- **check the boxes to acknowledge the warnings in the Capabilities section**
 	- then scroll down and click **Create stack**
 
 {{% notice warning %}}
-**If you do not select a the IAM role and continue with stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
+**If you do not select the existing IAM role and continue with the stack creation, this will fail!** If this occurred, simply create another stack with a different name and follow the steps closely for this section. 
 {{% /notice %}}
   
   ![](image-t0-1.png)
@@ -147,7 +147,7 @@ Due to the configuration of the Transit gateway route tables, the east/west traf
   **Instance A** | **`ping 10.2.2.10`** {{<success>}}  | **`ping 8.8.8.8`** {{<success>}} 
   **Instance A** | **`curl 10.2.2.10`** {{<fail>}}     | **`curl ipinfo.io`** {{<fail>}}
   **Instance A** | ---                                 | **`curl -k https://ipinfo.io`** {{<success>}}
-  **Instance A** | ---                                 | **`curl -k --retry 2 --retry-all-errors https://secure.eicar.org/eicar.com.txt -o file.txt`** {{<fail>}}
+  **Instance A** | ---                                 | **`curl -k --retry 2 --retry-all-errors https://secure.eicar.org/eicar.com.txt -o file.txt`** {{<investigate>}}
   
   - A --> B succeeded for ping but not HTTP due to FortiGate Firewall Policy
   - A --> Internet was successful for PING, Web Filtered for HTTPS, and blocked for HTTP due to FortiGate Firewall Policy
