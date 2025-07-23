@@ -23,7 +23,7 @@ In this scenario these FortiGate NGFWs are working together in an Active-Active 
 ###### 0) Lab environment setup
 
 {{% expand title="**Detailed Steps...**" %}}
-- **0.1:** Login to your AWS account, and click **the Launch Stack button below** below to launch the CloudFormation stack for Task 4
+- **0.1:** Login to your AWS account, and then click **the yellow Launch Stack button directly below this sentence** to launch the CloudFormation Stack for Task 4
 
 [![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png?lightbox=false)](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=task4&templateURL=https%3A%2F%2Fhacorp-cloud-cse-workshop-us-east-1.s3.amazonaws.com%2Faws-fgt-201%2FMaster_FGT_201_Part4.template.json)
 
