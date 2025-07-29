@@ -24,11 +24,34 @@ In this scenario the FortiGates are completely independent of each other (not cl
 {{% expand title="**Detailed Steps...**" %}}
 
 
-- **0.1:** Login to your AWS account, and then click **the yellow Launch Stack button directly below this sentence** to launch the CloudFormation Stack for Task 3
+- **0.1:** Login to your AWS account and navigate to the **CloudFormation Console** and **toggle View Nested to off**.
+- **0.2:** Make sure you are in the **United States (Ohio) region** as this is where the stack should be deployed.
+    {{% expand title="**Expand for Screenshots**" %}}
+![](image-t0-31.png)
+![](image-t0-32.png)
+    {{% /expand %}}
+
+  {{% notice info %}}
+All AWS resources for this lab will be deployed in the **United States (Ohio) region**. Either switch the region for your existing browser tabs (using the region selector in the upper right corner of the AWS Console) to this region or close all other browser tabs. Otherwise, you might accidently configure the wrong AWS resources.
+  {{% /notice %}}
+
+- **0.3:** Select the main stack and confirm the stack has **finished creating successfully** by looking at the **Events Tab**.
+    {{% expand title="**Expand for Screenshot**" %}}
+![](image-t0-33.png)
+    {{% /expand %}}
+
+- **0.4:** You are now ready to proceed with the rest of the lab below **starting in section 1**. The remaining steps for this section are if the main stack failed to create successfully.
+
+{{% notice warning %}}
+If the original stack failed to create, please notify those giving the workshop to review the root cause of the issue. Once that is done, please proceed with the remaining steps for this section.
+{{% /notice %}}
+
+- **0.5:** **Delete the previously failed main stack and wait till that has completed successfully**. Please use the refresh buttons to refresh both the left and right portions of the CloudFormation Console.
+- **0.6:** Click **the yellow Launch Stack button directly below this sentence** to launch the CloudFormation Stack for Task 3
 
 [![](https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png?lightbox=false)](https://console.aws.amazon.com/cloudformation/home#/stacks/create/review?stackName=task3&templateURL=https%3A%2F%2Fhacorp-cloud-cse-workshop-us-east-1.s3.amazonaws.com%2Faws-fgt-201%2FMaster_FGT_201_Part3.template.json)
 
-- **0.2:** **You must:** 
+- **0.7:** **You must:** 
     - **select the existing IAM role `qls-...CloudFormationServiceRole...` in the Permissions section**
 	- **check the boxes to acknowledge the warnings in the Capabilities section**
 	- then scroll down and click **Create stack**
@@ -39,7 +62,7 @@ In this scenario the FortiGates are completely independent of each other (not cl
   
   ![](image-t0-1.png)
 
-- **0.3:** The CloudFormation stack will take ~10 minutes to finish deploying. Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
+- **0.8:** The CloudFormation stack will take ~10 minutes to finish deploying. Once the main/root CloudFormation stack shows as **Create_Complete**, proceed with the steps below.
 
     {{% /expand %}}
 
@@ -253,7 +276,7 @@ While Transit Gateway does support ECMP routing, it only does so for the same at
 {{% expand title="**Detailed Steps...**" %}}
 
 - **9.1:** Navigate to the **CloudFormation Console**, select the main stack you created and click **Delete**.
-- **9.2:** The CloudFormation stack will take ~10 minutes to clean up. Once the stack is deleted, proceed to the next task.
+- **9.2:** The CloudFormation stack will take ~10 minutes to clean up. This is a great time for a break! Once the stack is deleted, proceed to the next task.
 
     {{% /expand %}}
 
