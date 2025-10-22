@@ -191,13 +191,14 @@ Due to the configuration of the Transit gateway route tables, the east/west traf
 {{% expand title = "**Detailed Steps...**" %}}
 
 {{% notice info %}}	
-[**Transit Gateway (TGW)**](https://docs.aws.amazon.com/vpc/latest/tgw/how-transit-gateways-work.html) is a highly scalable cloud router that connects your VPCs in the same region to each other, to on-premise networks, and even to the internet through one hub. With the use of multiple route tables for a single TGW, you can design hub and spoke routing for traffic inspection and enforcement of security policy across multiple VPCs. As the name implies, [**Transit Gateway supports transitive routing**](https://docs.aws.amazon.com/vpc/latest/tgw/TGW_Scenarios.html).
+[**Transit Gateway (TGW)**](https://docs.aws.amazon.com/vpc/latest/tgw/how-transit-gateways-work.html) is a highly scalable regional router that connects your VPCs in the same region to each other, to on-premise networks, and even to the internet through one hub. With the use of multiple route tables for a single TGW, you can design hub and spoke routing for traffic inspection and enforcement of security policy across multiple VPCs. As the name implies, [**Transit Gateway supports transitive routing**](https://docs.aws.amazon.com/vpc/latest/tgw/TGW_Scenarios.html).
 
 In this section, we used Transit gateway to provide open and direct east/west between certain VPCs A and B, to C while providing controlled east/west and centralized egress for other traffic flows (VPC-A to VPC-B). This allows broad routing decisions to be made on how traffic is handled for anything connecting to Transit gateway within the same region.
 
 Key points to understand is that:
   - a single Transit gateway can have multiple route tables
   - multiple attachment types exist (VPC, VPN, Direct Connect (dedicated circuit), TGW Connect (GRE))
+    - these attachments can be from the same or different AWS accounts:
   - each attachment can only be associated to one route table
   - each attachment can be propagated to multiple route tables (ie VPC A and B)
   - additionally static and dynamic routes (covered in next section) can be added to route tables
@@ -242,7 +243,7 @@ Hop | Component | Description | Packet |
 ## Discussion Points
 - TGW is essentially a regional router
 - TGW supports transitive routing and has many [**use cases**](https://docs.aws.amazon.com/vpc/latest/tgw/TGW_Scenarios.html)
-- TGW supports the following attachments in the same region:
+- TGW supports the following attachments in the same region and can be from the same or different AWS accounts:
   - VPC (static propagation of VPC CIDR)
   - VPN (static or dynamic routing)
   - Direct Connect Gateway (static or dynamic routing)
@@ -252,6 +253,15 @@ Hop | Component | Description | Packet |
   - FGTs can be attached to the TGWs to provide dynamic routing between them with an overlay tunnel
 - TGW supports default route table propagation and association settings which can be used to automate connecting spoke VPCs to a simple centralized design
 - Centralized Inspection VPC handles FortiGate NGFW inspection for any traffic flow (Inbound, Outbound, East/West)
-  - Advanced architectures for all of these scenarios can be [**found here**](https://fortinetcloudcse.github.io/FGCP-in-AWS/7_usecases.html)
-  
+  - Templates for deploying this design with/without Transit GW or Cloud WAN can be [**found here**](https://fortinetcloudcse.github.io/FGCP-in-AWS/5_templates.html)
+  - Advanced use cases for inbound VIPs, IPsec VPN, or VPC Ingress routing can be [**found here**](https://fortinetcloudcse.github.io/FGCP-in-AWS/7_usecases.html/71_usecase1.html)
+
+{{% notice tip %}}
+Once completed with this task, complete the quiz below as an individual whenever you are ready. **This quiz is scored and tracked individually.**
+{{% /notice %}}
+
+{{< quizframe page="/gamebytag?tag=tgw-part1" height="800" width="100%" >}}
+
+{{< quizframe page="/scoresbytag" height="800" width="100%" >}}
+
 **This concludes this task**
