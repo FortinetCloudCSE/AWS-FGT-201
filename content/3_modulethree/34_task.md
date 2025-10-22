@@ -363,6 +363,15 @@ VPC-A-Public2RouteTable | 0.0.0.0/0 | VPC-A-GWLB-VPCE-AZ2
 - Jumbo frames (8500 bytes) are supported
 - Inspection VPC handles FortiGate NGFW inspection for any traffic flow (Inbound, Outbound, East/West) and for any network design (distributed vs centralized)
   - [**Appliance Mode**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-appliance-scenario.html) is required for this design to keep flows sticky to the correct availability zone which in turn means the correct GWLB endpoint.
-  - Advanced architectures for all of these scenarios can be [**found here**](https://fortinetcloudcse.github.io/GWLB-in-AWS/7_usecases/71_usecase1.html)
+  - Templates for deploying this design with/without Transit GW or Cloud WAN can be [**found here**](https://fortinetcloudcse.github.io/GWLB-in-AWS/5_templates.html)
+  - Advanced use cases for supporting both centralized and distributed designs, one vs two arm model, and advanced SDN connector mode can be [**found here**](https://fortinetcloudcse.github.io/GWLB-in-AWS/7_usecases.html)
+
+{{% notice tip %}}
+Once completed with this task, complete the quiz below as an individual whenever you are ready. **This quiz is scored and tracked individually.**
+{{% /notice %}}
+
+{{< quizframe page="/gamebytag?tag=gwlb" height="800" width="100%" >}}
+
+{{< quizframe page="/scoresbytag" height="800" width="100%" >}}
 
 **This concludes this task**

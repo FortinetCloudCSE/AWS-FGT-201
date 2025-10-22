@@ -241,4 +241,12 @@ Hop | Component | Description                                                   
 - No Internet Gateway is required for VPC Peering (even when inter-region)
 - Jumbo frames (9001 bytes) are only supported for intra-region connections, inter-region is limited to 1500 bytes
 
+{{% notice tip %}}
+Once completed with this task, complete the quiz below as an individual whenever you are ready. **This quiz is scored and tracked individually.**
+{{% /notice %}}
+
+{{< quizframe page="/gamebytag?tag=vpc-peering" height="800" width="100%" >}}
+
+{{< quizframe page="/scoresbytag" height="800" width="100%" >}}
+
 **This concludes this task**

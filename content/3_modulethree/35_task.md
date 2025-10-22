@@ -243,8 +243,8 @@ If the original stack failed to create, please notify those giving the workshop 
 
 ## Discussion Points
 - Cloud WAN (CWAN) is a global service
-  - Network Manager Console, Global Network, and Core Network Policy are Global
-  - Segments can be regional or global, based on CNE locations and attached resources
+  - Network Manager Console, Global Network, and Core Network Policy are global
+  - Segments are global, but connected resouces such as CNE locations and attachments are regional
   - Core Network Edge (CNEs), and attachments (VPC, Connect, VPN, Direct Connect, etc) are regional
 - Segments are dedicated routing domains that can be isolated or allow direct communication between attached resources
 - Core Network Edges (CNEs) are essentially managed TGWs which are peered together with BGP
@@ -252,10 +252,18 @@ If the original stack failed to create, please notify those giving the workshop 
 - CWAN supports ECMP routing with routes from the same attachment type
    - CWAN is a stateless router which will result in asymmetric routing of traffic
    - SNAT is required for flow symmetry to the correct FortiGate in Active-Active design
-   - FGSP can be used instead for Active-Active East/West inspection with caveats
+   - FGSP can be used instead of SNAT for Active-Active East/West inspection with caveats
    - [**Appliance Mode**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-appliance-scenario.html) is not required but recommended as it limits the amount of asymmetric traffic
-- Connect (tunnel-less) attachments use BGP directly to privately connect to an appliance within a VPC only
+- Connect (tunnel-less) attachments use BGP directly to privately connect to an appliance within a VPC only (ie no overlay tunnel IPsec or GRE needed)
 - Each CWAN Connect (tunnel-less) peer supports up to 100 Gbps, (actual limit is based on instance type BW)
 - Jumbo frames (8500 bytes) are supported for all attachments except VPN (1500 bytes)
+
+{{% notice tip %}}
+Once completed with this task, complete the quiz below as an individual whenever you are ready. **This quiz is scored and tracked individually.**
+{{% /notice %}}
+
+{{< quizframe page="/gamebytag?tag=cwan" height="800" width="100%" >}}
+
+{{< quizframe page="/scoresbytag" height="800" width="100%" >}}
 
 **This concludes this task**

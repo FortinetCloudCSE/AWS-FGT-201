@@ -12,7 +12,7 @@ weight: 3
 ## Introduction
 In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway is configured with multiple Transit Gateway Route Tables.  You will need to create the appropriate VPC attachment associations and propagations to the correct TGW Route Tables, FW policy, and update BPG configuration on the independent FortiGates.
 
-In this scenario the FortiGates are completely independent of each other (not clustered, nor sharing config/sessions, etc.) and are showing different connectivity options to attach remote locations to Transit Gateway. VPN attachments can be used to connect to any IPsec capable device located anywhere.  TGW Connect attachments require a private path to reach a VM deployed in a VPC or HW/VM deployed on premise and must be reachable over Direct Connect (a dedicated, private circuit).
+In this scenario the FortiGates are completely independent of each other (not clustered, nor sharing config/sessions, etc.) and are showing different connectivity options to attach remote locations to Transit Gateway. VPN attachments can be used to connect to any IPsec capable device reachable over the Internet.  TGW Connect attachments require a private path to reach a VM deployed in a VPC or HW/VM deployed on premise and must be reachable over Direct Connect (a dedicated, private circuit).
 
 
 ![](image-tgw-dynamic-example.png)
@@ -293,8 +293,16 @@ While Transit Gateway does support ECMP routing, it only does so for the same at
    - Active-Active for East/West inspection possible with caveats
 - Each TGW VPN connection (2x IPsec tunnels per connection) supports up to 2.5 Gbps
 - Each TGW Connect peer supports up to 5 Gbps
-- TGW supports multiple peers per TGW Connect attachment and multiple attachments to a single VPC
+- TGW supports multiple Connect peers per TGW Connect attachment and multiple attachments to a single VPC
 - TGW supports multiple VPN attachments to the same or different customer gateway (remote IPsec appliance)
 - Jumbo frames (8500 bytes) are supported for all attachments except VPN (1500 bytes)
+
+{{% notice tip %}}
+Once completed with this task, complete the quiz below as an individual whenever you are ready. **This quiz is scored and tracked individually.**
+{{% /notice %}}
+
+{{< quizframe page="/gamebytag?tag=tgw-part2" height="800" width="100%" >}}
+
+{{< quizframe page="/scoresbytag" height="800" width="100%" >}}
 
 **This concludes this task**
