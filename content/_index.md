@@ -29,6 +29,3 @@ The intent is to help clarify the following:
   * Advanced AWS networking concepts such as VPC Peering, Transit Gateway (TGW), Gateway Load Balancer (GWLB), and Cloud WAN (CWAN)
   * Use of FortiGate instances in AWS to secure inbound, outbound, and East/West traffic flows
   * AWS architectures with Transit Gateway (TGW), Gateway Load Balancer (GWLB), Cloud WAN (CWAN), and the FortiGate security VPC concept
-
-
-{{< quizframe page="/gamebytag?tag=ch1" height="800" width="100%" >}}
