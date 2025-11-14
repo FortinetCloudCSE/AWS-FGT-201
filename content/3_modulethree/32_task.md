@@ -11,7 +11,7 @@ weight: 2
 
 ## Introduction
 
-In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway (TGW) is configured with multiple Transit Gateway Route Tables.  You will need to create the appropriate VPC attachment associations and propagations to the correct TGW Route Tables, FW policy and update a static route on the FortiGate Active-Passive cluster.
+In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway (TGW) is configured with multiple Transit Gateway Route Tables. You will need to create the appropriate VPC attachment associations and propagations to the correct TGW Route Tables, FW policy and update a static route on the FortiGate Active-Passive cluster.
 
 In this scenario you will allow traffic between the workload and shared services VPC to communicate directly (without going through the FortiGate A-P cluster), while inspecting outbound and east/west connectivity for the workload VPCs.
 
@@ -44,7 +44,7 @@ All AWS resources for this lab will be deployed in the **United States (N. Virgi
 - **0.4:** You are now ready to proceed with the rest of the lab below **starting in section 1**. The remaining steps for this section are if the main stack failed to create successfully.
 
 {{% notice warning %}}
-If the original stack failed to create, please notify those giving the workshop to review the root cause of the issue. Once that is done, please proceed with the remaining steps for this section.
+If the original stack failed to create, please notify those giving the workshop to review the root cause of the issue. Once that is done, please **check the status of the backup deployment in the eu-north-1 (Stockholm) region**. Otherwise, proceed with the remaining steps for this section.
 {{% /notice %}}
 
 - **0.5:** **Delete the previously failed main stack and wait till that has completed successfully**. Please use the refresh buttons to refresh both the left and right portions of the CloudFormation Console.
@@ -79,7 +79,7 @@ If the original stack failed to create, please notify those giving the workshop 
   ![](image-t2-2.png)
 
   {{% notice info %}}
-Notice that the VPC attachment is associated or attached to two subnets in VPC-A. This means VPC route tables can be used to direct traffic that comes through the attachment. This is what allows transitive routing to occur.    
+Notice that the VPC attachment is associated or attached to two subnets in VPC-A. This means VPC route tables can be used to direct traffic that comes through the attachment. This is what allows transitive routing to occur.  
   {{% /notice %}}
 
    {{% /expand %}}
@@ -174,10 +174,10 @@ Due to the configuration of the Transit gateway route tables, the east/west traf
   **Instance A** | ---                                 | **`curl -k --retry 2 --retry-all-errors https://secure.eicar.org/eicar.com.txt -o file.txt`** {{<investigate>}}
   
   - A --> B succeeded for ping but not HTTP due to FortiGate Firewall Policy
-  - A --> Internet was successful for PING, Web Filtered for HTTPS, and blocked for HTTP due to FortiGate Firewall Policy
+  - A --> Internet was successful for PING, inspected for HTTPS, and blocked for HTTP due to FortiGate Firewall Policy
   
 - **6.2:** To check the content of the file from the last command, run the command **`cat file.txt | grep -A 15 'High Security Alert'`**.
-  - You will see you were blocked, and a block page was returned due to the **Web Filtering** profile
+  - You will see you were blocked, and a block page was returned due to the **AntiVirus** profile
 
 {{% notice tip %}}
 Due to the configuration of the Transit gateway route tables, the east/west traffic from VPC-A to VPC-B and both VPCs to the internet is being routed through the inspection VPC. This is allowing us to have better visibility and control from both a layer 4 and 7 perspective. This allows us to trust but verify what is allowed and occurring in our environment.
@@ -197,20 +197,20 @@ In this section, we used Transit gateway to provide open and direct east/west be
 
 Key points to understand is that:
   - a single Transit gateway can have multiple route tables
-  - multiple attachment types exist (VPC, VPN, Direct Connect (dedicated circuit), TGW Connect (GRE))
+  - multiple attachment types exist (VPC, VPN, Direct Connect (dedicated circuit), TGW Connect (GRE+BGP))
     - these attachments can be from the same or different AWS accounts:
   - each attachment can only be associated to one route table
   - each attachment can be propagated to multiple route tables (ie VPC A and B)
   - additionally static and dynamic routes (covered in next section) can be added to route tables
 {{% /notice %}}
 
-- **7.1:** In the FortiGate GUI navigate to **Log & Report > Forward Traffic**.  You should see logs for the traffic you generated. 
+- **7.1:** In the FortiGate GUI navigate to **Log & Report > Forward Traffic**. You should see logs for the traffic you generated. 
 - **7.2:** **Double click** a log entry to view the **Log Details**.
 
 {{% notice info %}}
 The instance has the private IP 10.1.2.10/24, but is seen as coming from a public IP when running 'curl -k https://ipinfo.io', etc. This is because the primary FortiGate is providing secured outbound access to the internet for this private EC2 instance. This is because of the **VPC routes in all the VPCs (VPC-A and Inspection) are working together with the Transit Gateway (TGW) and Transit Gateway route tables to route** the in/outbound traffic through the primary FortiGate. This is a [**centralized design**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-appliance-scenario.html) that is also commonly called an appliance, inspection, or security VPC.
 
-Navigate to **Policy & Objects > Firewall Policy** and look at the **security profiles** being applied to the **secured-outbound-traffic-with-nat policy**. This pre-configured policy is applying source NAT to act as a NAT Gateway but is also applying advanced NGFW protection such as SSL MitM, Application Control, Intrusion Prevention, and Anti-Virus features.
+Navigate to **Policy & Objects > Firewall Policy** and look at the **security profiles** being applied to the **secured-outbound-traffic-with-nat policy**. This pre-configured policy is applying source NAT to act as a NAT Gateway but is also applying advanced NGFW protection such as SSL MitM, Application Control, Intrusion Prevention, and AntiVirus features.
 {{% /notice %}}
 
 - **7.3** Below is a step by step of the packet handling for the outbound web traffic from Instance-A.
@@ -253,15 +253,13 @@ Hop | Component | Description | Packet |
   - FGTs can be attached to the TGWs to provide dynamic routing between them with an overlay tunnel
 - TGW supports default route table propagation and association settings which can be used to automate connecting spoke VPCs to a simple centralized design
 - Centralized Inspection VPC handles FortiGate NGFW inspection for any traffic flow (Inbound, Outbound, East/West)
-  - Templates for deploying this design with/without Transit GW or Cloud WAN can be [**found here**](https://fortinetcloudcse.github.io/FGCP-in-AWS/5_templates.html)
-  - Advanced use cases for inbound VIPs, IPsec VPN, or VPC Ingress routing can be [**found here**](https://fortinetcloudcse.github.io/FGCP-in-AWS/7_usecases.html/71_usecase1.html)
+  - Templates for deploying this design with/without Transit GW or Cloud WAN can be [**found here**](https://fortinetcloudcse.github.io/FGCP-in-AWS/5_templates/index.html)
+  - Advanced use cases for inbound VIPs, IPsec VPN, or VPC Ingress routing can be [**found here**](https://fortinetcloudcse.github.io/FGCP-in-AWS/7_usecases/index.html)
 
 {{% notice tip %}}
-Once completed with this task, complete the quiz below as an individual whenever you are ready. **This quiz is scored and tracked individually.**
+Once completed with this task, complete the quiz below as an individual whenever you are ready.
 {{% /notice %}}
 
 {{< quizframe page="/gamebytag?tag=tgw-part1" height="800" width="100%" >}}
-
-{{< quizframe page="/scoresbytag" height="800" width="100%" >}}
 
 **This concludes this task**

@@ -6,7 +6,7 @@ weight: 2
 ### AWS 101 Review
 
 {{% notice tip %}}
-Before going through the workshop, we will run through the poll as a group. **This poll is not scored.** This will help us to review important AWS networking concepts before moving onto the advanced topics in the workshop hands-on section.
+Before going through the workshop, we will run through a quiz as a group. This will help us to review important AWS networking concepts before moving onto the advanced topics in the workshop hands-on section.
 {{% /notice %}}
 
 {{< quizframe page="/gamebytag?tag=101-review" height="800" width="100%" >}}
@@ -69,11 +69,11 @@ TGW | TGW routing tables, VPC, VPN, DXC and other attachments | 5,000 attachment
 ![](image-cwan-overview.png)
 
 ### AWS Data transfer cost considerations
-Below is a simplified description of the most basic AWS networking & data transfer charges.  The listed costs are examples only and change frequently based on the region in use.  Please consult [**AWS documentation for costs of your specific scenario**](https://aws.amazon.com/blogs/architecture/overview-of-data-transfer-costs-for-common-architectures/)
+Below is a simplified description of the most basic AWS networking & data transfer charges. The listed costs are examples only and change frequently based on the region in use. Please consult [**AWS documentation for costs of your specific scenario**](https://aws.amazon.com/blogs/architecture/overview-of-data-transfer-costs-for-common-architectures/)
 
 {{% notice note %}}
 
-Any specific pricing listed below is for estimation purposes only.  Please reference the [**AWS Cost Calculator**](https://calculator.aws/#/) for the most up-to-date pricing for your infrastructure. 
+Any specific pricing listed below is for estimation purposes only. Please reference the [**AWS Cost Calculator**](https://calculator.aws/#/) for the most up-to-date pricing for your infrastructure. 
 {{% /notice %}}
 
 {{% notice tip %}}
@@ -95,7 +95,7 @@ AWS Service costs | cost ($)
 VPC Peering | $0.00 (Free)
 CWAN | $0.02/GB + $0.50/hr (per CNE) + $0.065-0.09 (per attachment) [**See AWS CWAN Pricing**](https://aws.amazon.com/cloud-wan/pricing/)
 TGW | $0.02/GB + $0.05/hr (per attachment) [**See AWS TGW Pricing**](https://aws.amazon.com/transit-gateway/pricing/)
-IGW |  $0.00 (Free) [**See AWS VPC Pricing**](https://aws.amazon.com/vpc/pricing/)
+IGW | $0.00 (Free) [**See AWS VPC Pricing**](https://aws.amazon.com/vpc/pricing/)
 NATGW | $0.045/GB + $0.045/hr [**See AWS VPC Pricing**](https://aws.amazon.com/vpc/pricing/) 
 EIP | $0.005/hr [**See AWS VPC Pricing**](https://aws.amazon.com/vpc/pricing/)
 
