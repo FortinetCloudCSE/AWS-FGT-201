@@ -7,7 +7,7 @@ weight: 1
 
 For Fortinet cloud workshops, we will use [**Qwiklabs**](https://fortinet.qwiklabs.com/paths) to provide a pre-staged AWS account with the workshop environment ready to use. If you do not already have an account created, **please create an account using the same account you registered for this workshop with**, your corporate email (ie @fortinet.com, @acme.com), not your personal email.
 
-- After logging into [**Qwiklabs**](https://fortinet.qwiklabs.com/paths), click **Explore** (top of page)
+- After logging into [**Qwiklabs**](https://fortinet.qwiklabs.com/paths), click **Dashboard** (top of page)
 - Find and select **FortiGate: AWS Networking 201 Workshop**
 - Click the green **Start Lab** button to begin
 
