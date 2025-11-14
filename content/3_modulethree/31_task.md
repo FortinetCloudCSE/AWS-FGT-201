@@ -142,7 +142,7 @@ If the original stack failed to create, please notify those giving the workshop 
 - **3.2:** Run the following commands to verify connectivity and make sure results match expectations
   SRC / DST | VPC B                                                   | VPC C | Internet
   ---|--------------------------------------------------------------|---|---
-  **Instance A** | **`ping 10.2.2.10`** {{<success>}} |  **`ping 10.3.2.10`** {{<fail>}}
+  **Instance A** | **`ping 10.2.2.10`** {{<success>}} | **`ping 10.3.2.10`** {{<fail>}}
   **Instance A** | | | **`curl ipinfo.io`** {{<fail>}}
 
    - Now you can successfully ping Instance-B over the peering connection.
@@ -174,7 +174,7 @@ SRC / DST | Instance A                                                   | Insta
 - **4.4:** Run the following commands to verify connectivity and make sure results match expectations
 SRC / DST | Instance A                                                   | Instance B | Internet
   ---|--------------------------------------------------------------|---|---
-  **Instance C** | **`ping 10.1.2.10`** {{<fail>}}  |  **`ping 10.2.2.10`** {{<success>}}
+  **Instance C** | **`ping 10.1.2.10`** {{<fail>}} | **`ping 10.2.2.10`** {{<success>}}
   **Instance C** | | | **`curl ipinfo.io`** {{<fail>}}
 
    - Instance-C should ping Instance-B but not be able to ping Instance-A or access the internet through VPC-B.
@@ -242,11 +242,9 @@ Hop | Component | Description                                                   
 - Jumbo frames (9001 bytes) are only supported for intra-region connections, inter-region is limited to 1500 bytes
 
 {{% notice tip %}}
-Once completed with this task, complete the quiz below as an individual whenever you are ready. **This quiz is scored and tracked individually.**
+Once completed with this task, complete the quiz below as an individual whenever you are ready.
 {{% /notice %}}
 
 {{< quizframe page="/gamebytag?tag=vpc-peering" height="800" width="100%" >}}
-
-{{< quizframe page="/scoresbytag" height="800" width="100%" >}}
 
 **This concludes this task**

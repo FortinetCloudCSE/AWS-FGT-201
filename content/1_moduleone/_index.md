@@ -40,9 +40,9 @@ The following Fortinet & AWS components will be used during this workshop:
 
 AWS networking offers multiple ways to organize your AWS architecture to take advantage of FortiGate traffic inspection. The most important part of designing your network is to ensure **traffic follows a symmetrical routing path** (for forward and reverse flows). As long as flows are symmetrical, the architecture will work and traffic will flow through the FortiGate NGFW for inspection.
   
-We will investigate the configuration of different architecture patterns, including:  
+We will investigate the configuration of different architecture patterns, including:
 
-  * **VPC Peering**  
+  * **VPC Peering**
   * **FortiGate Centralized Architecture for Selective inspection of East/West & Egress traffic**
   * **FortiGate Centralized Architecture with Dynamic Routing for inspection of East/West & Egress Traffic with multiple VPCs**
   * **FortiGate Centralized & Distributed Inspection architectures featuring AWS GWLB**

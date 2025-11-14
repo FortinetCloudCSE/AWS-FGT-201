@@ -10,9 +10,9 @@ weight: 3
 | **Validation** | Confirm outbound and east/west connectivity from EC2 Instance-A via Ping, HTTP, HTTPS.
 
 ## Introduction
-In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway is configured with multiple Transit Gateway Route Tables.  You will need to create the appropriate VPC attachment associations and propagations to the correct TGW Route Tables, FW policy, and update BPG configuration on the independent FortiGates.
+In this task, there are multiple VPCs in the same region that have one instance each. Transit Gateway is configured with multiple Transit Gateway Route Tables. You will need to create the appropriate VPC attachment associations and propagations to the correct TGW Route Tables, FW policy, and update BPG configuration on the independent FortiGates.
 
-In this scenario the FortiGates are completely independent of each other (not clustered, nor sharing config/sessions, etc.) and are showing different connectivity options to attach remote locations to Transit Gateway. VPN attachments can be used to connect to any IPsec capable device reachable over the Internet.  TGW Connect attachments require a private path to reach a VM deployed in a VPC or HW/VM deployed on premise and must be reachable over Direct Connect (a dedicated, private circuit).
+In this scenario the FortiGates are completely independent of each other (not clustered, nor sharing config/sessions, etc.) and are showing different connectivity options to attach remote locations to Transit Gateway. VPN attachments can be used to connect to any IPsec capable device reachable over the Internet. TGW Connect attachments require a private path to reach a VM deployed in a VPC or HW/VM deployed on premise and must be reachable over Direct Connect (a dedicated, private circuit).
 
 
 ![](image-tgw-dynamic-example.png)
@@ -43,7 +43,7 @@ All AWS resources for this lab will be deployed in the **United States (Ohio) re
 - **0.4:** You are now ready to proceed with the rest of the lab below **starting in section 1**. The remaining steps for this section are if the main stack failed to create successfully.
 
 {{% notice warning %}}
-If the original stack failed to create, please notify those giving the workshop to review the root cause of the issue. Once that is done, please proceed with the remaining steps for this section.
+If the original stack failed to create, please notify those giving the workshop to review the root cause of the issue. Once that is done, please **check the status of the backup deployment in the eu-west-1 (Ireland) region**. Once that is done, please proceed with the remaining steps for this section.
 {{% /notice %}}
 
 - **0.5:** **Delete the previously failed main stack and wait till that has completed successfully**. Please use the refresh buttons to refresh both the left and right portions of the CloudFormation Console.
@@ -148,14 +148,14 @@ TGW-Connect-sharedservices-tgw-rtb | 10.1.0.0/16 <br> 10.2.0.0/16 |
 
 {{% expand title = "**Detailed Steps...**" %}}
 
-- **4.1:** High level diagram showing how the Connect attachment goes over a VPC attachment which allows FortiGate1 to have a GRE tunnel over a private path which has BGP peering configured as well.  This provides an overlay tunnel where dynamic routes and data-plane traffic can be routed without adding additional routes to the VPC router.
+- **4.1:** High level diagram showing how the Connect attachment goes over a VPC attachment which allows FortiGate1 to have a GRE tunnel over a private path which has BGP peering configured as well. This provides an overlay tunnel where dynamic routes and data-plane traffic can be routed without adding additional routes to the VPC router.
 	
 ![](image-tgw-dynamic-example-flow1.png)
 	
 {{% notice info %}}	
-FortiGate1 is getting data-plane traffic over a GRE tunnel between it's port2 private IP (10.0.3.x/24) and an IP out of Transit Gateway CIDR block (100.64.0.x/24).  This GRE tunnel is going over the TGW-Connect-security-connect-attachment, so this is all over a private path. Also Transit Gateway can support jumbo frames up to 8500 bytes for traffic between VPCs, AWS Direct Connect, Transit Gateway Connect, and peering attachments. However, traffic over VPN connections can have an MTU of 1500 bytes. Find out more in [**AWS Documentation**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-quotas.html#mtu-quotas).
+FortiGate1 is getting data-plane traffic over a GRE tunnel between it's port2 private IP (10.0.3.x/24) and an IP out of Transit Gateway CIDR block (100.64.0.x/24). This GRE tunnel is going over the TGW-Connect-security-connect-attachment, so this is all over a private path. Also Transit Gateway can support jumbo frames up to 8500 bytes for traffic between VPCs, AWS Direct Connect, Transit Gateway Connect, and peering attachments. However, traffic over VPN connections can have an MTU of 1500 bytes. Find out more in [**AWS Documentation**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-quotas.html#mtu-quotas).
 
-BGP peering can be either iBGP or eBGP but the IP addressing will always use the inside tunnel IPs from a specific selection of CIDRs from 169.254.0.0/16.  To find out which ones can or can't be used, please reference [**AWS Documentation**](https://docs.aws.amazon.com/vpc/latest/tgw/tgw-connect.html#tgw-connect-peer).
+BGP peering can be either iBGP or eBGP but the IP addressing will always use the inside tunnel IPs from a specific selection of CIDRs from 169.254.0.0/16. To find out which ones can or can't be used, please reference [**AWS Documentation**](https://docs.aws.amazon.com/vpc/latest/tgw/tgw-connect.html#tgw-connect-peer).
 
 Regardless which type of BGP is used, each connect peer is only required to create one GRE tunnel to peer to the redundant BGP peers on the Transit Gateway side. For more information, reference [**AWS Documentation**](https://aws.amazon.com/blogs/networking-and-content-delivery/simplify-sd-wan-connectivity-with-aws-transit-gateway-connect/).
 {{% /notice %}}
@@ -214,7 +214,7 @@ Regardless which type of BGP is used, each connect peer is only required to crea
 {{% notice info %}}	
 FortiGate2 is getting data-plane traffic over **two IPsec tunnels** between its port1 private ip (10.0.2.x/24) that has an associated [**Elastic IP**](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html) and two public IPs managed by AWS, so this is all over a public path but encrypted. This means that jumbo frames are not supported for VPN based attachments.
 
-Since there are two tunnels with a BGP peer configured for each, FortiGate2 is able to advertise ECMP paths which Transit Gateway can use.  [**TGW supports ECMP**](https://docs.aws.amazon.com/vpc/latest/tgw/how-transit-gateways-work.html#tgw-ecmp) for different attachment types.
+Since there are two tunnels with a BGP peer configured for each, FortiGate2 is able to advertise ECMP paths which Transit Gateway can use. [**TGW supports ECMP**](https://docs.aws.amazon.com/vpc/latest/tgw/how-transit-gateways-work.html#tgw-ecmp) for different attachment types.
 {{% /notice %}}
 
     {{% /expand %}}
@@ -298,11 +298,9 @@ While Transit Gateway does support ECMP routing, it only does so for the same at
 - Jumbo frames (8500 bytes) are supported for all attachments except VPN (1500 bytes)
 
 {{% notice tip %}}
-Once completed with this task, complete the quiz below as an individual whenever you are ready. **This quiz is scored and tracked individually.**
+Once completed with this task, complete the quiz below as an individual whenever you are ready.
 {{% /notice %}}
 
 {{< quizframe page="/gamebytag?tag=tgw-part2" height="800" width="100%" >}}
-
-{{< quizframe page="/scoresbytag" height="800" width="100%" >}}
 
 **This concludes this task**

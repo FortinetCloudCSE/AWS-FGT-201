@@ -16,8 +16,8 @@ weight: 2
 
 
 ### General
-- It's often helpful to open each new service in its own tab.  That way, you can refer back to each service independently without losing the info on your screen.
-  - This trick is also useful when working in multiple regions.  Just be careful you make a change in the appropriate region!
+- It's often helpful to open each new service in its own tab. That way, you can refer back to each service independently without losing the info on your screen.
+  - This trick is also useful when working in multiple regions. Just be careful you make a change in the appropriate region!
 - Search/filter within a service
   - Often, when working with AWS services, it can be confusing matching a particular item to its "owner"
     - e.g.  Every Subnet and RT belongs to a single VPC.

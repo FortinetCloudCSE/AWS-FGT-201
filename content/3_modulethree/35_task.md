@@ -41,7 +41,7 @@ All AWS resources for this lab will be deployed in the **United States (Oregon) 
 - **0.4:** You are now ready to proceed with the rest of the lab below **starting in section 1**. The remaining steps for this section are if the main stack failed to create successfully.
 
 {{% notice warning %}}
-If the original stack failed to create, please notify those giving the workshop to review the root cause of the issue. Once that is done, please proceed with the remaining steps for this section.
+If the original stack failed to create, please notify those giving the workshop to review the root cause of the issue. Once that is done, please **check the status of the backup deployment in the eu-west-3 (Paris) region**. Once that is done, please proceed with the remaining steps for this section.
 {{% /notice %}}
 
 - **0.5:** **Delete the previously failed main stack and wait till that has completed successfully**. Please use the refresh buttons to refresh both the left and right portions of the CloudFormation Console.
@@ -225,7 +225,7 @@ If the original stack failed to create, please notify those giving the workshop 
 	diag sys session sync
 	
 
-  While FGSP is great, there are caveats to keep in mind such as: inspecting asymmetric traffic with NGFW L7 features, increased packets per second (PPS) rates due to FGSP can trigger throttling from cloud providers, etc. To find out more about FGSP reference this  [**documentation**](https://docs.fortinet.com/document/fortigate/7.6.3/administration-guide/668583/fgsp).
+  While FGSP is great, there are caveats to keep in mind such as: inspecting asymmetric traffic with NGFW L7 features, increased packets per second (PPS) rates due to FGSP can trigger throttling from cloud providers, etc. To find out more about FGSP reference this [**documentation**](https://docs.fortinet.com/document/fortigate/7.6.3/administration-guide/668583/fgsp).
 
   [**Appliance Mode**](https://docs.aws.amazon.com/vpc/latest/tgw/transit-gateway-appliance-scenario.html) is not required but recommended if FGSP is to be used as it limits the amount of asymmetric traffic that will be handled in an ECMP Active-Active design. Appliance mode will use a flow hash algorithm to send traffic, including reply traffic, for the life of the flow to the same availability zone and network interface of the attachment within the appliance or inspection VPC.
   {{% /notice %}}
@@ -259,11 +259,9 @@ If the original stack failed to create, please notify those giving the workshop 
 - Jumbo frames (8500 bytes) are supported for all attachments except VPN (1500 bytes)
 
 {{% notice tip %}}
-Once completed with this task, complete the quiz below as an individual whenever you are ready. **This quiz is scored and tracked individually.**
+Once completed with this task, complete the quiz below as an individual whenever you are ready.
 {{% /notice %}}
 
 {{< quizframe page="/gamebytag?tag=cwan" height="800" width="100%" >}}
-
-{{< quizframe page="/scoresbytag" height="800" width="100%" >}}
 
 **This concludes this task**
